@@ -1,0 +1,491 @@
+{
+ "pages": {
+  "/": {
+   "code": 200,
+   "title": "RangsX Electric Experience",
+   "bytes": 30380
+  },
+  "/dongfeng": {
+   "code": 200,
+   "title": "Dongfeng Electric Vehicles | RangsX",
+   "bytes": 45808
+  },
+  "/electric-bikes": {
+   "code": 200,
+   "title": "Electric Bikes | RangsX",
+   "bytes": 45924
+  },
+  "/about": {
+   "code": 200,
+   "title": "About RangsX \u2014 Electric Mobility for Bangladesh",
+   "bytes": 54461
+  },
+  "/service": {
+   "code": 200,
+   "title": "Service & Support \u2014 RangsX",
+   "bytes": 70420
+  },
+  "/dealers": {
+   "code": 200,
+   "title": "Dealer Locator \u2014 RangsX",
+   "bytes": 157259
+  },
+  "/contact": {
+   "code": 200,
+   "title": "Contact \u2014 RangsX",
+   "bytes": 63091
+  },
+  "/electric-bikes/rx/zs": {
+   "code": 200,
+   "title": "RX ZS \u2014 The City Runs Electric | RangsX",
+   "bytes": 194703
+  },
+  "/shop": {
+   "code": 200,
+   "title": "RX Gear \u2014 Premium Riding Accessories | RangsX",
+   "bytes": 62636
+  },
+  "/commercial-evs": {
+   "code": 404,
+   "title": "",
+   "bytes": 0
+  },
+  "/electric-vans/em26": {
+   "code": 200,
+   "title": "Dongfeng EM-26 \u2014 Electric Logistics, Reimagined | RangsX",
+   "bytes": 153994
+  },
+  "/terms-of-use": {
+   "code": 200,
+   "title": "Terms of Use \u2014 RangsX",
+   "bytes": 47460
+  },
+  "/privacy-policy": {
+   "code": 200,
+   "title": "Privacy Policy \u2014 RangsX",
+   "bytes": 45680
+  },
+  "/electric-microbus/em27": {
+   "code": 200,
+   "title": "Dongfeng EM-27 \u2014 Electric Microbus | RangsX",
+   "bytes": 142247
+  },
+  "/electric-bikes/rx/t60": {
+   "code": 200,
+   "title": "RX T60 \u2014 The City Runs Electric | RangsX",
+   "bytes": 194823
+  },
+  "/electric-bikes/rx/es3": {
+   "code": 200,
+   "title": "RX ES3 \u2014 The City Runs Electric | RangsX",
+   "bytes": 194878
+  },
+  "/shop/rx-pro-helmet": {
+   "code": 200,
+   "title": "RX Pro Helmet \u2014 RX Gear | RangsX",
+   "bytes": 87051
+  },
+  "/shop/rx-urban-helmet": {
+   "code": 200,
+   "title": "RX Urban Helmet \u2014 RX Gear | RangsX",
+   "bytes": 85456
+  },
+  "/shop/rx-sport-gloves": {
+   "code": 200,
+   "title": "RX Sport Gloves \u2014 RX Gear | RangsX",
+   "bytes": 85631
+  },
+  "/shop/rx-rider-tshirt": {
+   "code": 200,
+   "title": "RX Rider T-Shirt \u2014 RX Gear | RangsX",
+   "bytes": 85351
+  },
+  "/shop/rx-rider-jacket": {
+   "code": 200,
+   "title": "RX Rider Jacket \u2014 RX Gear | RangsX",
+   "bytes": 86587
+  },
+  "/shop/rx-allweather-gloves": {
+   "code": 200,
+   "title": "RX All-Weather Gloves \u2014 RX Gear | RangsX",
+   "bytes": 85949
+  },
+  "/shop/rx-phone-mount": {
+   "code": 200,
+   "title": "RX Phone Mount \u2014 RX Gear | RangsX",
+   "bytes": 85467
+  },
+  "/shop/rx-saddlebag": {
+   "code": 200,
+   "title": "RX Saddlebag 20L \u2014 RX Gear | RangsX",
+   "bytes": 85725
+  }
+ },
+ "edges": {
+  "/": [],
+  "/dongfeng": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/electric-bikes": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/about": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/service": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/dealers": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/contact": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/electric-bikes/rx/zs": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/electric-bikes",
+   "/electric-bikes/rx/es3",
+   "/electric-bikes/rx/t60",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/shop": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-allweather-gloves",
+   "/shop/rx-phone-mount",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-rider-jacket",
+   "/shop/rx-rider-tshirt",
+   "/shop/rx-saddlebag",
+   "/shop/rx-sport-gloves",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/commercial-evs": [],
+  "/electric-vans/em26": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/terms-of-use": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/privacy-policy": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/electric-microbus/em27": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/electric-bikes/rx/t60": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/electric-bikes",
+   "/electric-bikes/rx/es3",
+   "/electric-bikes/rx/t60",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/electric-bikes/rx/es3": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/electric-bikes",
+   "/electric-bikes/rx/es3",
+   "/electric-bikes/rx/t60",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/terms-of-use"
+  ],
+  "/shop/rx-pro-helmet": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-allweather-gloves",
+   "/shop/rx-sport-gloves",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/shop/rx-urban-helmet": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-allweather-gloves",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-sport-gloves",
+   "/terms-of-use"
+  ],
+  "/shop/rx-sport-gloves": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-allweather-gloves",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/shop/rx-rider-tshirt": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-rider-jacket",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/shop/rx-rider-jacket": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-rider-tshirt",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/shop/rx-allweather-gloves": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-sport-gloves",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/shop/rx-phone-mount": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-saddlebag",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ],
+  "/shop/rx-saddlebag": [
+   "/",
+   "/about",
+   "/contact",
+   "/dealers",
+   "/dongfeng",
+   "/electric-bikes",
+   "/electric-bikes/rx/zs",
+   "/electric-microbus/em27",
+   "/electric-vans/em26",
+   "/privacy-policy",
+   "/service",
+   "/shop",
+   "/shop/rx-phone-mount",
+   "/shop/rx-pro-helmet",
+   "/shop/rx-urban-helmet",
+   "/terms-of-use"
+  ]
+ }
+}

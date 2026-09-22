@@ -1,0 +1,15 @@
+# Build output (regenerate with: node site/build.mjs)
+dist/
+
+# Local tooling
+.claude/
+node_modules/
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

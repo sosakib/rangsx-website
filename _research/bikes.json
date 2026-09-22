@@ -1,0 +1,251 @@
+[
+ {
+  "slug": "zs",
+  "brand": "rx",
+  "name": "ZS",
+  "tagline": "Bold and unstoppable. A wide-stance commuter built for Bangladeshi roads — potholes, speed breakers and all — with 1500W of silent torque and a full-colour TFT display.",
+  "heroStats": [
+   {
+    "value": "90–100",
+    "unit": "km",
+    "label": "Range"
+   },
+   {
+    "value": "65",
+    "unit": "km/h",
+    "label": "Top Speed"
+   },
+   {
+    "value": "1500",
+    "unit": "W",
+    "label": "Motor"
+   }
+  ],
+  "overviewPoints": [
+   "1500W motor tuned for city acceleration",
+   "90–100 km range on a single charge",
+   "76V 30Ah LFP battery pack",
+   "Wide 110/70-12 tyres on aluminium wheels",
+   "Full-colour TFT display with GPS and app access",
+   "Ground clearance and suspension set up for uneven local roads"
+  ],
+  "images": [
+   "/assets/ebike/rx/zs-grey.webp",
+   "/assets/ebike/rx/zs-red.webp",
+   "/assets/ebike/rx/zs-yellow.webp",
+   "/assets/ebike/CPx_PRO_RIQUADRO_1.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_2.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_3.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_4.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_5.jpg"
+  ],
+  "lifestyleImages": [
+   "/assets/ebike/CPx_PRO_RIQUADRO_1.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_2.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_3.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_5.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_7.jpg"
+  ],
+  "colorways": [
+   {
+    "id": "grey",
+    "label": "Silver Grey",
+    "src": "/assets/ebike/rx/zs-grey.webp",
+    "shadow": "rgba(255,255,255,0.10)",
+    "swatch": "#C9CCCF"
+   },
+   {
+    "id": "red",
+    "label": "Racing Red",
+    "src": "/assets/ebike/rx/zs-red.webp",
+    "shadow": "rgba(220,50,50,0.30)",
+    "swatch": "#B0141F"
+   },
+   {
+    "id": "yellow",
+    "label": "Solar Yellow",
+    "src": "/assets/ebike/rx/zs-yellow.webp",
+    "shadow": "rgba(230,200,40,0.30)",
+    "swatch": "#F2C200"
+   }
+  ],
+  "specs": {
+   "motor": "1500W",
+   "range": "90–100 km",
+   "topSpeed": "65 km/h",
+   "battery": "76V 30Ah LFP",
+   "tyre": "110/70-12",
+   "brakes": "Disk",
+   "wheelType": "Aluminium",
+   "display": "TFT",
+   "rangeKm": 100,
+   "topSpeedKmh": 65
+  }
+ },
+ {
+  "slug": "es3",
+  "brand": "rx",
+  "name": "ES3",
+  "tagline": "Effortless and elegant. Classic scooter lines over modern electric running gear, with a narrower footprint for threading through narrow streets and dense traffic.",
+  "heroStats": [
+   {
+    "value": "90–100",
+    "unit": "km",
+    "label": "Range"
+   },
+   {
+    "value": "65",
+    "unit": "km/h",
+    "label": "Top Speed"
+   },
+   {
+    "value": "1500",
+    "unit": "W",
+    "label": "Motor"
+   }
+  ],
+  "overviewPoints": [
+   "1500W motor with the same silent pull as the rest of the range",
+   "90–100 km range on a single charge",
+   "76V 30Ah LFP battery pack",
+   "Narrower 90/80-12 tyres for a lighter, more agile feel",
+   "LED instrument cluster with GPS and app access",
+   "Comfortable suspension and durable build for daily local road conditions"
+  ],
+  "images": [
+   "/assets/ebike/rx/es3-grey.webp",
+   "/assets/ebike/rx/es3-red.webp",
+   "/assets/ebike/rx/es3-red-white.webp",
+   "/assets/ebike/CPx_PRO_RIQUADRO_1.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_2.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_3.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_4.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_5.jpg"
+  ],
+  "lifestyleImages": [
+   "/assets/ebike/CPx_PRO_RIQUADRO_1.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_2.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_3.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_5.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_7.jpg"
+  ],
+  "colorways": [
+   {
+    "id": "grey",
+    "label": "Silver Grey",
+    "src": "/assets/ebike/rx/es3-grey.webp",
+    "shadow": "rgba(255,255,255,0.10)",
+    "swatch": "#BCC1C5"
+   },
+   {
+    "id": "red",
+    "label": "Shadow Red",
+    "src": "/assets/ebike/rx/es3-red.webp",
+    "shadow": "rgba(220,50,50,0.30)",
+    "swatch": "#9E1420"
+   },
+   {
+    "id": "red-white",
+    "label": "Red & White",
+    "src": "/assets/ebike/rx/es3-red-white.webp",
+    "shadow": "rgba(255,255,255,0.10)",
+    "swatch": "#E8E8EA"
+   }
+  ],
+  "specs": {
+   "motor": "1500W",
+   "range": "90–100 km",
+   "topSpeed": "65 km/h",
+   "battery": "76V 30Ah LFP",
+   "tyre": "90/80-12",
+   "brakes": "Disk",
+   "wheelType": "Aluminium",
+   "display": "LED",
+   "rangeKm": 100,
+   "topSpeedKmh": 65
+  }
+ },
+ {
+  "slug": "t60",
+  "brand": "rx",
+  "name": "T60",
+  "tagline": "The urban electric scooter. Long, low and angular — a planted, stable ride for the daily run, with 1500W of silent torque and a full-colour TFT display.",
+  "heroStats": [
+   {
+    "value": "90–100",
+    "unit": "km",
+    "label": "Range"
+   },
+   {
+    "value": "65",
+    "unit": "km/h",
+    "label": "Top Speed"
+   },
+   {
+    "value": "1500",
+    "unit": "W",
+    "label": "Motor"
+   }
+  ],
+  "overviewPoints": [
+   "1500W motor with a long, planted wheelbase",
+   "90–100 km range on a single charge",
+   "76V 30Ah LFP battery pack",
+   "Wide 110/70-12 tyres on aluminium wheels",
+   "Full-colour TFT display with GPS and app access",
+   "Long wheelbase and comfortable suspension for rough road surfaces"
+  ],
+  "images": [
+   "/assets/ebike/rx/t60-olive.webp",
+   "/assets/ebike/rx/t60-orange.webp",
+   "/assets/ebike/rx/t60-lavender.webp",
+   "/assets/ebike/CPx_PRO_RIQUADRO_1.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_2.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_3.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_4.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_5.jpg"
+  ],
+  "lifestyleImages": [
+   "/assets/ebike/CPx_PRO_RIQUADRO_1.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_2.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_3.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_5.jpg",
+   "/assets/ebike/CPx_PRO_RIQUADRO_7.jpg"
+  ],
+  "colorways": [
+   {
+    "id": "olive",
+    "label": "Olive Green",
+    "src": "/assets/ebike/rx/t60-olive.webp",
+    "shadow": "rgba(140,160,90,0.28)",
+    "swatch": "#6E7A56"
+   },
+   {
+    "id": "orange",
+    "label": "Sunset Orange",
+    "src": "/assets/ebike/rx/t60-orange.webp",
+    "shadow": "rgba(240,90,20,0.30)",
+    "swatch": "#EE5A18"
+   },
+   {
+    "id": "lavender",
+    "label": "Lavender",
+    "src": "/assets/ebike/rx/t60-lavender.webp",
+    "shadow": "rgba(190,170,220,0.28)",
+    "swatch": "#C6BAD9"
+   }
+  ],
+  "specs": {
+   "motor": "1500W",
+   "range": "90–100 km",
+   "topSpeed": "65 km/h",
+   "battery": "76V 30Ah LFP",
+   "tyre": "110/70-12",
+   "brakes": "Disk",
+   "wheelType": "Aluminium",
+   "display": "TFT",
+   "rangeKm": 100,
+   "topSpeedKmh": 65
+  }
+ }
+]
