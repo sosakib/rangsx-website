@@ -31,7 +31,7 @@ const body = html`
         </h1>
         <div class="opening__below" data-l="below">
           <div class="intro">
-            <p class="opening__lead">RangsX brings electric two-wheelers and commercial EVs to Bangladeshi roads. Designed for real conditions, backed by Rangs Group.</p>
+            <p class="opening__lead">RangsX brings the EV ecosystem to Bangladeshi roads: vehicles, service and support, backed by Rangs Group.</p>
             <div class="actions actions--center">
               ${btn("Explore Electric Bikes", "/electric-bikes", { size: "lg" })}
               ${btn("Commercial EV Fleet", "/dongfeng", { kind: "ghost", size: "lg" })}
