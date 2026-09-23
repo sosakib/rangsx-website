@@ -52,6 +52,11 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
       overflow at 375. Live beta.rangsx.com unchanged since the crawl. Nit: on mobile the hero's red vertical beam
       crosses the intro paragraph (e.g. /electric-bikes/rx/zs); hide it under 768px or keep it behind the image.
 
+## Round 4 (23 Sep 2026): homepage scroll intro, PLANNING
+- [x] Plan written: `HOMEPAGE-PLAN.md` ("the red line": headline screen over night Dhaka, red bar becomes the dividing
+      beam, vehicles slide in, then today's interactive chooser)
+- [ ] Waiting on you: direction (A/B/C), city photo source, nav change or not, homepage always dark, scroll length
+
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.
 - Shop photos are stock (e.g. saddlebag on a UK-plated cruiser). Replace with RX Gear product shots.
