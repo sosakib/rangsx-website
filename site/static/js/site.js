@@ -340,6 +340,106 @@
     });
   }
 
+  /* ---------- Home opening: the city hands off to the chooser, scrubbed by scroll ----------
+     One eased progress value (0..1) across the pinned travel. Acts, in progress units:
+       hold .00-.05 · split .05-.30 · descent .20-.50 · arrival (peak) .36-.80 · settle .60-1
+     Transforms and opacity are written straight onto each layer; nothing else moves. */
+  const op = $("[data-opening]");
+  if (op && motion() && getComputedStyle(op.querySelector(".opening__stage")).position === "sticky") {
+    const L = {};
+    $$("[data-l]", op).forEach((el) => (L[el.dataset.l] = el));
+    $$("img[loading=lazy]", op).forEach((i) => (i.loading = "eager")); // whole scene decoded before it is needed
+    // Exact cubic-bezier, so scroll motion uses the site's own curves (--ease-out) plus a strong on-screen move.
+    const bezier = (x1, y1, x2, y2) => {
+      const a = (p1, p2) => 1 - 3 * p2 + 3 * p1, b = (p1, p2) => 3 * p2 - 6 * p1, c = (p1) => 3 * p1;
+      const at = (t, p1, p2) => ((a(p1, p2) * t + b(p1, p2)) * t + c(p1)) * t;
+      const slope = (t, p1, p2) => 3 * a(p1, p2) * t * t + 2 * b(p1, p2) * t + c(p1);
+      return (x) => {
+        if (x <= 0 || x >= 1) return x <= 0 ? 0 : 1;
+        let t = x;
+        for (let i = 0; i < 8; i++) { const d = at(t, x1, x2) - x, s = slope(t, x1, x2); if (Math.abs(d) < 1e-5 || !s) break; t -= d / s; }
+        return at(t, y1, y2);
+      };
+    };
+    // Scrubbed motion is already smoothed in time (tick), so arrivals use a gentler ease-out (easeOutCubic)
+    // than the site's click curve; a front-loaded curve would leave the last stretch of scroll dead.
+    const easeOut = bezier(0.33, 1, 0.68, 1), easeMove = bezier(0.77, 0, 0.175, 1);
+    const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+    const mix = (a, b, t) => a + (b - a) * t;
+    const set = (el, transform, opacity) => { el.style.transform = transform; if (opacity !== undefined) el.style.opacity = opacity; };
+    const phone = matchMedia("(max-width: 767px)");
+    let W = 1, H = 1, top0 = 0, travel = 1, bar = 0, split = 0, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
+
+    const offsetIn = (el) => { let y = 0; for (let e = el; e && e !== L.stage; e = e.offsetParent) y += e.offsetTop; return y; };
+    const measure = () => {
+      W = L.stage.clientWidth; H = L.stage.clientHeight;
+      top0 = op.getBoundingClientRect().top + scrollY;
+      travel = Math.max(1, op.offsetHeight - H);
+      bar = offsetIn(L.slot) + L.slot.offsetHeight / 2;
+      const van = L.van.parentNode, bike = L.bike.parentNode; // layout boxes (transforms don't affect offsets)
+      split = phone.matches ? (offsetIn(van) + van.offsetHeight + offsetIn(bike)) / 2 : H / 2;
+    };
+
+    const render = (p) => {
+      const ph = phone.matches;
+      const split1 = easeMove(seg(p, 0.05, 0.3)), dive = easeMove(seg(p, 0.2, 0.5));
+      const van = easeOut(seg(p, 0.36, 0.74)), bike = easeOut(seg(p, 0.42, 0.8)), settle = easeOut(seg(p, 0.6, 0.96));
+      // Split: the headline parts along the line's axis; the rest sinks away.
+      const part = 1 - seg(split1, 0.25, 0.85);
+      set(L.l1, ph ? `translate3d(0, ${-split1 * 14}svh, 0)` : `translate3d(${-split1 * 20}vw, 0, 0)`, part);
+      set(L.l2, ph ? `translate3d(0, ${split1 * 14}svh, 0)` : `translate3d(${split1 * 20}vw, 0, 0)`, part);
+      set(L.below, `translate3d(0, ${split1 * 40}px, 0)`, 1 - seg(split1, 0, 0.5));
+      // Descent: slow push, then a dive toward the intersection. The ledge is nearest, so it falls away fastest.
+      set(L.plate, `translate3d(${px * -12}px, ${py * -8}px, 0) scale(${1 + 0.05 * split1 + 0.45 * dive})`);
+      set(L.ledge, `translate3d(${px * 24}px, ${py * 12 + dive * H * 0.42}px, 0) scale(${1 + 0.2 * dive})`);
+      L.city.style.opacity = 1 - seg(dive, 0.4, 1);
+      // The red bar becomes the beam (desktop) or the full-width divider (phone).
+      set(L.line,
+        `translate3d(0, ${mix(bar - H / 2, split - H / 2, split1)}px, 0) rotate(${ph ? 90 : mix(90, 0, split1)}deg) scaleY(${mix(120 / H, ph ? (W * 0.72) / H : 1, split1)})`,
+        ph ? 1 : 1 - 0.85 * seg(van, 0.35, 1));
+      // The showroom rises in behind.
+      L.landing.style.opacity = seg(dive, 0.45, 1);
+      L.bg.style.scale = mix(1.14, 1, dive);
+      // Peak: van from the left, scooter from the right, both brake either side of the line (a small nose dip).
+      set(L.van, `translate3d(${mix(-62, 0, van)}vw, 0, 0) rotate(${Math.sin(Math.PI * seg(van, 0.72, 1)) * 1.1}deg)`, seg(van, 0, 0.2));
+      set(L.bike, `translate3d(${mix(62, 0, bike)}vw, 0, 0) rotate(${-Math.sin(Math.PI * seg(bike, 0.72, 1)) * 1.4}deg)`, seg(bike, 0, 0.2));
+      L.flash.style.opacity = Math.sin(Math.PI * seg(p, 0.58, 0.8)) * 0.9;
+      // Settle: the chooser copy arrives last, then the chooser answers the pointer.
+      set(L.fleet, `translate3d(${(1 - settle) * -36}px, 0, 0)`, settle);
+      set(L.bikes, `translate3d(${(1 - settle) * 36}px, 0, 0)`, settle);
+      set(L.badge, `translate3d(0, ${(1 - settle) * 16}px, 0)`, settle);
+      L.kicker.style.opacity = settle;
+      op.classList.toggle("is-past", split1 > 0.5);
+      L.landing.classList.toggle("is-live", p > 0.85);
+    };
+
+    // Smoothed scrub: follow the scroll with an eased catch-up, stop the loop when settled.
+    const tick = () => {
+      cur += (target - cur) * 0.14; px += (tx - px) * 0.08; py += (ty - py) * 0.08;
+      const done = Math.abs(target - cur) < 4e-4 && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3;
+      if (done) cur = target;
+      render(cur);
+      raf = done ? 0 : requestAnimationFrame(tick);
+    };
+    const kick = () => {
+      target = Math.min(1, Math.max(0, (scrollY - top0) / travel));
+      root.classList.toggle("home-past", scrollY > top0 + op.offsetHeight - 64);
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const remeasure = () => { measure(); render(cur); kick(); };
+    addEventListener("scroll", kick, { passive: true });
+    addEventListener("resize", remeasure);
+    addEventListener("load", remeasure);
+    document.fonts && document.fonts.ready.then(remeasure);
+    if (fine.matches) op.addEventListener("pointermove", (e) => { tx = e.clientX / innerWidth - 0.5; ty = e.clientY / innerHeight - 0.5; kick(); });
+    // Keyboard users tabbing past the hero land on the chooser: bring it on screen rather than focusing invisible links.
+    L.landing.addEventListener("focusin", () => { if (!L.landing.classList.contains("is-live")) scrollTo({ top: top0 + travel, behavior: smooth() }); });
+    measure();
+    cur = target = Math.min(1, Math.max(0, (scrollY - top0) / travel));
+    render(cur);
+    kick();
+  }
+
   /* ---------- Count-up numbers (final value is in the HTML, so no-JS and crawlers see it) ---------- */
   const counts = $$("[data-count]");
   if (counts.length && motion()) {

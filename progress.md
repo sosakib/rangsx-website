@@ -55,7 +55,18 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
 ## Round 4 (23 Sep 2026): homepage scroll intro, PLANNING
 - [x] Plan written: `HOMEPAGE-PLAN.md` ("the red line": headline screen over night Dhaka, red bar becomes the dividing
       beam, vehicles slide in, then today's interactive chooser)
-- [ ] Waiting on you: direction (A/B/C), city photo source, nav change or not, homepage always dark, scroll length
+- [x] Decided: direction A, your photo, overlay behind the text, beta menu, short scroll
+
+## Round 5 (23 Sep 2026): homepage scroll intro, BUILT on branch `homepage-intro`
+- Safe copy of the previous site: git tag `v1-before-homepage-intro` (= `main`, untouched) and a standalone folder
+  `Downloads\RangsX-Web-v1-before-homepage-intro\` (double-click its start.bat).
+- [x] Hero layers from your photo: city plate (ledge area filled) + rooftop-ledge cutout (`_research/hero/layers.py`)
+- [x] Opening: headline between city and ledge, scrim overlay, red bar; scroll hand-off to the chooser
+- [x] Scroll length: 1.1 screens desktop, 0.9 phone. Phone: horizontal split, van above, scooter below
+- [x] Verified by script: 6 viewports x 10 scroll positions, no errors, no sideways scroll; 6/6 interaction checks
+- [ ] Your review; then merge `homepage-intro` into `main` (or keep v1)
+- [ ] Real-phone check (desktop emulation cannot reproduce iPhone scrolling exactly)
+- [ ] Higher-resolution original of the photo if you have it (current 1672 px is soft on large/retina screens)
 
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.

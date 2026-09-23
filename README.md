@@ -11,6 +11,11 @@ It builds the site, starts a local server at http://localhost:4321 (or the next 
 browser. It also prints a network address so phones on the same Wi-Fi can open the site. Press Ctrl+C to stop.
 Options: `--port 5000`, `--no-open`, `--no-build`. Needs Node.js 20+ (https://nodejs.org), nothing else.
 
+## Versions
+- `main` / tag `v1-before-homepage-intro`: the site before the homepage scroll intro.
+  A standalone copy lives in `..\RangsX-Web-v1-before-homepage-intro\` (run its `start.bat`).
+- Branch `homepage-intro`: the new homepage opening. Switch with `git switch main` / `git switch homepage-intro`.
+
 ## Build only
 ```bash
 node site/build.mjs   # writes dist/ and runs link / heading / dash checks
