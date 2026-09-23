@@ -2,12 +2,19 @@
 
 Static rebuild of beta.rangsx.com with the same URL tree. No framework, no runtime dependencies.
 
-## Run it
+## View it locally (one step)
+- **Windows:** double-click `start.bat`
+- **macOS / Linux:** `./start.sh`
+- **Any OS:** `node serve.mjs`
+
+It builds the site, starts a local server at http://localhost:4321 (or the next free port) and opens your
+browser. It also prints a network address so phones on the same Wi-Fi can open the site. Press Ctrl+C to stop.
+Options: `--port 5000`, `--no-open`, `--no-build`. Needs Node.js 20+ (https://nodejs.org), nothing else.
+
+## Build only
 ```bash
-node site/build.mjs                          # writes dist/ and runs link / heading / dash checks
-python -m http.server 4321 --directory dist  # preview at http://localhost:4321
+node site/build.mjs   # writes dist/ and runs link / heading / dash checks
 ```
-Needs Node 20+ (for the build) and any static host for `dist/`.
 
 ## Deploy
 `dist/` is plain HTML/CSS/JS. Vercel (a `vercel.json` with clean URLs is emitted), Netlify, Cloudflare
