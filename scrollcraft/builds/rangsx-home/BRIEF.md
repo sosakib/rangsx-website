@@ -40,3 +40,22 @@ on either side."
 ## Structure
 Grammar: a two-scene pinned hand-off (one act, not a long page); the homepage stays short by the user's own request.
 Total pinned travel: about 1.3 screens on desktop and 1.05 on phones, then today's interactive chooser.
+
+## Revision, 26 Sep 2026: the intro film
+User: "update the homepage scroll effect with this video. Initially, the first frame, and at the end, the last frame
+will be the end frame ... calculate everything and make it a smooth scroll effect."
+Asset: `_research/hero/intro-video.mp4` (10 s, 1280x720, 24 fps): red light trails warp toward a city, slow to a
+horizon, a beam ignites at the centre, a floor line and two chevrons light up, then it holds.
+
+Scroll is mapped to measured events in the film, not to clock time (the static last 2 s are compressed):
+| Scroll p | Film | On screen | Our layers |
+|---|---|---|---|
+| .00-.05 | 0.0 s | first frame, hold | headline reads |
+| .05-.34 | 0-2.7 s | warp | headline parts with the trails, scrim lifts |
+| .34-.52 | 2.7-4.9 s | slow-down to the horizon | red bar flies to the ignition point, stands upright |
+| .52-.60 | 4.9-5.6 s | beam ignites (x 50%, y 69%) | bar hands over to the film's beam |
+| .60-.70 | 5.6-6.8 s | floor line | chooser fades in, van sets off |
+| .70-.84 | 6.8-7.7 s | chevrons light (peak) | van and scooter land, floor flash |
+| .84-1 | 7.7-10 s | settles on the last frame | chooser copy, goes live at .9 |
+Film is a 98-frame WebP sequence on a canvas (every 2nd frame to 8 s, plus the last), adjacent frames blended by the
+fraction; phones get a centre crop. Travel 1.4 screens desktop, 1.2 phone. Previous photo build: tag `v2-photo-intro`.

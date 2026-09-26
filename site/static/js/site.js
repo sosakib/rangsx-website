@@ -340,16 +340,22 @@
     });
   }
 
-  /* ---------- Home opening: the city hands off to the chooser, scrubbed by scroll ----------
-     One eased progress value (0..1) across the pinned travel. Acts, in progress units:
-       hold .00-.05 · split .05-.30 · descent .20-.50 · arrival (peak) .36-.80 · settle .60-1
-     Transforms and opacity are written straight onto each layer; nothing else moves. */
+  /* ---------- Home opening: the intro film, scrubbed frame by frame by the scroll ----------
+     One eased progress value p (0..1) across the pinned travel drives the film's playhead and every layer.
+     Scroll is mapped to what happens on screen, not to clock time (measured from the pixels, _research/hero/frames.py):
+       p .00-.05  hold          film 0.0 s        read the headline
+       p .05-.34  warp          film 0.0-2.7 s    the headline parts with the light trails
+       p .34-.52  slow-down     film 2.7-4.9 s    the red bar flies to the horizon and stands upright
+       p .52-.60  ignition      film 4.9-5.6 s    the bar hands over to the film's own beam
+       p .60-.70  floor line    film 5.6-6.8 s    the chooser layer fades in, the van sets off
+       p .70-.84  chevrons      film 6.8-7.7 s    peak: the van and the scooter land
+       p .84-1    settle        film 7.7-10 s     chooser copy, then it goes live */
   const op = $("[data-opening]");
   if (op && motion() && getComputedStyle(op.querySelector(".opening__stage")).position === "sticky") {
     const L = {};
     $$("[data-l]", op).forEach((el) => (L[el.dataset.l] = el));
-    $$("img[loading=lazy]", op).forEach((i) => (i.loading = "eager")); // whole scene decoded before it is needed
-    // Exact cubic-bezier, so scroll motion uses the site's own curves (--ease-out) plus a strong on-screen move.
+    $$("img[loading=lazy]", op).forEach((i) => (i.loading = "eager")); // chooser images ready before they are needed
+    // Exact cubic-bezier, so scrubbed motion uses real curves: easeOutCubic for arrivals, a strong in-out for moves.
     const bezier = (x1, y1, x2, y2) => {
       const a = (p1, p2) => 1 - 3 * p2 + 3 * p1, b = (p1, p2) => 3 * p2 - 6 * p1, c = (p1) => 3 * p1;
       const at = (t, p1, p2) => ((a(p1, p2) * t + b(p1, p2)) * t + c(p1)) * t;
@@ -361,56 +367,98 @@
         return at(t, y1, y2);
       };
     };
-    // Scrubbed motion is already smoothed in time (tick), so arrivals use a gentler ease-out (easeOutCubic)
-    // than the site's click curve; a front-loaded curve would leave the last stretch of scroll dead.
     const easeOut = bezier(0.33, 1, 0.68, 1), easeMove = bezier(0.77, 0, 0.175, 1);
     const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
     const mix = (a, b, t) => a + (b - a) * t;
     const set = (el, transform, opacity) => { el.style.transform = transform; if (opacity !== undefined) el.style.opacity = opacity; };
     const phone = matchMedia("(max-width: 767px)");
-    let W = 1, H = 1, top0 = 0, travel = 1, bar = 0, split = 0, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
 
+    // Film timing: scroll -> seconds (knots above), seconds -> frame (every 2nd frame up to 8.0 s, then the last frame).
+    const KNOTS = [[0, 0], [0.05, 0], [0.34, 2.7], [0.52, 4.9], [0.6, 5.6], [0.7, 6.8], [0.84, 7.7], [1, 10]];
+    const seconds = (p) => { for (let i = 1; i < KNOTS.length; i++) if (p <= KNOTS[i][0]) { const [p0, t0] = KNOTS[i - 1], [p1, t1] = KNOTS[i]; return mix(t0, t1, (p - p0) / (p1 - p0)); } return 10; };
+    const N = +L.film.dataset.frames, LAST = N - 1;
+    const frameAt = (t) => (t <= 8 ? t * 12 : mix(LAST - 1, LAST, (t - 8) / 2));
+    const BEAM = [0.5, 0.69]; // where the film's beam ignites, as a share of the frame (measured)
+
+    // Frames load coarse to fine (every 8th first, then 4th, 2nd, all) so any scroll position has a near frame early.
+    const frames = [];
+    let dir = "", fNow = 0, drawn = "";
+    const load = () => {
+      const want = L.film.dataset.dir + (phone.matches ? "m/" : "d/");
+      if (want === dir) return;
+      dir = want; frames.length = 0; drawn = "";
+      const order = [...new Set([0, LAST, ...[8, 4, 2, 1].flatMap((s) => Array.from({ length: Math.ceil(N / s) }, (_, k) => k * s))])];
+      let next = 0, busy = 0;
+      const pump = () => {
+        while (next < order.length && busy < 6) {
+          const i = order[next++], im = new Image(), from = dir;
+          busy++;
+          im.decoding = "async";
+          im.onload = () => { busy--; if (from === dir) { frames[i] = im; if (Math.abs(i - fNow) < 2 || !drawn) paint(); } pump(); };
+          im.onerror = () => { busy--; pump(); };
+          im.src = `${from}${String(i).padStart(3, "0")}.webp`;
+        }
+      };
+      pump();
+    };
+    const ctx = L.canvas.getContext("2d", { alpha: false });
+    const nearest = (i) => { for (let d = 0; d < N; d++) { if (frames[i - d]) return frames[i - d]; if (frames[i + d]) return frames[i + d]; } return null; };
+    // Draw the frame under the playhead, blended with the next one by the fraction (smooth between stored frames).
+    const paint = () => {
+      const a = Math.floor(fNow), k = fNow - a, A = nearest(a), B = k > 0.02 && frames[a + 1];
+      if (!A) return;
+      const key = `${A.src}|${B ? B.src + k.toFixed(2) : ""}|${L.canvas.width}`;
+      if (key === drawn) return;
+      drawn = key;
+      const cw = L.canvas.width, ch = L.canvas.height, s = Math.max(cw / A.naturalWidth, ch / A.naturalHeight);
+      const dw = A.naturalWidth * s, dh = A.naturalHeight * s, dx = (cw - dw) / 2, dy = (ch - dh) / 2;
+      ctx.globalAlpha = 1;
+      ctx.drawImage(A, dx, dy, dw, dh);
+      if (B) { ctx.globalAlpha = k; ctx.drawImage(B, dx, dy, dw, dh); }
+      L.film.classList.add("is-ready");
+    };
+
+    let W = 1, H = 1, top0 = 0, travel = 1, bar = 0, beamY = 0, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
     const offsetIn = (el) => { let y = 0; for (let e = el; e && e !== L.stage; e = e.offsetParent) y += e.offsetTop; return y; };
     const measure = () => {
       W = L.stage.clientWidth; H = L.stage.clientHeight;
       top0 = op.getBoundingClientRect().top + scrollY;
       travel = Math.max(1, op.offsetHeight - H);
       bar = offsetIn(L.slot) + L.slot.offsetHeight / 2;
-      const van = L.van.parentNode, bike = L.bike.parentNode; // layout boxes (transforms don't affect offsets)
-      split = phone.matches ? (offsetIn(van) + van.offsetHeight + offsetIn(bike)) / 2 : H / 2;
+      const iw = phone.matches ? 560 : 1280, ih = 720, s = Math.max(W / iw, H / ih); // same cover maths as paint()
+      beamY = (H - ih * s) / 2 + BEAM[1] * ih * s;
+      const r = Math.min(devicePixelRatio || 1, 1.5);
+      L.canvas.width = Math.round(W * r); L.canvas.height = Math.round(H * r);
+      drawn = "";
     };
 
     const render = (p) => {
       const ph = phone.matches;
-      const split1 = easeMove(seg(p, 0.05, 0.3)), dive = easeMove(seg(p, 0.2, 0.5));
-      const van = easeOut(seg(p, 0.36, 0.74)), bike = easeOut(seg(p, 0.42, 0.8)), settle = easeOut(seg(p, 0.6, 0.96));
-      // Split: the headline parts along the line's axis; the rest sinks away.
+      const split1 = easeMove(seg(p, 0.05, 0.3)), fly = easeMove(seg(p, 0.34, 0.52));
+      const van = easeOut(seg(p, 0.6, 0.82)), bike = easeOut(seg(p, 0.64, 0.86)), settle = easeOut(seg(p, 0.8, 0.97));
+      // Film: playhead follows the scroll; a touch of pointer depth on desktop.
+      fNow = frameAt(seconds(p));
+      set(L.film, `translate3d(${px * -10}px, ${py * -6}px, 0) scale(1.03)`);
+      paint();
+      // Warp: the headline parts with the light trails (sideways on desktop, up and down on phones); the rest sinks.
       const part = 1 - seg(split1, 0.25, 0.85);
       set(L.l1, ph ? `translate3d(0, ${-split1 * 14}svh, 0)` : `translate3d(${-split1 * 20}vw, 0, 0)`, part);
       set(L.l2, ph ? `translate3d(0, ${split1 * 14}svh, 0)` : `translate3d(${split1 * 20}vw, 0, 0)`, part);
       set(L.below, `translate3d(0, ${split1 * 40}px, 0)`, 1 - seg(split1, 0, 0.5));
-      // Descent: slow push, then a dive toward the intersection. The ledge is nearest, so it falls away fastest.
-      set(L.plate, `translate3d(${px * -12}px, ${py * -8}px, 0) scale(${1 + 0.05 * split1 + 0.45 * dive})`);
-      set(L.ledge, `translate3d(${px * 24}px, ${py * 12 + dive * H * 0.42}px, 0) scale(${1 + 0.2 * dive})`);
-      L.city.style.opacity = 1 - seg(dive, 0.4, 1);
-      // The red bar becomes the beam (desktop) or the full-width divider (phone).
-      set(L.line,
-        `translate3d(0, ${mix(bar - H / 2, split - H / 2, split1)}px, 0) rotate(${ph ? 90 : mix(90, 0, split1)}deg) scaleY(${mix(120 / H, ph ? (W * 0.72) / H : 1, split1)})`,
-        ph ? 1 : 1 - 0.85 * seg(van, 0.35, 1));
-      // The showroom rises in behind.
-      L.landing.style.opacity = seg(dive, 0.45, 1);
-      L.bg.style.scale = mix(1.14, 1, dive);
-      // Peak: van from the left, scooter from the right, both brake either side of the line (a small nose dip).
+      L.shade.style.opacity = 1 - seg(p, 0.08, 0.36);
+      // The red bar flies to the horizon, stands upright, and hands over to the film's beam as it ignites.
+      set(L.line, `translate3d(0, ${mix(bar - H / 2, beamY - H / 2, fly)}px, 0) rotate(${mix(90, 0, fly)}deg) scaleY(${mix(120, 28, fly) / H})`, 1 - seg(p, 0.52, 0.58));
+      // Chooser: fades in with the floor line; the van and the scooter land as the chevrons light up.
+      L.landing.style.opacity = seg(p, 0.6, 0.72);
       set(L.van, `translate3d(${mix(-62, 0, van)}vw, 0, 0) rotate(${Math.sin(Math.PI * seg(van, 0.72, 1)) * 1.1}deg)`, seg(van, 0, 0.2));
       set(L.bike, `translate3d(${mix(62, 0, bike)}vw, 0, 0) rotate(${-Math.sin(Math.PI * seg(bike, 0.72, 1)) * 1.4}deg)`, seg(bike, 0, 0.2));
-      L.flash.style.opacity = Math.sin(Math.PI * seg(p, 0.58, 0.8)) * 0.9;
-      // Settle: the chooser copy arrives last, then the chooser answers the pointer.
+      L.flash.style.opacity = Math.sin(Math.PI * seg(p, 0.72, 0.88)) * 0.6;
       set(L.fleet, `translate3d(${(1 - settle) * -36}px, 0, 0)`, settle);
       set(L.bikes, `translate3d(${(1 - settle) * 36}px, 0, 0)`, settle);
       set(L.badge, `translate3d(0, ${(1 - settle) * 16}px, 0)`, settle);
       L.kicker.style.opacity = settle;
       op.classList.toggle("is-past", split1 > 0.5);
-      L.landing.classList.toggle("is-live", p > 0.85);
+      L.landing.classList.toggle("is-live", p > 0.9);
     };
 
     // Smoothed scrub: follow the scroll with an eased catch-up, stop the loop when settled.
@@ -426,7 +474,7 @@
       root.classList.toggle("home-past", scrollY > top0 + op.offsetHeight - 64);
       if (!raf) raf = requestAnimationFrame(tick);
     };
-    const remeasure = () => { measure(); render(cur); kick(); };
+    const remeasure = () => { measure(); load(); render(cur); kick(); };
     addEventListener("scroll", kick, { passive: true });
     addEventListener("resize", remeasure);
     addEventListener("load", remeasure);
@@ -435,6 +483,7 @@
     // Keyboard users tabbing past the hero land on the chooser: bring it on screen rather than focusing invisible links.
     L.landing.addEventListener("focusin", () => { if (!L.landing.classList.contains("is-live")) scrollTo({ top: top0 + travel, behavior: smooth() }); });
     measure();
+    load();
     cur = target = Math.min(1, Math.max(0, (scrollY - top0) / travel));
     render(cur);
     kick();

@@ -74,6 +74,17 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
       electricity tariffs unchanged). Defaults now EM-26 BDT 56,914/month (86% lower), EM-27 BDT 54,918 (83%).
       The beta still shows the old prices, so the two calculators no longer match; that is intended.
 
+## Round 7 (26 Sep 2026): homepage opening driven by your video, on branch `homepage-intro`
+- [x] Video turned into a 98-frame sequence (`_research/hero/frames.py`): desktop 2.9 MB, phone crop 1.5 MB, loaded
+      coarse to fine so any scroll position has a frame early
+- [x] Scroll plays the film from its first frame (behind the headline) to its last frame (behind the chooser);
+      timing mapped to what happens in the film (warp, beam ignition, chevrons), not seconds. Map in the BRIEF
+- [x] Red bar flies to the exact point where the film's beam ignites; van and scooter land as the chevrons light
+- [x] Scroll length: 1.4 screens desktop, 1.2 phone (the film needs a little more room than the photo did)
+- [x] Verified: 6 viewports x 14 positions, no errors, no sideways scroll; 6/6 interaction checks
+- Previous photo opening kept as git tag `v2-photo-intro`
+- [ ] Real-phone check; the video is 720p, so it is slightly soft on large/retina screens (a 1080p export would fix it)
+
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.
 - Shop photos are stock (e.g. saddlebag on a UK-plated cruiser). Replace with RX Gear product shots.

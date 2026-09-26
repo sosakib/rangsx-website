@@ -29,6 +29,7 @@ changes only grammar and world will fail it.
 | Build | Grammar | Nav treatment | Hero device | Act-sequence shape | Close pattern | Signature move | World | Port |
 |---|---|---|---|---|---|---|---|---|
 | rangsx-home (23 Sep 2026) | Two-scene pinned hand-off (single act) | Existing site-wide bar, transparent over the scene, dark in both themes until scrolled past | Client photo cut into city plate + rooftop-ledge cutout, headline between them, scrim overlay | Hold > split > descent > arrival (peak) > settle, 1.1 screens (0.9 phone) | Resolves into the live product chooser, pin releases to footer | Red bar under the headline swings into the beam that divides the two lanes (horizontal divider on phones) | Photographic, Dhaka at night | 4500 |
+| rangsx-home v3 (26 Sep 2026) | Same pinned hand-off | Same | Client video scrubbed frame by frame on a canvas, first frame under the headline | Hold > warp > slow-down > ignition > chevrons (peak) > settle, mapped to measured film events, 1.4 screens (1.2 phone) | Ends on the video's last frame as the live chooser backdrop | Red bar flies to the exact pixel where the film's beam ignites, then hands over | Rendered light-trail film | 4500 |
 
 *(empty: your first build has nothing to clear, so build whatever the interview
 points at. From the second onwards, this table is the constraint.)*

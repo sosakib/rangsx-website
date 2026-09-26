@@ -1,7 +1,7 @@
-// Home. Opening scene: the client's night photo of Dhaka, headline between the city and the rooftop ledge.
-// Scrolling hands off to the beta's chooser: the red bar becomes the beam that splits the two lanes, the city falls
-// away, the van and the scooter slide in either side of it. Motion lives in site.js ("Home opening").
-// Without JS or with reduced motion the two scenes simply stack.
+// Home. Opening scene: the client's intro film (red light trails at warp speed), scrubbed frame by frame by the
+// scroll. The film slows into the showroom; the red bar under the headline flies to the horizon and hands over to
+// the film's beam as it ignites; the van and the scooter land as the chevrons light up; then the beta's chooser.
+// Frames: _research/hero/frames.py. Motion: site.js ("Home opening"). No JS or reduced motion: the scenes stack.
 import { html, btn, pic, SITE } from "../lib/ui.mjs";
 
 const veh = (cls, href, base, alt, sizes) => html`
@@ -12,18 +12,18 @@ const veh = (cls, href, base, alt, sizes) => html`
   </span>
 </a>`;
 
-const layer = (name, alt, eager) => html`
-<picture class="opening__${name}" data-l="${name}">
-  <source media="(max-width: 767px)" srcset="/img/home/${name === "plate" ? "city" : "ledge"}-m.webp">
-  <img src="/img/home/${name === "plate" ? "city" : "ledge"}-1672.webp" srcset="/img/home/${name === "plate" ? "city" : "ledge"}-1200.webp 1200w, /img/home/${name === "plate" ? "city" : "ledge"}-1672.webp 1672w" sizes="100vw" width="1672" height="941" alt="${alt}"${eager ? ` fetchpriority="high"` : ` aria-hidden="true"`}>
-</picture>`;
-
 const body = html`
 <section class="opening" data-opening aria-labelledby="home-title" data-tuck-help>
   <div class="opening__stage" data-l="stage">
     <div class="opening__city" data-l="city">
-      ${layer("plate", "Night traffic at a Dhaka intersection, seen from a rooftop", true)}
-      <div class="opening__shade" aria-hidden="true"></div>
+      <div class="opening__film" data-l="film" data-frames="98" data-dir="/img/home/seq/">
+        <picture class="opening__poster">
+          <source media="(max-width: 767px)" srcset="/img/home/seq/m/000.webp">
+          <img src="/img/home/seq/d/000.webp" width="1280" height="720" alt="Red light trails rushing toward a city skyline at night" fetchpriority="high">
+        </picture>
+        <canvas class="opening__canvas" data-l="canvas" aria-hidden="true"></canvas>
+      </div>
+      <div class="opening__shade" data-l="shade" aria-hidden="true"></div>
       <div class="opening__copy wrap">
         <h1 class="opening__title" id="home-title">
           <span class="opening__l1" data-l="l1"><span class="ln"><span style="--i:0">Electric mobility,</span></span></span>
@@ -40,7 +40,6 @@ const body = html`
         </div>
         <i class="opening__slot" data-l="slot" aria-hidden="true"></i>
       </div>
-      ${layer("ledge", "", false)}
     </div>
     <section class="landing" data-landing data-l="landing" aria-label="Choose a vehicle type">
       <picture class="landing__bg" data-l="bg">

@@ -669,7 +669,7 @@ a.card:active { transform: translateY(-1px) scale(.995); }
 [data-glow]:hover::after, [data-tilt]:hover::after { opacity: 1; }
 
 /* ==========================================================================
-   Home: opening scene (client photo) that hands off to the chooser on scroll.
+   Home: opening scene (client intro film, scrubbed by scroll) that hands off to the chooser.
    Pinned only with JS and motion allowed; otherwise the two scenes stack.
    ========================================================================== */
 .is-home .gnav::before { background: linear-gradient(to bottom, rgb(5 5 7 / .7), transparent); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
@@ -682,17 +682,16 @@ html[data-theme="light"]:not(.home-past) .is-home .gnav:not(.is-open) .logo--on-
 html[data-theme="light"]:not(.home-past) .is-home .gnav:not(.is-open) .logo--on-light { display: none !important; }
 html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 1px 0 var(--line); }
 
-.opening { --travel: 110svh; position: relative; background: #050507; color: #F5F5F7; }
+.opening { --travel: 140svh; position: relative; background: #050507; color: #F5F5F7; }
 .opening__stage { position: relative; }
 .opening__city { position: relative; isolation: isolate; overflow: clip; min-height: 100svh; display: grid; place-items: center; }
-.opening__plate, .opening__ledge { position: absolute; inset: 0; transform-origin: 52% 48%; }
-.opening__plate { z-index: -3; }
-.opening__ledge { z-index: 1; pointer-events: none; }
-.opening__plate img, .opening__ledge img { width: 100%; height: 100%; object-fit: cover; object-position: 52% 50%; }
-.js .opening__plate img { animation: city-in 2s var(--ease-out) both; }
-.js .opening__ledge img { animation: ledge-in 1.8s .15s var(--ease-out) both; }
-@keyframes city-in { from { opacity: 0; transform: scale(1.06); } }
-@keyframes ledge-in { from { transform: translateY(10%); } }
+.opening__film { position: absolute; inset: 0; z-index: -3; overflow: hidden; background: #050507; }
+.opening__poster img, .opening__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.opening__poster img { object-fit: cover; }
+.js .opening__poster img { animation: film-in 1.6s var(--ease-out) both; }
+@keyframes film-in { from { opacity: 0; transform: scale(1.06); } }
+.opening__canvas { display: none; opacity: 0; transition: opacity .3s; }
+.opening__film.is-ready .opening__canvas { opacity: 1; }
 /* The overlay: a scrim where the words sit, a lid under the menu, a soft floor. The photo stays alive at the edges. */
 .opening__shade { position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background:
@@ -717,7 +716,9 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
   .js .opening__line { display: block; position: absolute; z-index: 4; left: 50%; top: 0; width: 3px; height: 100%; margin-left: -1.5px; pointer-events: none; transform: translate3d(0, 38svh, 0) rotate(90deg) scaleY(.14); }
   .js .opening__line > i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(to bottom, transparent, var(--red) 7%, var(--red) 93%, transparent); animation: line-in 1.1s .55s var(--ease-out) both; }
   @keyframes line-in { from { transform: scaleY(0); } }
-  .js .opening .landing { opacity: 0; pointer-events: none; }
+  .js .opening__canvas { display: block; }
+  .js .opening .landing { opacity: 0; pointer-events: none; background: transparent; }
+  .js .opening .landing__bg { display: none; }
   .js .opening .landing.is-live { pointer-events: auto; }
   .js .opening .landing:not(.is-live) .veh { pointer-events: none; }
   .js .opening .veh__in, .js .opening .landing__side, .js .opening .landing__badge, .js .opening .landing__kicker { opacity: 0; }
@@ -763,8 +764,7 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
 }
 /* Phone: the line lies across the screen; van above it, scooter below. Everything fits one screen. */
 @media (max-width: 767px) {
-  .opening { --travel: 90svh; }
-  .opening__plate img, .opening__ledge img { object-position: 50% 50%; }
+  .opening { --travel: 120svh; }
   .landing { grid-template-columns: 1fr; align-content: center; justify-items: center; row-gap: 10px; padding: calc(var(--gnav-h) + 8px) 20px 20px; text-align: center; }
   .landing__bg img { object-position: 50% 50%; }
   .landing__kicker, .landing__badge, .veh__refl { display: none; }
