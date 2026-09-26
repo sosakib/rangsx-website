@@ -1,20 +1,21 @@
 // Dongfeng electric fleet. Source: beta.rangsx.com (EM-26 / EM-27 pages, RSC model data, calculator module).
 // Copy tidied (dashes removed per house style), facts unchanged.
 
-// Running-cost constants from the live ROI calculator (rates updated 10 Sep 2026).
+// Running-cost constants for the ROI calculator. Liquid fuel prices: government revision effective 21 Sep 2026
+// (The Daily Star, 20 Sep 2026). CNG and the electricity tariffs were not part of that revision.
 export const FUELS = {
-  diesel: { label: "Diesel", unit: "litre", price: 115, mileage: 8 },
-  octane: { label: "Octane", unit: "litre", price: 145, mileage: 7 },
-  petrol: { label: "Petrol", unit: "litre", price: 140, mileage: 7 },
+  diesel: { label: "Diesel", unit: "litre", price: 135, mileage: 8 },
+  octane: { label: "Octane", unit: "litre", price: 165, mileage: 7 },
+  petrol: { label: "Petrol", unit: "litre", price: 160, mileage: 7 },
   cng: { label: "CNG", unit: "m³", price: 43, mileage: 7.5 },
 };
 export const CHARGING = {
   depot: { label: "Depot charger (EV tariff)", tariff: 11.36 },
   commercial: { label: "Commercial meter", tariff: 15.36 },
 };
-export const CALC = { efficiency: 0.9, usableShare: 0.95, dailyMin: 20, dailyMax: 250, ratesUpdated: "10 Sep 2026" };
+export const CALC = { efficiency: 0.9, usableShare: 0.95, dailyMin: 20, dailyMax: 250, ratesUpdated: "21 Sep 2026" };
 
-/** Default running-cost saving vs diesel with depot charging (what the live site prints as "84% lower"). */
+/** Default running-cost saving vs diesel with depot charging (the "% lower running cost" figure). */
 export const pctLower = (f) => {
   const ev = ((f.specs.batteryKwh * CALC.usableShare) / f.specs.realRangeKm / CALC.efficiency) * CHARGING.depot.tariff;
   return Math.round((1 - ev / (FUELS.diesel.price / FUELS.diesel.mileage)) * 100);
