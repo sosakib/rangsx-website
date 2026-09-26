@@ -68,6 +68,12 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
 - [ ] Real-phone check (desktop emulation cannot reproduce iPhone scrolling exactly)
 - [ ] Higher-resolution original of the photo if you have it (current 1672 px is soft on large/retina screens)
 
+## Round 6 (26 Sep 2026)
+- [x] Desktop shortcut "RangsX Website" runs start.bat (build + serve + open browser)
+- [x] Calculator fuel prices updated to the 21 Sep 2026 revision: diesel 135, octane 165, petrol 160 (CNG 43 and
+      electricity tariffs unchanged). Defaults now EM-26 BDT 56,914/month (86% lower), EM-27 BDT 54,918 (83%).
+      The beta still shows the old prices, so the two calculators no longer match; that is intended.
+
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.
 - Shop photos are stock (e.g. saddlebag on a UK-plated cruiser). Replace with RX Gear product shots.
