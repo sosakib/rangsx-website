@@ -12,9 +12,10 @@ browser. It also prints a network address so phones on the same Wi-Fi can open t
 Options: `--port 5000`, `--no-open`, `--no-build`. Needs Node.js 20+ (https://nodejs.org), nothing else.
 
 ## Versions
-- `main` / tag `v1-before-homepage-intro`: the site before the homepage scroll intro.
-  A standalone copy lives in `..\RangsX-Web-v1-before-homepage-intro\` (run its `start.bat`).
-- Branch `homepage-intro`: the new homepage opening. Switch with `git switch main` / `git switch homepage-intro`.
+- `main`: the current site (homepage opening scrubbed from the intro film, audited 27 Sep 2026).
+- Tag `v3-video-intro`: first version of the film opening. Tag `v2-photo-intro`: the Dhaka-photo opening.
+- Tag `v1-before-homepage-intro`: the site before any homepage scroll intro. A standalone copy lives in
+  `..\RangsX-Web-v1-before-homepage-intro\` (run its `start.bat`). Go back with `git switch --detach <tag>`.
 
 ## Build only
 ```bash

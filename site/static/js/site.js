@@ -90,6 +90,8 @@
     }
   };
   menuBtn && menuBtn.addEventListener("click", () => setMenu(menuBtn.getAttribute("aria-expanded") !== "true"));
+  // Rotating a tablet past the desktop breakpoint hides the menu button: close the menu so the page can scroll.
+  matchMedia("(min-width: 1024px)").addEventListener("change", (e) => e.matches && root.classList.contains("menu-open") && setMenu(false));
   mnav && mnav.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
 
   /* ---------- Help sheet ---------- */
@@ -260,14 +262,14 @@
   const WA = document.body.dataset.wa || "8801332832892";
   $$("form[data-form]").forEach((form) => {
     const date = $('input[type="date"]', form);
-    if (date) date.min = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+    if (date) date.min = new Date(Date.now() + 864e5).toLocaleDateString("en-CA"); // local YYYY-MM-DD, tomorrow
     const check = (el) => {
       const f = el.closest(".field");
       if (!f) return true;
       const v = el.value.trim();
       let msg = "";
       if (el.required && !v) msg = el.name === "phone" ? MSG.phone : MSG[el.name] || "This field is required";
-      else if (v && el.type === "tel" && !/^[\d\s+\-()]{7,15}$/.test(v)) msg = MSG.phoneBad;
+      else if (v && el.type === "tel" && !(/^[\d\s+\-()]+$/.test(v) && /^\d{7,15}$/.test(v.replace(/\D/g, "")))) msg = MSG.phoneBad; // e.g. +880 1711-123456
       else if (v && el.type === "email" && !/^\S+@\S+\.\S+$/.test(v)) msg = MSG.email;
       el.setAttribute("aria-invalid", String(!!msg));
       $(".field__error", f).textContent = msg;

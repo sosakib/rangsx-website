@@ -206,7 +206,7 @@ export const gallery = (groups, { alt = "", fit = {} } = {}) => {
   </ul>
   <dialog class="lb" data-lb aria-label="Image viewer">
     <div class="lb__top"><span data-lb-count></span><button class="icon-btn" type="button" data-lb-close aria-label="Close">${icon("x")}</button></div>
-    <div class="lb__fig"><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" decoding="async"></div>
+    <div class="lb__fig"><img alt="" decoding="async"></div>
     <p class="lb__cap" data-lb-cap></p>
     <button class="icon-btn lb__prev" type="button" aria-label="Previous image">${icon("caret-left")}</button>
     <button class="icon-btn lb__next" type="button" aria-label="Next image">${icon("caret-right")}</button>

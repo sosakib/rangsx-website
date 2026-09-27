@@ -50,6 +50,7 @@ ${c.html}
       </div>
       <p class="shop-bar__count" data-shop-count aria-live="polite">${PRODUCTS.length} products</p>
     </div>
+    <h2 class="sr">All products</h2>
     <div class="shop-grid" data-stagger>${PRODUCTS.map(card)}</div>
     <p class="choice__more">${icon("package")} Orders are fulfilled via WhatsApp, with delivery across Bangladesh.</p>
   </div>

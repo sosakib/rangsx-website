@@ -64,7 +64,7 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
 - [x] Opening: headline between city and ledge, scrim overlay, red bar; scroll hand-off to the chooser
 - [x] Scroll length: 1.1 screens desktop, 0.9 phone. Phone: horizontal split, van above, scooter below
 - [x] Verified by script: 6 viewports x 10 scroll positions, no errors, no sideways scroll; 6/6 interaction checks
-- [ ] Your review; then merge `homepage-intro` into `main` (or keep v1)
+- [x] Merged into `main` on 27 Sep 2026 (v1 kept as tag `v1-before-homepage-intro`)
 - [ ] Real-phone check (desktop emulation cannot reproduce iPhone scrolling exactly)
 - [ ] Higher-resolution original of the photo if you have it (current 1672 px is soft on large/retina screens)
 
@@ -84,6 +84,24 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
 - [x] Verified: 6 viewports x 14 positions, no errors, no sideways scroll; 6/6 interaction checks
 - Previous photo opening kept as git tag `v2-photo-intro`
 - [ ] Real-phone check; the video is 720p, so it is slightly soft on large/retina screens (a 1080p export would fix it)
+
+## Round 8 (27 Sep 2026): site-wide audit + polish, merged to `main`, pushed to GitHub
+Crawled all 24 pages at desktop, tablet and phone, dark and light (console errors, failed requests, sideways
+overflow, broken images, tap targets, axe-core WCAG 2.2 AA). Before: 0 errors, 0 overflow; contrast failures on
+every page. Fixed:
+- [x] Phone numbers like `+880 1711-123456` were rejected by every form (16 characters > 15); now counts digits (7-15)
+- [x] Tablet: menu open + rotate to landscape left the page unable to scroll; the menu now closes past 1024px
+- [x] Test-ride date picker allowed "today" between midnight and 6 am (UTC date); now local tomorrow
+- [x] Red beam lines struck through headings and text (closing band on every page, hub titles, phone heroes);
+      centred beams now stop just above the headline, side beams sit in the gutter on narrow screens
+- [x] Contrast: muted text token raised to pass AA in both themes (footer hours, prices, notes, labels); "A day on
+      the bike" dims inactive scenes by colour instead of 30% opacity (was 1.7:1)
+- [x] Shop card badges on photos get a solid backing ("Best Seller" was red on red)
+- [x] Headings: shop and dealer lists got their missing h2; product-nav switcher lost an invalid ARIA role
+- [x] Tap targets: footer logo and product-nav links reach 44px; lightbox placeholder image removed
+- [x] Dealer search box full width on phones (placeholder was cut off)
+After: axe clean on every page and view; homepage scroll + 6/6 interaction checks unchanged.
+`PRODUCT.md` added (brand context for future design work, from your earlier briefs).
 
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.

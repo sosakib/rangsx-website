@@ -142,7 +142,7 @@ export const localNav = ({ title, href, links = [], cta, switcher = [] }) => `
 <nav class="lnav" aria-label="${esc(title)}" data-lnav>
   <div class="lnav__bar wrap wrap--wide">
     <a class="lnav__title" href="${href}">${title}</a>
-    ${switcher.length ? `<div class="lnav__switch" role="list">${switcher.map(([l, h, cur]) => `<a role="listitem" href="${h}"${cur ? ` aria-current="page"` : ""}>${l}</a>`).join("")}</div>` : ""}
+    ${switcher.length ? `<div class="lnav__switch">${switcher.map(([l, h, cur]) => `<a href="${h}"${cur ? ` aria-current="page"` : ""}>${l}</a>`).join("")}</div>` : ""}
     <div class="lnav__links">
       ${links.map(([l, id]) => `<a href="#${id}" data-spy="${id}">${l}</a>`).join("")}
       ${cta ? `<a class="btn btn--primary btn--sm" href="${cta[1]}">${cta[0]}</a>` : ""}

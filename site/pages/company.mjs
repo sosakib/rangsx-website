@@ -226,7 +226,7 @@ ${pageHero({ eyebrow: "Dealer Network", title: `Dealer <span class="accent">loca
     </div>
     <div class="locator">
       <div class="locator__list">
-        <div class="dealer-grid">${DEALERS.map(dealerCard)}</div>
+        <h2 class="sr">Dealer locations</h2><div class="dealer-grid">${DEALERS.map(dealerCard)}</div>
         <p class="shop-empty" data-empty hidden>No dealer matches that search. Try another area, or ${more("ask us on WhatsApp", wa("Hi RangsX, I'd like to visit a dealer near me."), { external: true })}</p>
       </div>
       <div class="locator__map">${dealerMap()}</div>
