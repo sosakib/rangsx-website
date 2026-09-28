@@ -3,6 +3,7 @@
 // the film's beam as it ignites; the van and the scooter land as the chevrons light up; then the beta's chooser.
 // Frames: _research/hero/frames.py. Motion: site.js ("Home opening"). No JS or reduced motion: the scenes stack.
 import { html, btn, pic, SITE } from "../lib/ui.mjs";
+import { FILM } from "../data/film.mjs";
 
 const veh = (cls, href, base, alt, sizes) => html`
 <a class="veh veh--${cls}" href="${href}" aria-label="${alt}" tabindex="-1">
@@ -16,7 +17,7 @@ const body = html`
 <section class="opening" data-opening aria-labelledby="home-title" data-tuck-help>
   <div class="opening__stage" data-l="stage">
     <div class="opening__city" data-l="city">
-      <div class="opening__film" data-l="film" data-d="162" data-m="122" data-dir="/img/home/seq/">
+      <div class="opening__film" data-l="film" data-fps="${FILM.fps}" data-d="${FILM.d.join(",")}" data-m="${FILM.m.join(",")}" data-dir="/img/home/seq/">
         <picture class="opening__poster">
           <source media="(max-width: 767px)" srcset="/img/home/seq/m/000.webp" width="840" height="1080">
           <img src="/img/home/seq/d/000.webp" width="1920" height="1080" alt="Red light trails rushing toward a city skyline at night" fetchpriority="high">

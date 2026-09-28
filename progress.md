@@ -115,6 +115,20 @@ After: axe clean on every page and view; homepage scroll + 6/6 interaction check
 - [x] 6 viewports x 14 positions, 6/6 interaction checks, no console errors
 - [ ] Real-phone check still open
 
+## Round 10 (28 Sep 2026): no more ghosting, frames from the full 60 fps source
+Feedback: "when 2 frames are overlapping it creates multiple ghost frames ... utilize the high [fps] video".
+Cause: frames were 3 source frames apart and the canvas crossfaded them, including at rest (a permanent double image).
+- [x] Adaptive sampling from all 600 source frames (`frames.py`): a frame is kept whenever the picture has changed by
+      a fixed amount, so the light-trail rush keeps every 1-2 frames of the 60 fps video and the calm half 6-10 per
+      second. Desktop 159 frames at 1080p (8.6 MB), phone 127 at 840x1080 (3.3 MB). Frame map in `site/data/film.mjs`
+- [x] At rest the canvas shows exactly one real frame (verified pixel-identical); while moving it crossfades only
+      between neighbouring frames for ~45 ms, which reads as motion, not ghosts
+- [x] Frames fetched as blobs and decoded off the main thread into canvas-sized bitmaps around the playhead (ahead in
+      the direction of travel); longest frame gap during a wheel glide fell from 200 ms to 33 ms in testing
+- [x] Headline finishes fading as it parts (no half-faded text over the trails); on phones the lead and buttons move
+      with the lower line instead of being overlapped by it
+- [x] 3 viewports x 14 positions, 6/6 interaction checks, no console errors
+
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.
 - Shop photos are stock (e.g. saddlebag on a UK-plated cruiser). Replace with RX Gear product shots.

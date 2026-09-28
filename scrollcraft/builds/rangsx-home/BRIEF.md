@@ -66,3 +66,11 @@ everything. also make the scroll smooth and premium"
 Asset: TensorPix upscale of the same clip (1920x1080, 60 fps). Timing verified identical, so the scroll map above
 stands. Frames: desktop 20 fps / 162 at 1080p, phone 15 fps / 122 at 840x1080. Feel: decoded-before-drawn frames,
 time-based playhead easing (tau 0.09 s), wheel glide on mouse (tau 0.14 s), canvas settles with the poster.
+
+## Revision, 28 Sep 2026 (later): ghost-free film
+User: "when 2 frames are overlapping it creates multiple ghost frames and for that i gave a high fps video for smooth
+transition. find a way to utilize the high video and optimize more carefully. i need smooth premium transition and
+animation."
+Adaptive sampling of the 60 fps source by measured visual change (dense in the warp, sparse when calm); the display
+eases onto whole frames (crossfade only between neighbours while moving, one real frame at rest); blobs decoded off
+the main thread into canvas-sized bitmaps around the playhead.

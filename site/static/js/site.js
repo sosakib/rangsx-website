@@ -375,51 +375,87 @@
     const set = (el, transform, opacity) => { el.style.transform = transform; if (opacity !== undefined) el.style.opacity = opacity; };
     const phone = matchMedia("(max-width: 767px)");
 
-    // Film timing: scroll -> seconds (knots above), seconds -> frame. Each set samples 0-8.0 s evenly, then holds the
-    // true last frame (desktop 20 fps, phone 15 fps; the rate follows from the frame count, see frames.py).
+    // Film timing: scroll -> seconds (knots above) -> a position in the frame set. The frames were sampled adaptively
+    // from the 60 fps source (dense where the picture changes fast, sparse where it is calm; see frames.py), so each
+    // set lists the source frame numbers it kept and `pos` maps every source frame onto a fractional frame index.
     const KNOTS = [[0, 0], [0.05, 0], [0.34, 2.7], [0.52, 4.9], [0.6, 5.6], [0.7, 6.8], [0.84, 7.7], [1, 10]];
     const seconds = (p) => { for (let i = 1; i < KNOTS.length; i++) if (p <= KNOTS[i][0]) { const [p0, t0] = KNOTS[i - 1], [p1, t1] = KNOTS[i]; return mix(t0, t1, (p - p0) / (p1 - p0)); } return 10; };
-    let N = 2, LAST = 1, FPS = 0;
-    const frameAt = (t) => (t <= 8 ? t * FPS : mix(LAST - 1, LAST, (t - 8) / 2));
+    const SRC_FPS = +L.film.dataset.fps;
+    let N = 0, pos = [];
+    const frameAt = (t) => { const s = Math.min(pos.length - 1, Math.max(0, t * SRC_FPS)), a = Math.floor(s); return a >= pos.length - 1 ? N - 1 : mix(pos[a], pos[a + 1], s - a); };
     const BEAM = [0.5, 0.69]; // where the film's beam ignites, as a share of the frame (measured)
 
-    // Frames load coarse to fine (every 8th first, then 4th, 2nd, all) so any scroll position has a near frame early.
-    const frames = [];
-    let dir = "", fNow = 0, drawn = "";
+    // Frames arrive as compressed blobs (fetched coarse to fine: every 8th, then 4th, 2nd, all, so any scroll position
+    // has a near frame early). Around the playhead they are decoded into bitmaps sized for the canvas; a blob decodes
+    // off the main thread, so a draw never waits on a decode. Far frames stay compressed, which bounds memory.
+    const blobs = [], bitmaps = new Map(), decoding = new Set(), WIN = 12;
+    let dir = "", fNow = 0, fShow = 0, drawn = "", heading = 1, bmSize = {}, bmW = 0; // bitmap size for this canvas
+    const dropBitmaps = () => { bitmaps.forEach((b) => b.close()); bitmaps.clear(); };
+    const warm = () => {
+      const c = Math.round(fShow);
+      bitmaps.forEach((b, i) => { if (Math.abs(i - c) > WIN + 4) { b.close(); bitmaps.delete(i); } });
+      for (let d = 0; d <= WIN && decoding.size < 4; d++) {
+        for (const i of d === 0 ? [c] : d <= WIN / 3 ? [c + d * heading, c - d * heading] : [c + d * heading]) {
+          if (!blobs[i] || (bitmaps.has(i) && bitmaps.get(i).width === bmW) || decoding.has(i) || decoding.size >= 4) continue;
+          const from = dir, size = bmSize;
+          decoding.add(i);
+          createImageBitmap(blobs[i], size).then((b) => {
+            decoding.delete(i);
+            if (from !== dir || size !== bmSize || Math.abs(i - Math.round(fShow)) > WIN + 4) return b.close();
+            const old = bitmaps.get(i); old && old.close(); // one decoded for an older canvas size
+            bitmaps.set(i, b);
+            if (Math.abs(i - fShow) < 1 || drawn === "") paint();
+            warm();
+          }, () => decoding.delete(i));
+        }
+      }
+    };
     const load = () => {
       const set = phone.matches ? "m" : "d", want = L.film.dataset.dir + set + "/";
-      if (want === dir) return;
-      dir = want; frames.length = 0; drawn = "";
-      N = +L.film.dataset[set]; LAST = N - 1; FPS = (N - 2) / 8;
-      const order = [...new Set([0, LAST, ...[8, 4, 2, 1].flatMap((s) => Array.from({ length: Math.ceil(N / s) }, (_, k) => k * s))])];
+      if (want === dir || typeof createImageBitmap !== "function") return; // no bitmaps: the poster stays, layers still move
+      dir = want; blobs.length = 0; drawn = ""; dropBitmaps();
+      const src = L.film.dataset[set].split(",").map(Number);
+      N = src.length; pos = [];
+      for (let i = 0; i < N - 1; i++) for (let f = src[i]; f < src[i + 1]; f++) pos[f] = i + (f - src[i]) / (src[i + 1] - src[i]);
+      pos[src[N - 1]] = N - 1;
+      fShow = Math.round(frameAt(seconds(cur)));
+      const order = [...new Set([0, N - 1, ...[8, 4, 2, 1].flatMap((s) => Array.from({ length: Math.ceil(N / s) }, (_, k) => k * s))])];
       let next = 0, busy = 0;
       const pump = () => {
         while (next < order.length && busy < 6) {
-          const i = order[next++], im = new Image(), from = dir;
+          const i = order[next++], from = dir;
           busy++;
-          im.fetchPriority = "low"; // the poster and the rest of the page come first
-          im.src = `${from}${String(i).padStart(3, "0")}.webp`;
-          // Only decoded frames join the film, so drawing never stalls the scroll on a decode.
-          im.decode().then(() => { if (from === dir) { frames[i] = im; if (Math.abs(i - fNow) < 2 || !drawn) paint(); } }, () => {})
+          // Low priority: the poster and the rest of the page come first.
+          fetch(`${from}${String(i).padStart(3, "0")}.webp`, { priority: "low" })
+            .then((r) => (r.ok ? r.blob() : Promise.reject()))
+            .then((b) => { if (from === dir) { blobs[i] = b; if (Math.abs(i - fShow) <= WIN) warm(); } }, () => {})
             .finally(() => { busy--; pump(); });
         }
       };
       pump();
     };
+
     const ctx = L.canvas.getContext("2d", { alpha: false });
-    const nearest = (i) => { for (let d = 0; d < N; d++) { if (frames[i - d]) return frames[i - d]; if (frames[i + d]) return frames[i + d]; } return null; };
-    // Draw the frame under the playhead, blended with the next one by the fraction (smooth between stored frames).
+    let rect = [0, 0, 1, 1];
+    // Draw the frame under the playhead. Between two neighbouring frames (which the sampling keeps alike) it crossfades
+    // while moving; at rest fShow sits on a whole frame, so what stays on screen is always one real, sharp frame.
+    // If the exact frame is not decoded yet, the nearest decoded one stands in (never blended with anything).
     const paint = () => {
-      const a = Math.floor(fNow), k = fNow - a, A = nearest(a), B = k > 0.02 && frames[a + 1];
-      if (!A) return;
-      const key = `${A.src}|${B ? B.src + k.toFixed(2) : ""}|${L.canvas.width}`;
+      warm();
+      let a = Math.floor(fShow), k = fShow - a;
+      if (!bitmaps.has(a)) {
+        const c = Math.round(fShow);
+        a = -1; k = 0;
+        for (let d = 0; d <= WIN + 4 && a < 0; d++) a = bitmaps.has(c - d) ? c - d : bitmaps.has(c + d) ? c + d : -1;
+        if (a < 0) return; // keep what is on the canvas until the new neighbourhood decodes
+      }
+      const b = k > 0.004 && bitmaps.has(a + 1) ? a + 1 : -1;
+      const key = `${a}|${b < 0 ? "" : k.toFixed(3)}|${L.canvas.width}`;
       if (key === drawn) return;
       drawn = key;
-      const cw = L.canvas.width, ch = L.canvas.height, s = Math.max(cw / A.naturalWidth, ch / A.naturalHeight);
-      const dw = A.naturalWidth * s, dh = A.naturalHeight * s, dx = (cw - dw) / 2, dy = (ch - dh) / 2;
       ctx.globalAlpha = 1;
-      ctx.drawImage(A, dx, dy, dw, dh);
-      if (B) { ctx.globalAlpha = k; ctx.drawImage(B, dx, dy, dw, dh); }
+      ctx.drawImage(bitmaps.get(a), ...rect);
+      if (b >= 0) { ctx.globalAlpha = k; ctx.drawImage(bitmaps.get(b), ...rect); }
       L.film.classList.add("is-ready");
     };
 
@@ -430,26 +466,32 @@
       top0 = op.getBoundingClientRect().top + scrollY;
       travel = Math.max(1, op.offsetHeight - H);
       bar = offsetIn(L.slot) + L.slot.offsetHeight / 2;
-      const iw = phone.matches ? 840 : 1920, ih = 1080, s = Math.max(W / iw, H / ih); // same cover maths as paint()
-      beamY = (H - ih * s) / 2 + BEAM[1] * ih * s;
-      const r = Math.min(devicePixelRatio || 1, 1.5);
-      L.canvas.width = Math.round(W * r); L.canvas.height = Math.round(H * r);
+      const fw = phone.matches ? 840 : 1920, fh = 1080, s = Math.max(W / fw, H / fh); // cover, as the canvas draws it
+      beamY = (H - fh * s) / 2 + BEAM[1] * fh * s;
+      const r = Math.min(devicePixelRatio || 1, 1.5), cw = Math.round(W * r), ch = Math.round(H * r), cs = Math.max(cw / fw, ch / fh);
+      rect = [(cw - fw * cs) / 2, (ch - fh * cs) / 2, fw * cs, fh * cs];
+      const size = { resizeWidth: Math.round(fw * cs), resizeHeight: Math.round(fh * cs), resizeQuality: "high" };
+      // Bitmaps at the size they are drawn (never larger than the frame). On a new size the old ones keep drawing,
+      // scaled, while sharper ones decode, so a resize never flashes an empty canvas.
+      const w = cs < 1 ? size.resizeWidth : fw;
+      if (w !== bmW) { bmW = w; bmSize = cs < 1 ? size : {}; }
       drawn = "";
+      if (cw !== L.canvas.width || ch !== L.canvas.height) { L.canvas.width = cw; L.canvas.height = ch; paint(); }
     };
 
     const render = (p) => {
       const ph = phone.matches;
       const split1 = easeMove(seg(p, 0.05, 0.3)), fly = easeMove(seg(p, 0.34, 0.52));
       const van = easeOut(seg(p, 0.6, 0.82)), bike = easeOut(seg(p, 0.64, 0.86)), settle = easeOut(seg(p, 0.8, 0.97));
-      // Film: playhead follows the scroll; a touch of pointer depth on desktop.
+      // Film: the playhead follows the scroll (drawn in tick); a touch of pointer depth on desktop.
       fNow = frameAt(seconds(p));
       set(L.film, `translate3d(${px * -10}px, ${py * -6}px, 0) scale(1.03)`);
-      paint();
       // Warp: the headline parts with the light trails (sideways on desktop, up and down on phones); the rest sinks.
-      const part = 1 - seg(split1, 0.25, 0.85);
+      const part = 1 - seg(split1, 0.1, 0.55); // gone before the warp peaks: no half-faded headline over the trails
       set(L.l1, ph ? `translate3d(0, ${-split1 * 14}svh, 0)` : `translate3d(${-split1 * 20}vw, 0, 0)`, part);
       set(L.l2, ph ? `translate3d(0, ${split1 * 14}svh, 0)` : `translate3d(${split1 * 20}vw, 0, 0)`, part);
-      set(L.below, `translate3d(0, ${split1 * 40}px, 0)`, 1 - seg(split1, 0, 0.5));
+      // The lead and buttons travel with the lower line (on phones it moves down into them), fading first.
+      set(L.below, ph ? `translate3d(0, ${split1 * 14}svh, 0)` : `translate3d(0, ${split1 * 40}px, 0)`, 1 - seg(split1, 0, 0.35));
       L.shade.style.opacity = 1 - seg(p, 0.08, 0.36);
       // The red bar flies to the horizon, stands upright, and hands over to the film's beam as it ignites.
       set(L.line, `translate3d(0, ${mix(bar - H / 2, beamY - H / 2, fly)}px, 0) rotate(${mix(90, 0, fly)}deg) scaleY(${mix(120, 28, fly) / H})`, 1 - seg(p, 0.52, 0.58));
@@ -468,7 +510,7 @@
 
     // Smoothed scrub. Time-based easing (the same feel at 60, 120 or 144 Hz): the playhead eases toward the scroll
     // position, and on a mouse the wheel itself glides instead of stepping. The loop stops once everything settles.
-    const TAU = 0.09, GLIDE = 0.14, TAU_POINTER = 0.2; // seconds to close ~63% of the gap
+    const TAU = 0.09, TAU_FRAME = 0.045, GLIDE = 0.14, TAU_POINTER = 0.2; // seconds to close ~63% of the gap
     let last = 0, wy = null, wt = 0, written = 0;
     const progress = () => Math.min(1, Math.max(0, (scrollY - top0) / travel));
     const tick = (now) => {
@@ -484,9 +526,16 @@
       }
       const k = 1 - Math.exp(-dt / TAU), kp = 1 - Math.exp(-dt / TAU_POINTER);
       cur += (target - cur) * k; px += (tx - px) * kp; py += (ty - py) * kp;
-      const done = wy === null && Math.abs(target - cur) < 4e-4 && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3;
-      if (done) cur = target;
+      const settled = Math.abs(target - cur) < 4e-4;
+      if (settled) cur = target;
       render(cur);
+      // The shown frame eases onto the nearest whole frame: brief crossfades between neighbours, never a resting blend.
+      const goal = Math.round(fNow);
+      if (goal !== fShow) heading = goal > fShow ? 1 : -1;
+      fShow += (goal - fShow) * (1 - Math.exp(-dt / TAU_FRAME));
+      if (Math.abs(goal - fShow) < 2e-3) fShow = goal;
+      paint();
+      const done = wy === null && settled && fShow === goal && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3;
       raf = done ? 0 : requestAnimationFrame(tick);
     };
     const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
@@ -517,6 +566,8 @@
     load();
     cur = target = progress();
     render(cur);
+    fShow = Math.round(fNow);
+    paint();
     kick();
   }
 
