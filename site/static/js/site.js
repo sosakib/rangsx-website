@@ -375,30 +375,33 @@
     const set = (el, transform, opacity) => { el.style.transform = transform; if (opacity !== undefined) el.style.opacity = opacity; };
     const phone = matchMedia("(max-width: 767px)");
 
-    // Film timing: scroll -> seconds (knots above), seconds -> frame (every 2nd frame up to 8.0 s, then the last frame).
+    // Film timing: scroll -> seconds (knots above), seconds -> frame. Each set samples 0-8.0 s evenly, then holds the
+    // true last frame (desktop 20 fps, phone 15 fps; the rate follows from the frame count, see frames.py).
     const KNOTS = [[0, 0], [0.05, 0], [0.34, 2.7], [0.52, 4.9], [0.6, 5.6], [0.7, 6.8], [0.84, 7.7], [1, 10]];
     const seconds = (p) => { for (let i = 1; i < KNOTS.length; i++) if (p <= KNOTS[i][0]) { const [p0, t0] = KNOTS[i - 1], [p1, t1] = KNOTS[i]; return mix(t0, t1, (p - p0) / (p1 - p0)); } return 10; };
-    const N = +L.film.dataset.frames, LAST = N - 1;
-    const frameAt = (t) => (t <= 8 ? t * 12 : mix(LAST - 1, LAST, (t - 8) / 2));
+    let N = 2, LAST = 1, FPS = 0;
+    const frameAt = (t) => (t <= 8 ? t * FPS : mix(LAST - 1, LAST, (t - 8) / 2));
     const BEAM = [0.5, 0.69]; // where the film's beam ignites, as a share of the frame (measured)
 
     // Frames load coarse to fine (every 8th first, then 4th, 2nd, all) so any scroll position has a near frame early.
     const frames = [];
     let dir = "", fNow = 0, drawn = "";
     const load = () => {
-      const want = L.film.dataset.dir + (phone.matches ? "m/" : "d/");
+      const set = phone.matches ? "m" : "d", want = L.film.dataset.dir + set + "/";
       if (want === dir) return;
       dir = want; frames.length = 0; drawn = "";
+      N = +L.film.dataset[set]; LAST = N - 1; FPS = (N - 2) / 8;
       const order = [...new Set([0, LAST, ...[8, 4, 2, 1].flatMap((s) => Array.from({ length: Math.ceil(N / s) }, (_, k) => k * s))])];
       let next = 0, busy = 0;
       const pump = () => {
         while (next < order.length && busy < 6) {
           const i = order[next++], im = new Image(), from = dir;
           busy++;
-          im.decoding = "async";
-          im.onload = () => { busy--; if (from === dir) { frames[i] = im; if (Math.abs(i - fNow) < 2 || !drawn) paint(); } pump(); };
-          im.onerror = () => { busy--; pump(); };
+          im.fetchPriority = "low"; // the poster and the rest of the page come first
           im.src = `${from}${String(i).padStart(3, "0")}.webp`;
+          // Only decoded frames join the film, so drawing never stalls the scroll on a decode.
+          im.decode().then(() => { if (from === dir) { frames[i] = im; if (Math.abs(i - fNow) < 2 || !drawn) paint(); } }, () => {})
+            .finally(() => { busy--; pump(); });
         }
       };
       pump();
@@ -427,7 +430,7 @@
       top0 = op.getBoundingClientRect().top + scrollY;
       travel = Math.max(1, op.offsetHeight - H);
       bar = offsetIn(L.slot) + L.slot.offsetHeight / 2;
-      const iw = phone.matches ? 560 : 1280, ih = 720, s = Math.max(W / iw, H / ih); // same cover maths as paint()
+      const iw = phone.matches ? 840 : 1920, ih = 1080, s = Math.max(W / iw, H / ih); // same cover maths as paint()
       beamY = (H - ih * s) / 2 + BEAM[1] * ih * s;
       const r = Math.min(devicePixelRatio || 1, 1.5);
       L.canvas.width = Math.round(W * r); L.canvas.height = Math.round(H * r);
@@ -463,19 +466,45 @@
       L.landing.classList.toggle("is-live", p > 0.9);
     };
 
-    // Smoothed scrub: follow the scroll with an eased catch-up, stop the loop when settled.
-    const tick = () => {
-      cur += (target - cur) * 0.14; px += (tx - px) * 0.08; py += (ty - py) * 0.08;
-      const done = Math.abs(target - cur) < 4e-4 && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3;
+    // Smoothed scrub. Time-based easing (the same feel at 60, 120 or 144 Hz): the playhead eases toward the scroll
+    // position, and on a mouse the wheel itself glides instead of stepping. The loop stops once everything settles.
+    const TAU = 0.09, GLIDE = 0.14, TAU_POINTER = 0.2; // seconds to close ~63% of the gap
+    let last = 0, wy = null, wt = 0, written = 0;
+    const progress = () => Math.min(1, Math.max(0, (scrollY - top0) / travel));
+    const tick = (now) => {
+      const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+      last = now;
+      if (wy !== null) {
+        wy += (wt - wy) * (1 - Math.exp(-dt / GLIDE));
+        if (Math.abs(wt - wy) < 0.5) wy = wt;
+        scrollTo(0, wy);
+        written = scrollY;
+        target = progress();
+        if (wy === wt) wy = null;
+      }
+      const k = 1 - Math.exp(-dt / TAU), kp = 1 - Math.exp(-dt / TAU_POINTER);
+      cur += (target - cur) * k; px += (tx - px) * kp; py += (ty - py) * kp;
+      const done = wy === null && Math.abs(target - cur) < 4e-4 && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3;
       if (done) cur = target;
       render(cur);
       raf = done ? 0 : requestAnimationFrame(tick);
     };
+    const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
     const kick = () => {
-      target = Math.min(1, Math.max(0, (scrollY - top0) / travel));
+      if (wy !== null && Math.abs(scrollY - written) > 2) wy = null; // the scrollbar, a key or a link took over
+      target = progress();
       root.classList.toggle("home-past", scrollY > top0 + op.offsetHeight - 64);
-      if (!raf) raf = requestAnimationFrame(tick);
+      start();
     };
+    // Mouse wheel: glide to the new position (trackpads keep their own momentum and pass through the same easing).
+    if (fine.matches) addEventListener("wheel", (e) => {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY) || root.classList.contains("menu-open") || (e.target.closest && e.target.closest("textarea, select, dialog"))) return;
+      e.preventDefault();
+      if (wy === null) wy = wt = scrollY;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      wt = Math.max(0, Math.min(max, wt + e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1)));
+      start();
+    }, { passive: false });
     const remeasure = () => { measure(); load(); render(cur); kick(); };
     addEventListener("scroll", kick, { passive: true });
     addEventListener("resize", remeasure);
@@ -486,7 +515,7 @@
     L.landing.addEventListener("focusin", () => { if (!L.landing.classList.contains("is-live")) scrollTo({ top: top0 + travel, behavior: smooth() }); });
     measure();
     load();
-    cur = target = Math.min(1, Math.max(0, (scrollY - top0) / travel));
+    cur = target = progress();
     render(cur);
     kick();
   }

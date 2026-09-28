@@ -59,3 +59,10 @@ Scroll is mapped to measured events in the film, not to clock time (the static l
 | .84-1 | 7.7-10 s | settles on the last frame | chooser copy, goes live at .9 |
 Film is a 98-frame WebP sequence on a canvas (every 2nd frame to 8 s, plus the last), adjacent frames blended by the
 fraction; phones get a centre crop. Travel 1.4 screens desktop, 1.2 phone. Previous photo build: tag `v2-photo-intro`.
+
+## Revision, 28 Sep 2026: HD film, premium scroll feel
+User: "update the home page background with this video. make sure to update this according to context of
+everything. also make the scroll smooth and premium"
+Asset: TensorPix upscale of the same clip (1920x1080, 60 fps). Timing verified identical, so the scroll map above
+stands. Frames: desktop 20 fps / 162 at 1080p, phone 15 fps / 122 at 840x1080. Feel: decoded-before-drawn frames,
+time-based playhead easing (tau 0.09 s), wheel glide on mouse (tau 0.14 s), canvas settles with the poster.

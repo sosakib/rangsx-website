@@ -691,6 +691,9 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
 .opening__poster img { object-fit: cover; }
 .js .opening__poster img { animation: film-in 1.6s var(--ease-out) both; }
 @keyframes film-in { from { opacity: 0; transform: scale(1.06); } }
+/* The canvas settles with the poster, so the hand-over from poster to live frames never jumps in scale. */
+.js .opening__canvas { animation: film-settle 1.6s var(--ease-out) both; }
+@keyframes film-settle { from { transform: scale(1.06); } }
 .opening__canvas { display: none; opacity: 0; transition: opacity .3s; }
 .opening__film.is-ready .opening__canvas { opacity: 1; }
 /* The overlay: a scrim where the words sit, a lid under the menu, a soft floor. The photo stays alive at the edges. */

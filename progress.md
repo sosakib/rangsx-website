@@ -83,7 +83,7 @@ Feedback on round 1: "it made a one-page website". Round 1 only shipped `/` (a l
 - [x] Scroll length: 1.4 screens desktop, 1.2 phone (the film needs a little more room than the photo did)
 - [x] Verified: 6 viewports x 14 positions, no errors, no sideways scroll; 6/6 interaction checks
 - Previous photo opening kept as git tag `v2-photo-intro`
-- [ ] Real-phone check; the video is 720p, so it is slightly soft on large/retina screens (a 1080p export would fix it)
+- [ ] Real-phone check (720p softness fixed in round 9 with the 1080p upscale)
 
 ## Round 8 (27 Sep 2026): site-wide audit + polish, merged to `main`, pushed to GitHub
 Crawled all 24 pages at desktop, tablet and phone, dark and light (console errors, failed requests, sideways
@@ -102,6 +102,18 @@ every page. Fixed:
 - [x] Dealer search box full width on phones (placeholder was cut off)
 After: axe clean on every page and view; homepage scroll + 6/6 interaction checks unchanged.
 `PRODUCT.md` added (brand context for future design work, from your earlier briefs).
+
+## Round 9 (28 Sep 2026): homepage film in HD, smoother scroll
+- [x] Source replaced by your TensorPix upscale (1920x1080, 60 fps, same timing: frame difference ~2/255), so the
+      measured scroll map is unchanged. `_research/hero/frames.py` regenerates both sets from it
+- [x] Desktop frames 1920x1080 at 20 fps of film (162 frames, 7.1 MB); phone 840x1080 crop at 15 fps (122, 2.5 MB).
+      Was 1280x720 / 560x720 at 12 fps. Reduced motion still loads only the poster
+- [x] Smoother scrub: frames join the film only once decoded (no decode stalls mid-scroll), load at low priority
+      behind the page, time-based easing (same feel at 60/120/144 Hz), poster and live canvas settle together
+- [x] Mouse wheel glides on the homepage instead of stepping (trackpads, touch and keyboard keep native scrolling
+      with the eased playhead). Verified: continuous glide, lands exactly on target, 0.5 ms per blended frame paint
+- [x] 6 viewports x 14 positions, 6/6 interaction checks, no console errors
+- [ ] Real-phone check still open
 
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.

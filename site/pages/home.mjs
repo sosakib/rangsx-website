@@ -16,10 +16,10 @@ const body = html`
 <section class="opening" data-opening aria-labelledby="home-title" data-tuck-help>
   <div class="opening__stage" data-l="stage">
     <div class="opening__city" data-l="city">
-      <div class="opening__film" data-l="film" data-frames="98" data-dir="/img/home/seq/">
+      <div class="opening__film" data-l="film" data-d="162" data-m="122" data-dir="/img/home/seq/">
         <picture class="opening__poster">
-          <source media="(max-width: 767px)" srcset="/img/home/seq/m/000.webp">
-          <img src="/img/home/seq/d/000.webp" width="1280" height="720" alt="Red light trails rushing toward a city skyline at night" fetchpriority="high">
+          <source media="(max-width: 767px)" srcset="/img/home/seq/m/000.webp" width="840" height="1080">
+          <img src="/img/home/seq/d/000.webp" width="1920" height="1080" alt="Red light trails rushing toward a city skyline at night" fetchpriority="high">
         </picture>
         <canvas class="opening__canvas" data-l="canvas" aria-hidden="true"></canvas>
       </div>
