@@ -131,6 +131,12 @@ Cause: frames were 3 source frames apart and the canvas crossfaded them, includi
 - [x] Fix (29 Sep): the last stretch jittered because sampling stopped at 8.0 s and jumped to the final frame
       (2 s gap, with a spark at 8.3 s). Sampling now runs through the last frame: desktop 178 frames (9.2 MB),
       phone 143 (3.5 MB)
+- [x] Fix (29 Sep): fast scrolling froze then jumped. Measured: in a fast flick only 33 of ~145 refreshes drew, the
+      canvas held frame ~16 while the scroll crossed the whole warp, then snapped to 133. Cause: full-size frames were
+      decoded only in a small window around the playhead (4 at a time, 15-30 ms each), slower than a flick moves.
+      Now every frame also keeps a 360px-tall copy (decoded once in the background, ~160 MB desktop), full-size
+      bitmaps are decoded around where the scroll is heading. After: wrong frame 0 of all draws in fast flicks both
+      ways, no main-thread long tasks, and the resting frame is the sharp full-size one (pixel-identical)
 
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.

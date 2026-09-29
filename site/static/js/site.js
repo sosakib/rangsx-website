@@ -386,34 +386,42 @@
     const BEAM = [0.5, 0.69]; // where the film's beam ignites, as a share of the frame (measured)
 
     // Frames arrive as compressed blobs (fetched coarse to fine: every 8th, then 4th, 2nd, all, so any scroll position
-    // has a near frame early). Around the playhead they are decoded into bitmaps sized for the canvas; a blob decodes
-    // off the main thread, so a draw never waits on a decode. Far frames stay compressed, which bounds memory.
-    const blobs = [], bitmaps = new Map(), decoding = new Set(), WIN = 12;
-    let dir = "", fNow = 0, fShow = 0, drawn = "", heading = 1, bmSize = {}, bmW = 0; // bitmap size for this canvas
-    const dropBitmaps = () => { bitmaps.forEach((b) => b.close()); bitmaps.clear(); };
+    // has a near frame early) and are decoded off the main thread into two tiers of bitmaps:
+    //   low:  every frame at 360px tall, decoded once in the background. A fast scroll moves several frames per
+    //         screen refresh, faster than full-size decodes can follow; the low tier means every refresh still shows
+    //         the right frame (the softness is invisible at that speed) instead of freezing and then jumping.
+    //   full: canvas-sized, only around where the scroll is heading (its destination, not the current frame), so the
+    //         frame it comes to rest on is already sharp. Memory stays bounded: ~160 MB low + a small full window.
+    const blobs = [], low = [], full = new Map(), decoding = new Set(), WIN = 6;
+    let dir = "", fNow = 0, fShow = 0, drawn = "", bmSize = {}, bmW = 0, lowSize = {};
+    const dropBitmaps = () => { full.forEach((b) => b.close()); full.clear(); };
+    const dest = () => Math.round(frameAt(seconds(pAt(wy === null ? scrollY : wt))));
+    const decode = (i, small) => {
+      const key = (small ? "l" : "f") + i;
+      if (!blobs[i] || decoding.has(key) || decoding.size >= 4 || (small ? low[i] : full.has(i) && full.get(i).width === bmW)) return;
+      const from = dir, size = small ? lowSize : bmSize;
+      decoding.add(key);
+      createImageBitmap(blobs[i], size).then((b) => {
+        decoding.delete(key);
+        if (from !== dir || (!small && (size !== bmSize || Math.abs(i - dest()) > WIN + 4))) return b.close();
+        if (small) low[i] = b;
+        else { const old = full.get(i); old && old.close(); full.set(i, b); } // may replace one for an older canvas size
+        if (Math.abs(i - fShow) < 1.5 || drawn === "") paint();
+        warm();
+      }, () => decoding.delete(key));
+    };
     const warm = () => {
-      const c = Math.round(fShow);
-      bitmaps.forEach((b, i) => { if (Math.abs(i - c) > WIN + 4) { b.close(); bitmaps.delete(i); } });
-      for (let d = 0; d <= WIN && decoding.size < 4; d++) {
-        for (const i of d === 0 ? [c] : d <= WIN / 3 ? [c + d * heading, c - d * heading] : [c + d * heading]) {
-          if (!blobs[i] || (bitmaps.has(i) && bitmaps.get(i).width === bmW) || decoding.has(i) || decoding.size >= 4) continue;
-          const from = dir, size = bmSize;
-          decoding.add(i);
-          createImageBitmap(blobs[i], size).then((b) => {
-            decoding.delete(i);
-            if (from !== dir || size !== bmSize || Math.abs(i - Math.round(fShow)) > WIN + 4) return b.close();
-            const old = bitmaps.get(i); old && old.close(); // one decoded for an older canvas size
-            bitmaps.set(i, b);
-            if (Math.abs(i - fShow) < 1 || drawn === "") paint();
-            warm();
-          }, () => decoding.delete(i));
-        }
-      }
+      const c = dest();
+      full.forEach((b, i) => { if (Math.abs(i - c) > WIN + 4) { b.close(); full.delete(i); } });
+      for (let d = 0; d <= WIN && decoding.size < 4; d++) { decode(c + d, false); if (d) decode(c - d, false); }
+      for (let d = 0; d < N && decoding.size < 4; d++) { decode(c + d, true); if (d) decode(c - d, true); }
     };
     const load = () => {
       const set = phone.matches ? "m" : "d", want = L.film.dataset.dir + set + "/";
       if (want === dir || typeof createImageBitmap !== "function") return; // no bitmaps: the poster stays, layers still move
       dir = want; blobs.length = 0; drawn = ""; dropBitmaps();
+      low.forEach((b) => b.close()); low.length = 0;
+      lowSize = set === "m" ? { resizeWidth: 280, resizeHeight: 360 } : { resizeWidth: 640, resizeHeight: 360 };
       const src = L.film.dataset[set].split(",").map(Number);
       N = src.length; pos = [];
       for (let i = 0; i < N - 1; i++) for (let f = src[i]; f < src[i + 1]; f++) pos[f] = i + (f - src[i]) / (src[i + 1] - src[i]);
@@ -428,7 +436,7 @@
           // Low priority: the poster and the rest of the page come first.
           fetch(`${from}${String(i).padStart(3, "0")}.webp`, { priority: "low" })
             .then((r) => (r.ok ? r.blob() : Promise.reject()))
-            .then((b) => { if (from === dir) { blobs[i] = b; if (Math.abs(i - fShow) <= WIN) warm(); } }, () => {})
+            .then((b) => { if (from === dir) { blobs[i] = b; warm(); } }, () => {})
             .finally(() => { busy--; pump(); });
         }
       };
@@ -437,25 +445,26 @@
 
     const ctx = L.canvas.getContext("2d", { alpha: false });
     let rect = [0, 0, 1, 1];
-    // Draw the frame under the playhead. Between two neighbouring frames (which the sampling keeps alike) it crossfades
-    // while moving; at rest fShow sits on a whole frame, so what stays on screen is always one real, sharp frame.
-    // If the exact frame is not decoded yet, the nearest decoded one stands in (never blended with anything).
+    // Draw the frame under the playhead: the full bitmap if decoded, else the low one. Between two neighbouring frames
+    // (which the sampling keeps alike) it crossfades while moving; at rest fShow sits on a whole frame, so what stays
+    // on screen is one real frame. Only while frames are still loading does the nearest ready one stand in.
+    const ready = (i) => full.get(i) || low[i];
     const paint = () => {
       warm();
       let a = Math.floor(fShow), k = fShow - a;
-      if (!bitmaps.has(a)) {
+      if (!ready(a)) {
         const c = Math.round(fShow);
         a = -1; k = 0;
-        for (let d = 0; d <= WIN + 4 && a < 0; d++) a = bitmaps.has(c - d) ? c - d : bitmaps.has(c + d) ? c + d : -1;
-        if (a < 0) return; // keep what is on the canvas until the new neighbourhood decodes
+        for (let d = 0; d < N && a < 0; d++) a = ready(c - d) ? c - d : ready(c + d) ? c + d : -1;
+        if (a < 0) return;
       }
-      const b = k > 0.004 && bitmaps.has(a + 1) ? a + 1 : -1;
-      const key = `${a}|${b < 0 ? "" : k.toFixed(3)}|${L.canvas.width}`;
+      const b = k > 0.004 && ready(a + 1) ? a + 1 : -1;
+      const key = `${a}${full.has(a) ? "f" : "l"}|${b < 0 ? "" : k.toFixed(3) + (full.has(b) ? "f" : "l")}|${L.canvas.width}`;
       if (key === drawn) return;
       drawn = key;
       ctx.globalAlpha = 1;
-      ctx.drawImage(bitmaps.get(a), ...rect);
-      if (b >= 0) { ctx.globalAlpha = k; ctx.drawImage(bitmaps.get(b), ...rect); }
+      ctx.drawImage(ready(a), ...rect);
+      if (b >= 0) { ctx.globalAlpha = k; ctx.drawImage(ready(b), ...rect); }
       L.film.classList.add("is-ready");
     };
 
@@ -470,7 +479,7 @@
       beamY = (H - fh * s) / 2 + BEAM[1] * fh * s;
       const r = Math.min(devicePixelRatio || 1, 1.5), cw = Math.round(W * r), ch = Math.round(H * r), cs = Math.max(cw / fw, ch / fh);
       rect = [(cw - fw * cs) / 2, (ch - fh * cs) / 2, fw * cs, fh * cs];
-      const size = { resizeWidth: Math.round(fw * cs), resizeHeight: Math.round(fh * cs), resizeQuality: "high" };
+      const size = { resizeWidth: Math.round(fw * cs), resizeHeight: Math.round(fh * cs), resizeQuality: "medium" };
       // Bitmaps at the size they are drawn (never larger than the frame). On a new size the old ones keep drawing,
       // scaled, while sharper ones decode, so a resize never flashes an empty canvas.
       const w = cs < 1 ? size.resizeWidth : fw;
@@ -512,7 +521,7 @@
     // position, and on a mouse the wheel itself glides instead of stepping. The loop stops once everything settles.
     const TAU = 0.09, TAU_FRAME = 0.045, GLIDE = 0.14, TAU_POINTER = 0.2; // seconds to close ~63% of the gap
     let last = 0, wy = null, wt = 0, written = 0;
-    const progress = () => Math.min(1, Math.max(0, (scrollY - top0) / travel));
+    const pAt = (y) => Math.min(1, Math.max(0, (y - top0) / travel)), progress = () => pAt(scrollY);
     const tick = (now) => {
       const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
       last = now;
@@ -531,7 +540,6 @@
       render(cur);
       // The shown frame eases onto the nearest whole frame: brief crossfades between neighbours, never a resting blend.
       const goal = Math.round(fNow);
-      if (goal !== fShow) heading = goal > fShow ? 1 : -1;
       fShow += (goal - fShow) * (1 - Math.exp(-dt / TAU_FRAME));
       if (Math.abs(goal - fShow) < 2e-3) fShow = goal;
       paint();
