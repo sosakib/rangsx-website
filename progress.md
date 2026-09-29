@@ -128,6 +128,9 @@ Cause: frames were 3 source frames apart and the canvas crossfaded them, includi
 - [x] Headline finishes fading as it parts (no half-faded text over the trails); on phones the lead and buttons move
       with the lower line instead of being overlapped by it
 - [x] 3 viewports x 14 positions, 6/6 interaction checks, no console errors
+- [x] Fix (29 Sep): the last stretch jittered because sampling stopped at 8.0 s and jumped to the final frame
+      (2 s gap, with a spark at 8.3 s). Sampling now runs through the last frame: desktop 178 frames (9.2 MB),
+      phone 143 (3.5 MB)
 
 ## Flags for the client (carried over + new)
 - Lifestyle photos (`CPx_PRO_RIQUADRO_*`) show VMOTO CPx branding, not RX. The beta uses them; so does this build. Replace with RX shoots.

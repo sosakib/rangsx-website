@@ -4,7 +4,7 @@
 #
 # Source: the TensorPix upscale of the client's clip, 1920x1080 at 60 fps (same timing as the 720p original).
 # Timing measured from the pixels (see progress.md): warp 0-2.7 s, slow-down to 4.9 s, beam ignites 4.9-5.6 s
-# at x 50% / y 69%, floor line 5.6-6.8 s, chevrons 6.8-7.7 s, then almost no change until 10 s.
+# at x 50% / y 69%, floor line 5.6-6.8 s, chevrons 6.8-7.7 s, then slow drift (and a spark at 8.3 s) until 10 s.
 #
 # Adaptive sampling: walk the 60 fps source and keep a frame whenever the picture has changed by THRESHOLD
 # (mean absolute RGB difference, accumulated) since the last kept one, or MAXGAP source frames have passed.
@@ -22,7 +22,7 @@ OUT = "site/static/img/home/seq"
 DATA = "site/data/film.mjs"
 FF = imageio_ffmpeg.get_ffmpeg_exe()
 W, H, FPS = 1920, 1080, 60
-END, CALM = 480, 294          # 8.0 s: last sampled frame before the true last one; 4.9 s: the calm half starts
+CALM = 294                    # 4.9 s: the calm half starts
 #       change threshold, max gap before / after CALM, crop box (None = full frame), quality before / after CALM
 SETS = {"d": (10, (4, 6), None, 54, 64),
         "m": (13, (5, 7), (540, 0, 1380, 1080), 52, 60)}   # phone: centre 840x1080, covers portrait up to 0.78
@@ -39,14 +39,14 @@ def frames(w, h):
 
 def pick(diff, threshold, maxgap):
     keep, acc = [0], 0.0
-    for i in range(1, END + 1):
+    for i in range(1, len(diff) + 1):  # through the true last frame: no jump at the end of the scroll
         acc += diff[i - 1]
         if acc >= threshold or i - keep[-1] >= maxgap[i >= CALM]:
             keep.append(i)
             acc = 0.0
-    if keep[-1] != END:
-        keep.append(END)
-    return keep + [len(diff)]  # + the true last frame
+    if keep[-1] != len(diff):
+        keep.append(len(diff))
+    return keep
 
 
 small = np.stack([f.astype(np.float32) for f in frames(480, 270)])
