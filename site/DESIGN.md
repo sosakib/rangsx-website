@@ -9,6 +9,10 @@ Reference implementation: `site/pages/home.mjs` (read it first; copy its pattern
 RangsX = Rangs Group's electric vehicle unit (Bangladesh). Dongfeng electric vans/microbus for business,
 RX electric scooters for riders. Voice: calm, factual, confident. Apple-style restraint: generous space,
 one idea per section, product imagery on a dark stage, a single red accent. Nothing flashy.
+Brand book (Documents\RANGSX_BRANDBOOK_compressed.pdf): black / white / grey #BCBEC0 / red #ED2328; LEMON MILK
+(caps) for headlines via `--font-brand`, Poppins via `--font-text` / `--font-display`, Li Ador Noirrit for Bangla.
+Taglines: RangsX "Drive Next" + "Electromobility"; RX bikes "Ride Beyond" (never "Drive Next" on RX).
+Bangla: write pages in English only; add their strings to `site/i18n/bn-*.mjs` (the build reports gaps).
 
 ## Hard rules
 1. **Real content only.** Every fact, number, name, FAQ, spec comes from the live site. Sources:
@@ -141,3 +145,10 @@ Data: `site/data/{fleet,bikes,shop,dealers,legal,site}.mjs`. Pages: `site/pages/
   Use `rgb(var(--glow) / a)` for any new glow or atmospheric gradient; keep `var(--red)` for accents only.
 - Dealer map: markup in `site/pages/company.mjs` (`dealerMap`), behaviour in the dealers block of `site.js`,
   styles under "Dealer locator" in `site.css`. Regenerate shapes with `python _research/geo/bd_map.py`.
+
+## Round 12 (brand book + Bangla)
+- Big headline classes get LEMON MILK from one rule at the end of site.css ("Brand display type"). Units inside them
+  go in `<small>` / `.stat__unit` so they stay lower case in Poppins (km, kg, m³).
+- Bangla rules sit at the very end of site.css (`:lang(bn)`): taller line height, no letter-spacing, headings at the
+  font's single weight (a synthetic bold smears it), `.ln` reveal clips padded for vowel signs.
+- `.bn-only` shows an element on Bangla pages only (font credit, legal note).

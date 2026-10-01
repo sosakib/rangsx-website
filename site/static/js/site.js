@@ -6,14 +6,17 @@
   const root = document.documentElement;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const smooth = () => (reduced.matches ? "auto" : "smooth");
+  // Bangla pages (/bn/...): the few strings this file writes itself come in both languages.
+  const BN = root.lang.startsWith("bn");
+  const T = (en, bn) => (BN ? bn : en);
 
   /* ---------- Theme ---------- */
   const setTheme = (t) => {
     root.dataset.theme = t;
     try { localStorage.setItem("theme", t); } catch {}
     const meta = $('meta[name="theme-color"]');
-    if (meta) meta.content = t === "light" ? "#FBFBFD" : "#050507";
-    $$("[data-theme-toggle]").forEach((b) => b.setAttribute("aria-label", t === "light" ? "Switch to dark theme" : "Switch to light theme"));
+    if (meta) meta.content = t === "light" ? "#FFFFFF" : "#000000";
+    $$("[data-theme-toggle]").forEach((b) => b.setAttribute("aria-label", t === "light" ? T("Switch to dark theme", "ডার্ক থিমে যান") : T("Switch to light theme", "লাইট থিমে যান")));
   };
   setTheme(root.dataset.theme === "light" ? "light" : "dark");
   $$("[data-theme-toggle]").forEach((b) => b.addEventListener("click", () => setTheme(root.dataset.theme === "light" ? "dark" : "light")));
@@ -244,7 +247,22 @@
   $$("input.range").forEach((r) => { fillRange(r); r.addEventListener("input", () => fillRange(r)); });
 
   /* ---------- Forms: validate, then POST to data-endpoint or hand off to WhatsApp ---------- */
-  const MSG = {
+  const MSG = BN ? {
+    name: "নাম লিখুন",
+    phone: "ফোন নম্বর লিখুন",
+    phoneBad: "সঠিক ফোন নম্বর দিন",
+    email: "সঠিক ইমেইল অ্যাড্রেস দিন",
+    model: "একটি মডেল বেছে নিন",
+    location: "একটি লোকেশন বেছে নিন",
+    date: "একটি তারিখ বেছে নিন",
+    time: "একটি টাইম স্লট বেছে নিন",
+    subject: "একটি বিষয় বেছে নিন",
+    message: "কীভাবে সাহায্য করতে পারি, লিখুন",
+    business: "আপনার ব্যবসার ধরন বেছে নিন",
+    need: "কয়টি গাড়ি লাগবে, বেছে নিন",
+    contact: "কীভাবে যোগাযোগ করব, বেছে নিন",
+    required: "এই ঘরটি পূরণ করুন",
+  } : {
     name: "Name is required",
     phone: "Phone number is required",
     phoneBad: "Enter a valid phone number",
@@ -258,6 +276,7 @@
     business: "Select your business type",
     need: "Select how many vehicles you need",
     contact: "Choose how we should reach you",
+    required: "This field is required",
   };
   const WA = document.body.dataset.wa || "8801332832892";
   $$("form[data-form]").forEach((form) => {
@@ -268,7 +287,7 @@
       if (!f) return true;
       const v = el.value.trim();
       let msg = "";
-      if (el.required && !v) msg = el.name === "phone" ? MSG.phone : MSG[el.name] || "This field is required";
+      if (el.required && !v) msg = el.name === "phone" ? MSG.phone : MSG[el.name] || MSG.required;
       else if (v && el.type === "tel" && !(/^[\d\s+\-()]+$/.test(v) && /^\d{7,15}$/.test(v.replace(/\D/g, "")))) msg = MSG.phoneBad; // e.g. +880 1711-123456
       else if (v && el.type === "email" && !/^\S+@\S+\.\S+$/.test(v)) msg = MSG.email;
       el.setAttribute("aria-invalid", String(!!msg));
@@ -297,7 +316,7 @@
           done();
         } catch {
           form.classList.remove("is-sending");
-          alert("Sorry, that did not go through. Please call 16758 or message us on WhatsApp.");
+          alert(T("Sorry, that did not go through. Please call 16758 or message us on WhatsApp.", "দুঃখিত, পাঠানো যায়নি। 16758 নম্বরে কল করুন অথবা WhatsApp-এ মেসেজ দিন।"));
         }
         return;
       }
@@ -313,7 +332,7 @@
      Round 2 behaviours
      ====================================================================== */
   const motion = () => !reduced.matches;
-  const tk = (n) => "BDT " + Math.round(n).toLocaleString("en-US");
+  const tk = (n) => T("BDT ", "৳") + Math.round(n).toLocaleString("en-US");
   const fmt = (n, d = 0) => n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 
   /* ---------- Ambient spotlight trails the pointer ---------- */
@@ -779,21 +798,27 @@
       const full = (cfg.usableKwh / cfg.eff) * ch.tariff, oneCharge = km <= cfg.realRangeKm;
       out("km", km); out("days", days);
       out("monthly", tk(save * n));
-      out("per", n > 1 ? `across ${n} vehicles, ${tk(save)} each` : "per vehicle");
+      const opt = (k) => v(k).selectedOptions[0].textContent, unit = BN ? { litre: "লিটার" }[fuel.unit] || fuel.unit : fuel.unit;
+      out("per", n > 1 ? T(`across ${n} vehicles, ${tk(save)} each`, `${n}টি গাড়িতে, প্রতিটিতে ${tk(save)}`) : T("per vehicle", "প্রতি গাড়িতে"));
       out("pct", Math.round((1 - evKm / fuelKm) * 100) + "%");
-      out("fuelname", fuel.label.toLowerCase());
+      out("fuelname", BN ? opt("fuel") : fuel.label.toLowerCase());
       out("yearly", tk(save * 12 * n));
-      out("yearper", n > 1 ? `for ${n} vehicles / year` : "per vehicle / year");
+      out("yearper", n > 1 ? T(`for ${n} vehicles / year`, `${n}টি গাড়িতে / বছরে`) : T("per vehicle / year", "প্রতি গাড়িতে / বছরে"));
       out("fuelM", tk(fuelM * n)); out("evM", tk(evM * n));
       c.style.setProperty("--w", Math.max(3, Math.min(100, (evM / fuelM) * 100)).toFixed(1) + "%");
-      out("charge", oneCharge ? `One overnight charge covers the day: ${tk(full)} for a full 0-100%.` : `About ${(km / cfg.realRangeKm).toFixed(1)} charges a day: ${tk(full)} per full 0-100% charge.`);
-      out("fit", oneCharge ? `${cfg.model} with overnight depot charging` : `${cfg.model} with depot charging + a mid-day top-up`);
-      out("s1", `Fuel: Tk ${fmt(fuel.price, 2)} per ${fuel.unit} ÷ ${fmt(mileage, 1)} km per ${fuel.unit} = Tk ${fmt(fuelKm, 2)} per km`);
-      out("s2", `Electricity: ${fmt(cfg.usableKwh, 2)} kWh usable ÷ ${cfg.realRangeKm} km ÷ ${Math.round(cfg.eff * 100)}% charging efficiency = ${fmt(kwhKm, 3)} kWh per km`);
-      out("s3", `${fmt(kwhKm, 3)} kWh × Tk ${fmt(ch.tariff, 2)} per kWh = Tk ${fmt(evKm, 2)} per km`);
-      out("s4", `${km} km per day × ${days} days = ${fmt(monthKm)} km per month`);
-      out("s5", `Fuel ${tk(fuelM)} − electricity ${tk(evM)} = ${tk(save)} per vehicle per month`);
-      out("tariffname", ch.label); out("tariff", fmt(ch.tariff, 2));
+      out("charge", oneCharge
+        ? T(`One overnight charge covers the day: ${tk(full)} for a full 0-100%.`, `রাতের এক চার্জেই সারা দিন: 0-100% ফুল চার্জে ${tk(full)}।`)
+        : T(`About ${(km / cfg.realRangeKm).toFixed(1)} charges a day: ${tk(full)} per full 0-100% charge.`, `দিনে প্রায় ${(km / cfg.realRangeKm).toFixed(1)}টি চার্জ: প্রতি 0-100% ফুল চার্জে ${tk(full)}।`));
+      out("fit", oneCharge ? T(`${cfg.model} with overnight depot charging`, `${cfg.model}, রাতে ডিপোতে চার্জিং`) : T(`${cfg.model} with depot charging + a mid-day top-up`, `${cfg.model}, ডিপো চার্জিং + দুপুরে একবার টপ-আপ`));
+      const Tk = T("Tk ", "৳");
+      out("s1", T(`Fuel: Tk ${fmt(fuel.price, 2)} per ${fuel.unit} ÷ ${fmt(mileage, 1)} km per ${fuel.unit} = Tk ${fmt(fuelKm, 2)} per km`,
+        `জ্বালানি: প্রতি ${unit} ${Tk}${fmt(fuel.price, 2)} ÷ প্রতি ${unit} ${fmt(mileage, 1)} km = প্রতি km ${Tk}${fmt(fuelKm, 2)}`));
+      out("s2", T(`Electricity: ${fmt(cfg.usableKwh, 2)} kWh usable ÷ ${cfg.realRangeKm} km ÷ ${Math.round(cfg.eff * 100)}% charging efficiency = ${fmt(kwhKm, 3)} kWh per km`,
+        `বিদ্যুৎ: ব্যবহারযোগ্য ${fmt(cfg.usableKwh, 2)} kWh ÷ ${cfg.realRangeKm} km ÷ ${Math.round(cfg.eff * 100)}% চার্জিং এফিশিয়েন্সি = প্রতি km ${fmt(kwhKm, 3)} kWh`));
+      out("s3", T(`${fmt(kwhKm, 3)} kWh × Tk ${fmt(ch.tariff, 2)} per kWh = Tk ${fmt(evKm, 2)} per km`, `${fmt(kwhKm, 3)} kWh × প্রতি kWh ${Tk}${fmt(ch.tariff, 2)} = প্রতি km ${Tk}${fmt(evKm, 2)}`));
+      out("s4", T(`${km} km per day × ${days} days = ${fmt(monthKm)} km per month`, `দিনে ${km} km × ${days} দিন = মাসে ${fmt(monthKm)} km`));
+      out("s5", T(`Fuel ${tk(fuelM)} − electricity ${tk(evM)} = ${tk(save)} per vehicle per month`, `জ্বালানি ${tk(fuelM)} − বিদ্যুৎ ${tk(evM)} = প্রতি গাড়িতে মাসে ${tk(save)}`));
+      out("tariffname", BN ? opt("charging") : ch.label); out("tariff", fmt(ch.tariff, 2));
     };
     c.addEventListener("input", run);
     c.addEventListener("change", run);
@@ -807,7 +832,7 @@
       chips.forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.f === f)));
       let n = 0;
       cards.forEach((el) => { const show = f === "all" || el.dataset.cat === f; el.hidden = !show; if (show) { n++; el.classList.add("is-in"); } });
-      count.textContent = `${n} product${n === 1 ? "" : "s"}`;
+      count.textContent = T(`${n} product${n === 1 ? "" : "s"}`, `${n}টি প্রোডাক্ট`);
     };
     chips.forEach((c) => c.addEventListener("click", () => apply(c.dataset.f)));
   });
@@ -825,11 +850,14 @@
     const dhaka = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
     const now = dhaka.getHours() * 60 + dhaka.getMinutes();
     const mins = (hm) => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
-    const h12 = (hm) => { let [h, m] = hm.split(":").map(Number); const ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return `${h}:${String(m).padStart(2, "0")} ${ap}`; };
+    const h12 = (hm) => {
+      const [h, m] = hm.split(":").map(Number), t = `${h % 12 || 12}:${String(m).padStart(2, "0")}`;
+      return BN ? `${h < 12 ? "সকাল" : h < 16 ? "দুপুর" : h < 18 ? "বিকেল" : h < 20 ? "সন্ধ্যা" : "রাত"} ${t}` : `${t} ${h >= 12 ? "pm" : "am"}`;
+    };
     $$("[data-hours]", w).forEach((el) => {
       const [o, cl] = el.dataset.hours.split("-"), open = now >= mins(o) && now < mins(cl);
       el.classList.toggle("is-open", open);
-      el.textContent = open ? `Open now, until ${h12(cl)}` : `Closed, opens ${h12(o)}`;
+      el.textContent = open ? T(`Open now, until ${h12(cl)}`, `এখন খোলা, ${h12(cl)} পর্যন্ত`) : T(`Closed, opens ${h12(o)}`, `বন্ধ, খুলবে ${h12(o)}`);
     });
 
     // Map zoom: registered custom properties (--k scale, --tx/--ty offset) animate in CSS.
@@ -847,8 +875,8 @@
     const apply = () => {
       const s = q.value.trim().toLowerCase();
       let n = 0;
-      cards.forEach((c) => { const show = (div === "all" || c.dataset.div === div) && (!s || c.dataset.q.includes(s)); c.hidden = !show; if (show) n++; });
-      count.textContent = `${n} location${n === 1 ? "" : "s"}`;
+      cards.forEach((c) => { const show = (div === "all" || c.dataset.div === div) && (!s || c.dataset.q.includes(s) || c.textContent.toLowerCase().includes(s)); c.hidden = !show; if (show) n++; });
+      count.textContent = T(`${n} location${n === 1 ? "" : "s"}`, `${n}টি লোকেশন`);
       empty.hidden = n > 0;
       pins.forEach((p) => p.classList.toggle("is-dim", cardOf(p.dataset.pin).hidden));
     };
@@ -882,7 +910,7 @@
     const pinTip = (p) => {
       const c = cardOf(p.dataset.pin), st = $(".dealer__status", c);
       const r = stage.getBoundingClientRect(), d = $(".bdmap__dot", p).getBoundingClientRect();
-      showTip([[$("h3", c).textContent], [$$(".badge", c).map((b) => b.textContent).join(" · ") + " · " + c.dataset.div], [st.textContent, st.classList.contains("is-open") ? "is-open" : ""]],
+      showTip([[$("h3", c).textContent], [$$(".badge", c).map((b) => b.textContent).join(" · ") + " · " + chips.find((x) => x.dataset.div === c.dataset.div).firstChild.textContent.trim()], [st.textContent, st.classList.contains("is-open") ? "is-open" : ""]],
         d.left + d.width / 2 - r.left, d.top - r.top + (d.top - r.top < 90 ? d.height : 0));
     };
     const hl = (id, on) => { const p = pinOf(id), c = cardOf(id); p && p.classList.toggle("is-hl", on); c && c.classList.toggle("is-hl", on); };
@@ -901,8 +929,9 @@
       const r = e.target.closest(".bdmap__div");
       labels.forEach((l) => l.classList.toggle("is-hover", !!r && l.dataset.region === r.dataset.region));
       if (!r) return hideTip();
-      const box = stage.getBoundingClientRect(), n = +r.dataset.n;
-      showTip([[`${r.dataset.region} Division`], [`${n} dealer${n === 1 ? "" : "s"} · ${div === r.dataset.region ? "click to zoom out" : "click to zoom in"}`]], e.clientX - box.left, e.clientY - box.top);
+      const box = stage.getBoundingClientRect(), n = +r.dataset.n, out = div === r.dataset.region;
+      const name = labels.find((l) => l.dataset.region === r.dataset.region).textContent;
+      showTip([[T(`${name} Division`, `${name} বিভাগ`)], [T(`${n} dealer${n === 1 ? "" : "s"} · ${out ? "click to zoom out" : "click to zoom in"}`, `${n}টি ডিলার · ${out ? "ক্লিক করে জুম আউট" : "ক্লিক করে জুম ইন"}`)]], e.clientX - box.left, e.clientY - box.top);
     });
     svg.addEventListener("pointerleave", () => { hideTip(); labels.forEach((l) => l.classList.remove("is-hover")); });
     svg.addEventListener("click", (e) => {

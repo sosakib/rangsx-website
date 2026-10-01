@@ -6,6 +6,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { layout } from "./lib/layout.mjs";
 import { SITE } from "./data/site.mjs";
+import { toBangla, bnPath } from "./lib/i18n.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dist = join(here, "..", "dist");
@@ -23,20 +24,30 @@ for (const f of readdirSync(join(here, "pages")).filter((f) => f.endsWith(".mjs"
 }
 
 const seen = new Set();
+const fileOf = (path) => (path === "/404" ? join(dist, "404.html") : join(dist, path, "index.html"));
+const missing = new Set();
 for (const p of pages) {
   if (seen.has(p.path)) throw new Error(`Duplicate path ${p.path} (${p._file})`);
   seen.add(p.path);
-  const out = p.path === "/404" ? join(dist, "404.html") : join(dist, p.path, "index.html");
-  mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, layout(p));
+  const page = layout(p);
+  mkdirSync(dirname(fileOf(p.path)), { recursive: true });
+  writeFileSync(fileOf(p.path), page);
+  if (p.path === "/404") continue;
+  // Bangla twin at /bn/... (site/lib/i18n.mjs)
+  const bn = bnPath(p.path);
+  seen.add(bn);
+  mkdirSync(dirname(fileOf(bn)), { recursive: true });
+  writeFileSync(fileOf(bn), toBangla(page, p.path, missing));
 }
+const all = [...seen];
 
 // sitemap + robots
 const indexable = pages.filter((p) => !p.noindex && p.path !== "/404");
 writeFileSync(
   join(dist, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${indexable
-    .map((p) => `  <url><loc>${SITE.url}${p.path === "/" ? "/" : p.path}</loc></url>`)
+    .flatMap((p) => [p.path === "/" ? "/" : p.path, bnPath(p.path)])
+    .map((u) => `  <url><loc>${SITE.url}${u}</loc></url>`)
     .join("\n")}\n</urlset>\n`
 );
 writeFileSync(join(dist, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE.url}/sitemap.xml\n`);
@@ -52,9 +63,9 @@ const exists = (url) => {
   return existsSync(f) && statSync(f).isFile();
 };
 const { readFileSync } = await import("node:fs");
-for (const p of pages) {
-  const file = p.path === "/404" ? join(dist, "404.html") : join(dist, p.path, "index.html");
-  const html = readFileSync(file, "utf8");
+for (const path of all) {
+  const p = { path };
+  const html = readFileSync(fileOf(path), "utf8");
   for (const [, url] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) if (!exists(url)) problems.push(`${p.path}: missing ${url}`);
   for (const [, set] of html.matchAll(/srcset="([^"]+)"/g))
     for (const part of set.split(",")) { const u = part.trim().split(" ")[0]; if (!exists(u)) problems.push(`${p.path}: missing ${u}`); }
@@ -65,13 +76,17 @@ for (const p of pages) {
   if (h1 !== 1) problems.push(`${p.path}: ${h1} <h1> elements`);
 }
 // Cross-page anchors: every href="/page#id" must land on an element with that id.
-const htmlOf = new Map(pages.map((p) => [p.path, readFileSync(p.path === "/404" ? join(dist, "404.html") : join(dist, p.path, "index.html"), "utf8")]));
+const htmlOf = new Map(all.map((path) => [path, readFileSync(fileOf(path), "utf8")]));
 for (const [from, html] of htmlOf)
   for (const [, path, id] of html.matchAll(/href="(\/[^"#]*)#([^"]+)"/g)) {
     const target = htmlOf.get(path);
     if (target && !target.includes(`id="${id}"`)) problems.push(`${from}: links to ${path}#${id}, id missing there`);
   }
 
-console.log(`Built ${pages.length} pages in ${Date.now() - t0} ms`);
+console.log(`Built ${pages.length} pages + ${all.length - pages.length} in Bangla in ${Date.now() - t0} ms`);
+if (missing.size) {
+  writeFileSync(join(here, "i18n", "missing.txt"), [...missing].join("\n") + "\n");
+  problems.push(`${missing.size} strings have no Bangla yet (site/i18n/missing.txt)`);
+} else rmSync(join(here, "i18n", "missing.txt"), { force: true });
 if (problems.length) console.log("\nChecks:\n  " + [...new Set(problems)].join("\n  "));
 else console.log("Checks: all links resolve, one h1 per page, no en/em dashes.");

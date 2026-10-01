@@ -55,7 +55,7 @@ const benefits = (f) => html`
         <p class="benefit__n">0${i + 1}</p>
         <h3>${h}</h3>
         <p>${p}</p>
-        <p class="benefit__big">${big === "{pct}" ? `<span data-count="${pctLower(f)}">${pctLower(f)}</span>%` : big}</p><span>${label}</span>
+        <p class="benefit__big">${big === "{pct}" ? `<span data-count="${pctLower(f)}">${pctLower(f)}</span>%` : big.replace(/ (m³|km|kg)$/, " <small>$1</small>")}</p><span>${label}</span>
       </article>`)}
     </div>
   </div>

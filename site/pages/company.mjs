@@ -85,7 +85,7 @@ ${pageHero({
     </div>
   </div>
 </section>
-${ctaBand({ title: "Ready to drive next?", lead: "Find your nearest dealer or explore our vehicle lines.", primary: ["Find a Dealer", "/dealers"], secondary: ["Contact Us", "/contact"] })}`,
+${ctaBand({ eyebrow: "Powering Purposeful Progress", title: "Ready to drive next?", lead: "Find your nearest dealer or explore our vehicle lines.", primary: ["Find a Dealer", "/dealers"], secondary: ["Contact Us", "/contact"] })}`,
 });
 
 // ---------------------------------------------------------------- Service
@@ -291,7 +291,7 @@ const legal = (key) => {
     title: L.title,
     description: L.description,
     body: html`
-${pageHero({ eyebrow: "Legal", title: L.title, lead: `Last updated: ${L.updated}` })}
+${pageHero({ eyebrow: "Legal", title: L.title, lead: `Last updated: ${L.updated}<span class="bn-only"><br>This Bangla version is for convenience. If it differs from the English version, the English version applies.</span>` })}
 <section class="section section--flush-top">
   <div class="wrap legal">
     <nav class="legal__toc" aria-label="On this page"><p>On this page</p>${secs.map((s) => `<a href="#${s.id}" data-spy="${s.id}">${s.h}</a>`)}</nav>

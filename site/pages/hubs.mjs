@@ -70,7 +70,7 @@ export default [
     lead: "",
     trail: [["Home", "/"], ["Electric Bikes", "/electric-bikes"]],
     cards: [
-      { href: bikeUrl(BIKES[0]), img: "/img/bikes/zs-red", alt: "RX ZS electric bike in Racing Red", title: "RX", kicker: "Built for Bangladeshi Roads", text: "ZS, ES3, and T60: the RangsX electric two-wheeler brand, engineered for local roads and daily commutes.", tag: "", cta: "Explore RX", badge: `${BIKES.length} Models`, seed: 37 },
+      { href: bikeUrl(BIKES[0]), img: "/img/bikes/zs-red", alt: "RX ZS electric bike in Racing Red", title: "RX", kicker: "Built for Bangladeshi Roads", text: "ZS, ES3, and T60: the RangsX electric two-wheeler brand, engineered for local roads and daily commutes.", tag: "Ride Beyond", cta: "Explore RX", badge: `${BIKES.length} Models`, seed: 37 },
       { img: "/img/bikes/coming-soon", alt: "An electric bike hidden under a cover", title: "New Brand", kicker: "Still Under Wraps", text: "Another electric mobility brand joins the RangsX line-up soon. Models, specs, and launch details to follow.", badge: "Coming Soon", soon: true, seed: 41 },
     ],
     more: [

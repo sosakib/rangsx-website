@@ -155,3 +155,34 @@ Cause: frames were 3 source frames apart and the canvas crossfaded them, includi
 - [x] `/electric-bikes` hub: signpost line linking to the section.
 - [ ] Photo: save it as `site/static/img/bikes/bangla-display.png` (or `.webp`), run start.bat. It replaces the placeholder.
 - [ ] Confirm: ES3 (LED cluster) left out on purpose. Bangla copy to be proofread by the team.
+
+## Round 12 (1 Oct 2026): brand book applied + full Bangla site
+Source: `Documents\RANGSX_BRANDBOOK_compressed.pdf` (59 pages). Pulled GitHub first: local was already up to date.
+- [x] Colours (p.33): stage pure black #000000, type white, secondary text brand grey #BCBEC0, red #ED2328 accents
+      (buttons stay #D41E25 for AA contrast). Light theme: white page, black type, neutral grey glows. Greys de-blued.
+- [x] Type (p.37): LEMON MILK (caps) for headlines, hero titles and big numbers; Poppins for all other text (the
+      brand book's body face); Li Ador Noirrit for Bangla. Archivo and Plus Jakarta removed. Units stay lower case
+      in Poppins (km, kg, m³), timeline decades stay "2000s".
+- [x] Taglines (p.15-18): RX bike pages close with "Ride Beyond" and the RX card on /electric-bikes carries it;
+      About closes with the brand promise "Powering Purposeful Progress" above "Ready to drive next?". "Drive Next"
+      never appears on RX pages.
+- [x] Logo (p.21): header logo 34 -> 42 px, footer 40 -> 62 px (wordmark 24 px in the footer; the 56 px header caps
+      the header wordmark at ~16 px, under the book's 0.25 in print minimum).
+- [x] Fix: EM-26/27 benefit numbers (86%, 5.68 m³, 100%) rendered at body size because `.benefit p` outranked
+      `.benefit__big`; now big, as designed.
+- [x] Bangla site: every page at `/bn/...` (23 pages), header switch বাংলা / EN on every page, hreflang alternates,
+      both languages in the sitemap. Translation in `site/i18n/` (5 files, ~1,150 strings + pattern rules for
+      captions, prefilled WhatsApp messages and calculator lines); the build lists anything missing (0 now).
+      Voice from the brand book's Bangla messaging: everyday English loanwords in Bangla script (ইলেকট্রিক, ফ্লিট,
+      টেস্ট রাইড), model names, units, taglines and acronyms (EV, EMI, TFT) in English, Western digits.
+- [x] Bangla behaviours: calculator lines, dealer open/closed, counts, map tooltips, form errors, theme label
+      all in Bangla (site.js `T()`); dealer search matches Bangla or English names; form values stay English.
+- [x] Bangla typography: Li Ador Noirrit scaled to match Poppins (size-adjust), no letter-spacing, taller body
+      leading, no synthetic bold (the font has one weight), line-reveal clips padded for vowel signs.
+- [x] Bangla display demo on ZS/T60 opens in Bangla on the Bangla pages; its English half stays English.
+- [x] Legal pages carry a note that the English text governs.
+- [x] Checks: build (47 pages) links/anchors/h1/dashes clean, 21/21 Bangla interaction checks.
+- [ ] LEMON MILK licence: free for personal use only; confirm RangsX's commercial licence before launch.
+- [ ] Bangla proofread by a native copy editor at RangsX (especially legal pages).
+- [ ] Li Ador Noirrit comes from a third-party CDN copy (Lipighor has no direct download); swap in the files from
+      RangsX's design team if they have the full family (SemiBold would give Bangla headings real weight).

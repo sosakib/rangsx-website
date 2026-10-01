@@ -22,6 +22,15 @@ and turn interest into leads (test rides, fleet quotes, dealer visits). It keeps
 per-page layouts, with calmer, more premium visuals, motion and interaction. Success = a visitor reaches the right
 vehicle and a contact action without friction, on a phone.
 
+## Brand Book
+RANGSX brand book (Documents\RANGSX_BRANDBOOK_compressed.pdf). Promise: "Powering Purposeful Progress". Positioning: modern,
+reliable, green electric mobility. Archetype: the Innovative Everyman (60/40 Everyman/Creator). Pillars: Problem
+Solver, Go Green, Cost Intelligent, Smart Urban Style, Resourceful and Efficient. Colours: red #ED2328, black, grey
+#BCBEC0, white. Type: LEMON MILK (English), Li Ador Noirrit (Bangla), Poppins (body). Taglines: "Electromobility"
+(category line, with the logo), "Drive Next" (RangsX campaigns), "Ride Beyond" (RX bikes only).
+Bangla voice (sample key messaging, p.16): everyday English loanwords written in Bangla (ইলেকট্রিক ফ্লিট, স্মার্ট,
+সার্ভিসিং), short and confident.
+
 ## Brand Personality
 Calm, proud, local. Premium without being cold; confident, never loud. Client words: "more sophisticated, minimal,
 and attractive", "user-interactive", animated elements that feel smooth and relevant.
@@ -41,4 +50,4 @@ and attractive", "user-interactive", animated elements that feel smooth and rele
 
 ## Accessibility & Inclusion
 WCAG 2.2 AA. Reduced-motion users get a static, stacked version of every scroll effect. Colour is never the only
-signal (division filters, open/closed status). Bangla-speaking audience reads English UI; keep copy plain.
+signal (division filters, open/closed status). Every page also exists in Bangla at /bn/...; keep copy plain in both.

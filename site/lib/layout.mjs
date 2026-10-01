@@ -5,6 +5,7 @@ import { FLEET } from "../data/fleet.mjs";
 import { icon } from "./icons.mjs";
 import { pic, imgUrl } from "./img.mjs";
 import { esc } from "./ui.mjs";
+import { bnPath } from "./i18n.mjs";
 
 const logo = (cls = "") =>
   `<span class="logo ${cls}"><img class="logo--on-dark" src="/img/brand/rangsx-on-dark.webp" width="480" height="205" alt="RangsX Electromobility"><img class="logo--on-light" src="/img/brand/rangsx-on-light.webp" width="480" height="205" alt="" aria-hidden="true"></span>`;
@@ -41,6 +42,9 @@ const FLYOUTS = {
     </ul>`,
 };
 
+// Language switch: English pages link to the Bangla twin; site/lib/i18n.mjs turns it into "EN" on Bangla pages.
+const langSwitch = (path, cls) => path === "/404" ? "" : `<a class="${cls} lang-switch" href="${bnPath(path)}" hreflang="bn" lang="bn">বাংলা</a>`;
+
 function header(path) {
   const items = NAV.map((n) => {
     const cur = isActive(path, n) ? ` aria-current="page"` : "";
@@ -58,6 +62,7 @@ function header(path) {
     <nav class="gnav__nav" aria-label="Primary"><ul>${items}</ul></nav>
     <div class="gnav__tools">
       <a class="gnav__hotline" href="tel:${SITE.hotline}" aria-label="Call hotline ${SITE.hotline}">${icon("phone")}<span>${SITE.hotline}</span></a>
+      ${langSwitch(path, "gnav__lang")}
       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch to light theme">${icon("sun", "i--sun")}${icon("moon", "i--moon")}</button>
       <button class="icon-btn gnav__menu" type="button" aria-expanded="false" aria-controls="mnav" data-menu-toggle><span class="burger" aria-hidden="true"></span><span class="sr">Menu</span></button>
     </div>
@@ -118,7 +123,7 @@ function footer() {
     </div>
     <div class="foot__bottom" data-tuck-help="0">
       <p>© 2026 ${SITE.legalName} All rights reserved.</p>
-      <ul><li><a href="/privacy-policy">Privacy Policy</a></li><li><a href="/terms-of-use">Terms of Use</a></li></ul>
+      <ul><li><a href="/privacy-policy">Privacy Policy</a></li><li><a href="/terms-of-use">Terms of Use</a></li><li class="bn-only">Bangla font: Li Ador Noirrit by Lipighor</li></ul>
     </div>
   </div>
 </footer>`;
@@ -151,7 +156,7 @@ export const localNav = ({ title, href, links = [], cta, switcher = [] }) => `
 </nav>`;
 
 // Runs before first paint: theme (dark default, like the live site) + "js" flag for reveal styles.
-const THEME_BOOT = `(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t!=="light")t="dark";d.dataset.theme=t;document.querySelector('meta[name="theme-color"]').content=t==="light"?"#FBFBFD":"#050507"}catch(e){}})();`;
+const THEME_BOOT = `(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t!=="light")t="dark";d.dataset.theme=t;document.querySelector('meta[name="theme-color"]').content=t==="light"?"#FFFFFF":"#000000"}catch(e){}})();`;
 
 /**
  * layout({ path, title, description, image, body, schema, localNav, css, js, noindex, bodyClass })
@@ -172,8 +177,11 @@ export function layout({ path, title, description, image = "/img/og/default.jpg"
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${canonical}">
+${path === "/404" ? "" : `<link rel="alternate" hreflang="en-BD" href="${canonical}">
+<link rel="alternate" hreflang="bn-BD" href="${SITE.url + bnPath(path)}">
+<link rel="alternate" hreflang="x-default" href="${canonical}">`}
 ${noindex ? `<meta name="robots" content="noindex">` : ""}
-<meta name="theme-color" content="#050507">
+<meta name="theme-color" content="#000000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RangsX">
 <meta property="og:locale" content="en_BD">
@@ -188,8 +196,8 @@ ${noindex ? `<meta name="robots" content="noindex">` : ""}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/icon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/lemonmilk-500.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/fonts/poppins-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/site.css">
 ${css.map((c) => `<link rel="stylesheet" href="/css/${c}.css">`).join("\n")}
 <script>${THEME_BOOT}</script>

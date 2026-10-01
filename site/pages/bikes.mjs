@@ -263,7 +263,7 @@ ${compare(b)}
 ${day(b)}
 ${testRide({ model: b.fullName })}
 ${faq(BIKE_FAQS)}
-${ctaBand({ eyebrow: "Your Electric Journey", title: "Start your electric", accent: "ride today", lead: "Book a test ride in Dhaka. Feel the silence, the speed, the freedom. Zero commitment.", primary: ["Book Test Ride", "#test-ride-form"], waText: "Hi RangsX, I am interested in the RX Electric Bikes." })}
+${ctaBand({ eyebrow: "Ride Beyond", title: "Start your electric", accent: "ride today", lead: "Book a test ride in Dhaka. Feel the silence, the speed, the freedom. Zero commitment.", primary: ["Book Test Ride", "#test-ride-form"], waText: "Hi RangsX, I am interested in the RX Electric Bikes." })}
 ${actionbar(b)}`,
   };
 });
