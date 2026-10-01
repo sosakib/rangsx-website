@@ -246,7 +246,7 @@ strong, b { font-weight: 600; }
 .gnav__nav { margin-inline: auto; height: 100%; }
 .gnav__nav > ul { display: flex; align-items: center; gap: 2px; height: 100%; }
 .gnav__item { height: 100%; display: flex; align-items: center; }
-.gnav__link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: var(--r-pill); font-size: .875rem; font-weight: 500; color: var(--fg-2); transition: color var(--dur-2), background-color var(--dur-2); }
+.gnav__link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; white-space: nowrap; border-radius: var(--r-pill); font-size: .875rem; font-weight: 500; color: var(--fg-2); transition: color var(--dur-2), background-color var(--dur-2); }
 .gnav__link:hover, .gnav__item.is-open > .gnav__link { color: var(--fg); }
 .gnav__link[aria-current="page"] { color: var(--fg); font-weight: 600; }
 .gnav__tools { display: flex; align-items: center; gap: 4px; flex: none; }
@@ -267,7 +267,7 @@ strong, b { font-weight: 600; }
   clip-path: inset(0 0 100% 0); opacity: 0; visibility: hidden;
   transition: clip-path var(--dur-3) var(--ease-spring), opacity var(--dur-2) var(--ease-out), visibility 0s var(--dur-3); }
 .gnav__item.is-open .fly { clip-path: inset(0 0 -40px 0); opacity: 1; visibility: visible; transition: clip-path 520ms var(--ease-spring), opacity var(--dur-2) var(--ease-out); }
-.fly__inner { display: grid; grid-template-columns: 1fr 240px; gap: 48px; padding-block: 28px 40px; }
+.fly__inner { padding-block: 28px 40px; }
 .fly__cards { display: grid; gap: 16px; }
 .fly__cards--2 { grid-template-columns: repeat(2, minmax(0, 300px)); }
 .fly__cards--3 { grid-template-columns: repeat(3, minmax(0, 260px)); }
@@ -280,9 +280,6 @@ strong, b { font-weight: 600; }
 .fly-card:hover .fly-card__img img { transform: scale(1.05); }
 .fly-card__name { display: block; margin-top: 12px; font: 600 1rem/1.2 var(--font-display); font-stretch: var(--stretch); }
 .fly-card__note { display: block; margin-top: 2px; font-size: var(--fs-xs); color: var(--fg-2); }
-.fly__links { border-left: 1px solid var(--line); padding-left: 32px; display: flex; flex-direction: column; gap: 12px; }
-.fly__links a { font-size: var(--fs-sm); color: var(--fg-2); transition: color var(--dur-2); }
-.fly__links a:hover { color: var(--fg); }
 .gnav-scrim { position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity var(--dur-3) var(--ease-out), visibility 0s var(--dur-3); }
 .gnav-scrim.is-on { opacity: 1; visibility: visible; transition: opacity var(--dur-3) var(--ease-out); }
 
@@ -302,6 +299,11 @@ html.menu-open .gnav::before { background: var(--bg); box-shadow: 0 1px 0 var(--
 @keyframes mnav-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes rise { to { opacity: 1; transform: none; } }
 
+/* 7 nav items: tighten links and drop the hotline number (icon stays) on small laptops */
+@media (max-width: 1199px) {
+  .gnav__link { padding: 0 9px; }
+  .gnav__hotline span { display: none; }
+}
 @media (max-width: 1023px) {
   .gnav__nav { display: none; }
   .gnav__menu { display: inline-grid; }
@@ -1428,3 +1430,25 @@ html:lang(bn) body { line-height: 1.7; }
 /* Line reveals clip: give the vowel signs above and below the line room inside the clip. */
 :lang(bn) .ln { padding-block: .2em; margin-block: -.2em; }
 :lang(bn) :is(.h3, .h4, .lead, .faq__item summary) { line-height: 1.5; }
+
+/* ---------- Account bits used site-wide: header avatar, wishlist heart, toast ---------- */
+.ava { display: inline-grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--bg-btn2); color: var(--fg); font: 600 1rem/1 var(--font-text); }
+.ava img { width: 100%; height: 100%; object-fit: cover; }
+.gnav__acct .ava { display: none; width: 28px; height: 28px; font-size: .8125rem; }
+.gnav__acct.is-in .ava { display: inline-grid; background: var(--red-btn); color: #fff; }
+.gnav__acct.is-in > .i { display: none; }
+.wish { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--fg-2); background: var(--bg-btn2); transition: color var(--dur-1), background-color var(--dur-1), transform var(--dur-1) var(--ease-out); }
+.wish:hover { color: var(--fg); background: var(--bg-btn2-hover); }
+.wish:active { transform: scale(.9); }
+.wish .i { width: 20px; height: 20px; }
+.wish .i--on, .wish[aria-pressed="true"] .i--off { display: none; }
+.wish[aria-pressed="true"] .i--on { display: block; color: var(--red); animation: wish-pop var(--dur-2) var(--ease-spring); }
+.wish--float { position: absolute; top: 12px; right: 12px; z-index: 1; background: var(--glass); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.wish--lg { width: 52px; height: 52px; }
+.wish--sm { width: 36px; height: 36px; }
+.wish--sm .i { width: 18px; height: 18px; }
+@keyframes wish-pop { 40% { transform: scale(1.25); } }
+.toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); z-index: 90; translate: -50% 16px; max-width: calc(100vw - 32px); padding: 12px 20px; border-radius: var(--r-pill); background: var(--fg); color: var(--bg); font-size: var(--fs-sm); font-weight: 500; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transition: opacity var(--dur-2), translate var(--dur-2) var(--ease-out); }
+.toast.is-on { opacity: 1; translate: -50% 0; pointer-events: auto; }
+.toast a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; margin-left: 6px; }
+@media (prefers-reduced-motion: reduce) { .wish[aria-pressed="true"] .i--on { animation: none; } .toast { transition: opacity var(--dur-1); translate: -50% 0; } }

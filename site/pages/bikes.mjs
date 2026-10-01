@@ -1,6 +1,6 @@
 // RX bike pages: /electric-bikes/rx/{zs,es3,t60}. Section order follows the beta:
 // hero · lineup · details tabs · gallery · rider quiz · compare · a day on the bike · test ride · FAQ · closing CTA.
-import { html, btn, more, head, icon, pic, swatchStage, faq, testRide, ctaBand, crumbs, esc, SITE, wa, lines, skyline, tabs, gallery, ticks } from "../lib/ui.mjs";
+import { html, btn, more, head, icon, pic, swatchStage, faq, testRide, ctaBand, crumbs, esc, SITE, wa, lines, skyline, tabs, gallery, ticks, wishBtn } from "../lib/ui.mjs";
 import { localNav } from "../lib/layout.mjs";
 import { variants } from "../lib/img.mjs";
 import { BIKES, bikeUrl, RX_STANDARD, BIKE_FAQS, RX_H1, LIFESTYLE, QUIZ, COMPARE_ROWS, DAY } from "../data/bikes.mjs";
@@ -21,6 +21,7 @@ const hero = (b) => html`
         ${btn("Book Test Ride", "#test-ride-form", { size: "lg", attrs: `data-fill="model=${b.fullName}"` })}
         ${btn("Explore Models", "#lineup", { kind: "secondary", size: "lg" })}
         ${more("Compare", "#compare")}
+        ${wishBtn("bike:" + b.slug, "wish--lg")}
       </div>
       <div class="hero__stats">
         <div class="hero__stat"><b>90-100<small>km</small></b><span>Range</span></div>

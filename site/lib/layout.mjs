@@ -23,23 +23,11 @@ const FLYOUTS = {
   fleet: () => `
     <div class="fly__cards fly__cards--2">
       ${FLEET.map((f) => flyCard(f.url, f.img, f.fullName, f.kind, f.fullName)).join("")}
-    </div>
-    <ul class="fly__links">
-      <li><a href="/dongfeng">Electric Fleet overview</a></li>
-      <li><a href="/electric-vans/em26#savings">Savings calculator</a></li>
-      <li><a href="/service">Fleet service</a></li>
-      <li><a href="/dealers">Find a dealer</a></li>
-    </ul>`,
+    </div>`,
   bikes: () => `
     <div class="fly__cards fly__cards--3">
       ${BIKES.map((b) => flyCard(bikeUrl(b), b.colorways[0].img, b.fullName, b.kind, b.fullName)).join("")}
-    </div>
-    <ul class="fly__links">
-      <li><a href="/electric-bikes">All electric bikes</a></li>
-      <li><a href="/electric-bikes/rx/zs#compare">Compare models</a></li>
-      <li><a href="/electric-bikes/rx/zs#test-ride-form">Book a test ride</a></li>
-      <li><a href="/shop">RX Gear shop</a></li>
-    </ul>`,
+    </div>`,
 };
 
 // Language switch: English pages link to the Bangla twin; site/lib/i18n.mjs turns it into "EN" on Bangla pages.
@@ -63,6 +51,7 @@ function header(path) {
     <div class="gnav__tools">
       <a class="gnav__hotline" href="tel:${SITE.hotline}" aria-label="Call hotline ${SITE.hotline}">${icon("phone")}<span>${SITE.hotline}</span></a>
       ${langSwitch(path, "gnav__lang")}
+      <a class="icon-btn gnav__acct" href="/account" data-acct-link aria-label="My account">${icon("user")}</a>
       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch to light theme">${icon("sun", "i--sun")}${icon("moon", "i--moon")}</button>
       <button class="icon-btn gnav__menu" type="button" aria-expanded="false" aria-controls="mnav" data-menu-toggle><span class="burger" aria-hidden="true"></span><span class="sr">Menu</span></button>
     </div>
@@ -85,6 +74,7 @@ function mobileNav() {
       <li><a class="mnav__link" href="/service">Service</a></li>
       <li><a class="mnav__link" href="/dealers">Dealers</a></li>
       <li><a class="mnav__link" href="/contact">Contact</a></li>
+      <li><a class="mnav__link" href="/account">My account</a></li>
     </ul>
     <div class="mnav__foot">
       <a class="btn btn--secondary" href="tel:${SITE.hotline}">${icon("phone")}<span>Call ${SITE.hotline}</span></a>

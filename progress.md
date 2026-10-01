@@ -186,3 +186,28 @@ Source: `Documents\RANGSX_BRANDBOOK_compressed.pdf` (59 pages). Pulled GitHub fi
 - [ ] Bangla proofread by a native copy editor at RangsX (especially legal pages).
 - [ ] Li Ador Noirrit comes from a third-party CDN copy (Lipighor has no direct download); swap in the files from
       RangsX's design team if they have the full family (SemiBold would give Bangla headings real weight).
+
+## Round 13 (1 Oct 2026): nav tidy
+- [x] Removed the right-hand link column from both dropdowns (Electric Fleet, Electric Bikes): it repeated the top nav. Dropdowns now show the model cards only.
+- [x] "RX Gear Shop" added to the top nav after Electric Bikes (Bangla: RX Gear শপ). Mobile menu already had it.
+- [x] 7 nav items no longer wrap: links never break lines; at 1024-1199px links tighten and the hotline shows its icon only. Checked EN + BN at 1024 and 1440.
+
+## Round 14 (1 Oct 2026): customer accounts (demo)
+- [x] `/account` (+ `/bn/account`, noindex): sign in → finish profile → one-look dashboard. Files: `site/pages/account.mjs`,
+      `site/static/js/account.js`, `site/static/css/account.css`, `site/i18n/bn-account.mjs`; store/session/hearts in `site.js`.
+- [x] Sign in: "Continue with Google" opens a simulated account chooser (demo account or any name + Gmail), clearly labelled
+      as a demo. "Keep me signed in on this device" (default on) keeps the session after the browser closes; also a switch
+      on the dashboard. Sign out keeps the account; "Reset demo" wipes it so first-time sign-up can be shown again.
+- [x] Profile: name (from Google), BD mobile (validated, 01XXXXXXXXX), home address, optional photo (cropped to 256 px).
+      Completion meter: email + name + mobile + address = 100%. "Skip for now" leaves a nudge on the dashboard.
+- [x] Dashboard cards: My vehicle (+ warranty per part from the /service table, months left), Test rides (upcoming/past,
+      book from the dashboard), Purchases (tap for order details), Messages (chat with canned replies), Wishlist,
+      Refer a friend (code, copy, WhatsApp share). Details open in a side sheet (bottom sheet on phones).
+- [x] Wishlist hearts on shop cards, product pages and bike pages; header shows the avatar when signed in; "My account"
+      in the mobile menu; test-ride forms elsewhere also land on the dashboard when signed in.
+- [x] Checked: EN + BN, dark + light, 375 / 1280 / 1440, no overflow, build clean.
+- [ ] Demo data: RX T60 bought 170 days before first sign-in (Tejgaon showroom), RX Gear order, two test rides. Bike
+      price is not on the site, so the bike order shows "As invoiced".
+- [ ] Going live needs: Google Identity Services client ID + a backend (accounts, ERP/DMS orders, warranty start,
+      support inbox, referral rules). The swap points are marked `ponytail:` in site.js and account.js.
+- [ ] Referral reward wording is generic ("you both get a reward"); confirm the actual programme.

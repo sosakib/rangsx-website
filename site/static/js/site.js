@@ -21,6 +21,72 @@
   setTheme(root.dataset.theme === "light" ? "light" : "dark");
   $$("[data-theme-toggle]").forEach((b) => b.addEventListener("click", () => setTheme(root.dataset.theme === "light" ? "dark" : "light")));
 
+  /* ---------- Customer account (demo): device-local store shared by /account, the header and wishlist hearts ---------- */
+  // ponytail: localStorage stands in for the account backend and the Google sign-in is simulated on /account.
+  // Going live = swap these five functions for API calls + Google Identity Services; nothing else changes.
+  const ACCT = "rx-account", SESS = "rx-session";
+  const acct = {
+    get() { try { return JSON.parse(localStorage.getItem(ACCT)) || {}; } catch { return {}; } },
+    save(d) {
+      try { localStorage.setItem(ACCT, JSON.stringify(d)); return true; }
+      catch { alert(T("This browser's storage is full, so that change was not saved. Try a smaller photo.", "ব্রাউজারের স্টোরেজ ভরে গেছে, তাই পরিবর্তনটি সেভ হয়নি। ছোট একটি ছবি দিয়ে চেষ্টা করুন।")); return false; }
+    },
+    signedIn() { try { return !!(localStorage.getItem(SESS) || sessionStorage.getItem(SESS)) && !!acct.get().user; } catch { return false; } },
+    // keep = "Keep me signed in": survives closing the browser (localStorage) or ends with the tab session.
+    signIn(keep) { try { acct.signOut(); (keep ? localStorage : sessionStorage).setItem(SESS, "1"); } catch {} },
+    signOut() { try { localStorage.removeItem(SESS); sessionStorage.removeItem(SESS); } catch {} },
+    kept() { try { return !!localStorage.getItem(SESS); } catch { return false; } },
+  };
+  window.RXAccount = acct;
+  const acctHome = (BN ? "/bn" : "") + "/account";
+  const initial = (name = "") => (name.trim()[0] || "R").toUpperCase();
+  const syncAcctLink = () => {
+    const u = acct.signedIn() && acct.get().user;
+    $$("[data-acct-link]").forEach((a) => {
+      a.classList.toggle("is-in", !!u);
+      const ava = $(".ava", a) || a.appendChild(Object.assign(document.createElement("span"), { className: "ava" }));
+      ava.innerHTML = u ? (u.photo ? `<img src="${u.photo}" alt="">` : initial(u.name)) : "";
+      a.setAttribute("aria-label", u ? T(`My account: ${u.name}`, `আমার অ্যাকাউন্ট: ${u.name}`) : T("My account", "আমার অ্যাকাউন্ট"));
+    });
+  };
+  window.RXAccount.sync = syncAcctLink;
+  syncAcctLink();
+
+  // Wishlist hearts: kept in the device store, shown on the dashboard once signed in.
+  let toastT;
+  const toast = (html) => {
+    let el = $(".toast");
+    if (!el) { el = Object.assign(document.createElement("div"), { className: "toast", role: "status" }); document.body.append(el); }
+    el.innerHTML = html;
+    el.classList.add("is-on");
+    clearTimeout(toastT);
+    toastT = setTimeout(() => el.classList.remove("is-on"), 3200);
+  };
+  window.RXAccount.toast = toast;
+  const syncWish = () => {
+    const w = acct.get().wish || [];
+    $$("[data-wish]").forEach((b) => {
+      const on = w.includes(b.dataset.wish);
+      b.setAttribute("aria-pressed", String(on));
+      b.setAttribute("aria-label", on ? T("Remove from wishlist", "উইশলিস্ট থেকে সরান") : T("Save to wishlist", "উইশলিস্টে রাখুন"));
+    });
+  };
+  window.RXAccount.syncWish = syncWish;
+  syncWish();
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-wish]");
+    if (!b) return;
+    e.preventDefault();
+    const d = acct.get(), w = new Set(d.wish || []), id = b.dataset.wish, on = !w.has(id);
+    on ? w.add(id) : w.delete(id);
+    d.wish = [...w];
+    if (!acct.save(d)) return;
+    syncWish();
+    if (!b.closest("[data-acct]"))
+      toast(on ? T(`Saved to your wishlist. <a href="${acctHome}#wishlist">View</a>`, `উইশলিস্টে রাখা হয়েছে। <a href="${acctHome}#wishlist">দেখুন</a>`) : T("Removed from your wishlist.", "উইশলিস্ট থেকে সরানো হয়েছে।"));
+  });
+  addEventListener("storage", () => { syncWish(); syncAcctLink(); });
+
   /* ---------- Header: hairline once the page scrolls (sentinel, no scroll listener) ---------- */
   const gnav = $("[data-gnav]");
   if (gnav) {
@@ -302,6 +368,12 @@
       const bad = fields.filter((x) => !check(x));
       if (bad.length) { bad[0].focus(); return; }
       const data = Object.fromEntries(new FormData(form));
+      // Signed-in customers see the booking on their dashboard too.
+      if (form.dataset.form === "test-ride" && acct.signedIn()) {
+        const d = acct.get();
+        (d.rides ||= []).unshift({ id: Date.now(), model: data.model, location: data.location, date: data.date, time: data.time, status: "requested" });
+        acct.save(d);
+      }
       const done = () => {
         $$(".form__grid, [type=submit], .form__note", form).forEach((x) => (x.hidden = true));
         const d = $(".form__done", form);

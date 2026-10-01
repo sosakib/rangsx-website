@@ -61,6 +61,10 @@ export const swatchStage = (colorways, { alt, sizes = "(min-width: 900px) 60vw, 
   </div>
 </div>`;
 
+/** Wishlist heart (site.js keeps it in sync with the account store). id: "bike:zs" | "shop:<slug>". */
+export const wishBtn = (id, cls = "") =>
+  `<button class="wish ${cls}" type="button" data-wish="${id}" aria-pressed="false" aria-label="Save to wishlist">${icon("heart", "i--off")}${icon("heart-fill", "i--on")}</button>`;
+
 /** Form field. type: text | tel | email | date | select | textarea */
 export const field = ({ name, label, type = "text", required = false, options = [], placeholder = "", autocomplete = "", hint = "", full = false, value = "" }) => {
   const id = `f-${name}`;

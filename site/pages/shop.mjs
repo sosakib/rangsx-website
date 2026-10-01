@@ -1,5 +1,5 @@
 // RX Gear: /shop (filterable grid) and /shop/<slug> (product page). Orders go through WhatsApp, as on the beta.
-import { html, btn, icon, pic, crumbs, esc, SITE, wa, ticks, beam } from "../lib/ui.mjs";
+import { html, btn, icon, pic, crumbs, esc, SITE, wa, ticks, beam, wishBtn } from "../lib/ui.mjs";
 import { CATEGORIES, PRODUCTS, taka, productUrl, productImg, bySlug, catLabel } from "../data/shop.mjs";
 
 const order = (p) => wa(`Hi RangsX, I am interested in the ${p.name} from RX Gear Shop.`);
@@ -10,6 +10,7 @@ const card = (p) => html`
   <div class="prod__img">
     ${p.badge && `<span class="badge${p.badge === "Best Seller" ? " badge--red" : ""}">${p.badge}</span>`}
     ${pic(productImg(p), { alt: p.name, sizes: "(min-width: 1024px) 23vw, (min-width: 768px) 30vw, 46vw" })}
+    ${wishBtn("shop:" + p.slug, "wish--float")}
   </div>
   <div class="prod__body">
     <p class="prod__cat">${catLabel(p.cat)}</p>
@@ -83,7 +84,7 @@ ${c.html}
       <p class="price"><b>${taka(p.price)}</b>${p.was ? `<s>${taka(p.was)}</s><span class="save">Save ${taka(p.was - p.price)}</span>` : ""}</p>
       <p class="pdp__desc">${esc(p.desc)}</p>
       ${ticks(p.features.map(esc))}
-      <div class="actions">${btn("Order via WhatsApp", order(p), { size: "lg", ic: "whatsapp-logo", attrs: `target="_blank" rel="noopener"` })}${btn("Call " + SITE.hotline, "tel:" + SITE.hotline, { kind: "secondary", size: "lg", ic: "phone" })}</div>
+      <div class="actions">${btn("Order via WhatsApp", order(p), { size: "lg", ic: "whatsapp-logo", attrs: `target="_blank" rel="noopener"` })}${btn("Call " + SITE.hotline, "tel:" + SITE.hotline, { kind: "secondary", size: "lg", ic: "phone" })}${wishBtn("shop:" + p.slug, "wish--lg")}</div>
       <p class="pdp__note">${icon("check-circle")}Orders fulfilled via WhatsApp. Delivery across Bangladesh.</p>
     </div>
   </div>

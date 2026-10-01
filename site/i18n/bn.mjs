@@ -8,8 +8,9 @@ import bikes from "./bn-bikes.mjs";
 import fleet from "./bn-fleet.mjs";
 import company from "./bn-company.mjs";
 import legal from "./bn-legal.mjs";
+import account from "./bn-account.mjs";
 
-export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal };
+export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account };
 const LOWER = Object.fromEntries(Object.entries(BN).map(([k, v]) => [k.toLowerCase(), v]));
 const tr = (s) => BN[s] ?? LOWER[s.toLowerCase()];
 

@@ -32,6 +32,7 @@ export const wa = (text = "Hi RangsX, I have a question.") =>
 export const NAV = [
   { label: "Electric Fleet", href: "/dongfeng", flyout: "fleet" },
   { label: "Electric Bikes", href: "/electric-bikes", flyout: "bikes" },
+  { label: "RX Gear Shop", href: "/shop" },
   { label: "About", href: "/about" },
   { label: "Service", href: "/service" },
   { label: "Dealers", href: "/dealers" },
@@ -84,3 +85,6 @@ export const GENERAL_FAQS = [
 ];
 
 export const CONTACT_SUBJECTS = ["General Enquiry", "Fleet Purchase: Dongfeng", "Two-Wheeler Purchase: RX", "Book a Test Ride", "Service & Warranty", "Dealer / Partnership", "Press & Media"];
+
+// Warranty coverage by component: [part, years, distance]. Source: beta /service. Used on /service and /account.
+export const WARRANTY = [["Vehicle Body & Frame", 2, "40,000 km"], ["Battery Pack", 3, "60,000 km"], ["Electric Motor", 5, "80,000 km"], ["Electrical Components", 2, "40,000 km"], ["Charging System", 1, "20,000 km"]];

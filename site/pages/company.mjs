@@ -1,7 +1,7 @@
 // Company pages: /about, /service, /dealers, /contact, /privacy-policy, /terms-of-use (beta section order).
 import { html, btn, more, head, icon, pic, faq, testRide, ctaBand, crumbs, field, esc, SITE, wa, pageHero, counter, ticks } from "../lib/ui.mjs";
 import { FLEET } from "../data/fleet.mjs";
-import { GENERAL_FAQS, CONTACT_SUBJECTS } from "../data/site.mjs";
+import { GENERAL_FAQS, CONTACT_SUBJECTS, WARRANTY } from "../data/site.mjs";
 import { DEALERS, DIVISIONS } from "../data/dealers.mjs";
 import { LEGAL } from "../data/legal.mjs";
 import { MAP, project, DIVISION_SHAPES } from "../data/bd-map.mjs";
@@ -89,7 +89,6 @@ ${ctaBand({ eyebrow: "Powering Purposeful Progress", title: "Ready to drive next
 });
 
 // ---------------------------------------------------------------- Service
-const WARRANTY = [["Vehicle Body & Frame", 2, "40,000 km"], ["Battery Pack", 3, "60,000 km"], ["Electric Motor", 5, "80,000 km"], ["Electrical Components", 2, "40,000 km"], ["Charging System", 1, "20,000 km"]];
 
 const service = page("/service", "Service", {
   title: "Service & Support: EV Service Across Bangladesh",
