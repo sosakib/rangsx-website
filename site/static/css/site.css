@@ -1356,3 +1356,28 @@ a.channel:hover { box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-lg); }
   .bdmap__stage, .bdmap__legend { width: min(100%, 460px); }
 }
 @media (max-width: 639px) { .locator .dealer-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Bangla display feature (RX ZS / T60) ---------- */
+:lang(bn) { font-family: "Noto Sans Bengali", "Kohinoor Bangla", "Bangla Sangam MN", "Nirmala UI", "Vrinda", var(--font-text); }
+.bangla__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(40px, 6vw, 96px); align-items: center; }
+.bangla__copy .h2 { margin-top: 20px; }
+.bangla__copy .lead { margin-top: 20px; max-width: 44ch; }
+.bl { display: inline-grid; }
+.bl > * { grid-area: 1 / 1; transition: opacity var(--dur-4) var(--ease-out), filter var(--dur-4) var(--ease-out), transform var(--dur-4) var(--ease-out), visibility var(--dur-4); }
+.bangla .l-bn, .bangla[data-lang="bn"] .l-en { opacity: 0; visibility: hidden; filter: blur(6px); transform: translateY(6px); }
+.bangla[data-lang="bn"] .l-bn { opacity: 1; visibility: visible; filter: none; transform: none; }
+.bangla .h2 .l-bn { font-size: .8em; line-height: 1.3; letter-spacing: 0; font-stretch: 100%; }
+.bangla__toggle { display: inline-grid; grid-template-columns: 1fr 1fr; margin-top: 32px; }
+.bangla__toggle .seg__btn { min-width: 112px; min-height: 44px; }
+.bangla__toggle .seg__btn[aria-pressed="true"] { color: var(--fg); }
+.bangla__toggle .seg__pill { left: 4px; width: calc(50% - 5px); }
+.bangla[data-lang="bn"] .bangla__toggle .seg__pill { transform: translateX(calc(100% + 2px)); }
+.bangla__screen { position: relative; margin: 0; aspect-ratio: 4 / 3; border-radius: var(--r-lg); overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(60% 55% at 50% 55%, rgb(237 35 40 / .16), transparent 70%), var(--bg-card); box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-lg); }
+.bangla__screen.has-photo { background: var(--bg-card); }
+.bangla__screen img { width: 100%; height: 100%; object-fit: cover; }
+.bangla__word { text-align: center; font: 620 clamp(3rem, 2rem + 4.5vw, 6rem)/1.1 var(--font-display); font-stretch: var(--stretch); letter-spacing: -.03em; color: var(--fg); }
+.bangla__word .l-bn { letter-spacing: 0; font-weight: 600; }
+.bangla__word small { display: block; margin-top: 14px; font: 500 var(--fs-sm)/1.4 var(--font-text); letter-spacing: .02em; color: var(--fg-2); }
+.choice__more .badge { margin-right: 6px; vertical-align: 1px; }
+@media (max-width: 899px) { .bangla__grid { grid-template-columns: 1fr; } }

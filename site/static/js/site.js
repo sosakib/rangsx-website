@@ -933,4 +933,11 @@
       l.style.setProperty("--oy", (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%");
     });
   });
+
+  /* Language toggle (Bangla display section): swaps the copy between English and Bangla. */
+  $$("[data-lang-set]").forEach((b) => b.addEventListener("click", () => {
+    const sec = b.closest("[data-lang]");
+    sec.dataset.lang = b.dataset.langSet;
+    $$("[data-lang-set]", sec).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  }));
 })();

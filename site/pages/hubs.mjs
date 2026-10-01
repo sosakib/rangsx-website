@@ -36,7 +36,7 @@ const hub = ({ path, title, description, eyebrow, h1, lead, cards, more: m, imag
 <section class="section section--flush-top" aria-label="${title}">
   <div class="wrap wrap--wide">
     <div class="choice" data-stagger>${cards.map(card)}</div>
-    ${m && `<p class="choice__more" data-reveal>${m}</p>`}
+    ${m && [].concat(m).map((x) => `<p class="choice__more" data-reveal>${x}</p>`)}
   </div>
 </section>`,
   };
@@ -73,6 +73,9 @@ export default [
       { href: bikeUrl(BIKES[0]), img: "/img/bikes/zs-red", alt: "RX ZS electric bike in Racing Red", title: "RX", kicker: "Built for Bangladeshi Roads", text: "ZS, ES3, and T60: the RangsX electric two-wheeler brand, engineered for local roads and daily commutes.", tag: "", cta: "Explore RX", badge: `${BIKES.length} Models`, seed: 37 },
       { img: "/img/bikes/coming-soon", alt: "An electric bike hidden under a cover", title: "New Brand", kicker: "Still Under Wraps", text: "Another electric mobility brand joins the RangsX line-up soon. Models, specs, and launch details to follow.", badge: "Coming Soon", soon: true, seed: 41 },
     ],
-    more: `Riding gear for your RX? ${more("Shop RX Gear", "/shop")}`,
+    more: [
+      `<span class="badge badge--red" lang="bn">বাংলা</span> RX ZS and T60 speedometers now speak Bangla. ${more("See the Bangla display", "/electric-bikes/rx/zs#bangla")}`,
+      `Riding gear for your RX? ${more("Shop RX Gear", "/shop")}`,
+    ],
   }),
 ].map((p) => ({ ...p, schema: [...p.schema, { "@type": "CollectionPage", name: p.title, url: SITE.url + p.path }] }));

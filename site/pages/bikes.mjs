@@ -2,6 +2,7 @@
 // hero · lineup · details tabs · gallery · rider quiz · compare · a day on the bike · test ride · FAQ · closing CTA.
 import { html, btn, more, head, icon, pic, swatchStage, faq, testRide, ctaBand, crumbs, esc, SITE, wa, lines, skyline, tabs, gallery, ticks } from "../lib/ui.mjs";
 import { localNav } from "../lib/layout.mjs";
+import { variants } from "../lib/img.mjs";
 import { BIKES, bikeUrl, RX_STANDARD, BIKE_FAQS, RX_H1, LIFESTYLE, QUIZ, COMPARE_ROWS, DAY } from "../data/bikes.mjs";
 
 const bySlug = Object.fromEntries(BIKES.map((b) => [b.slug, b]));
@@ -32,6 +33,42 @@ const hero = (b) => html`
   </div>
 </section>`;
 
+// Bangla display: ZS and T60 (TFT models, specs.language set). Drop a photo at
+// site/static/img/bikes/bangla-display.png (or .webp, optional -<width> suffix) and rebuild: it replaces the placeholder.
+const DISPLAY_PHOTO = "/img/bikes/bangla-display";
+const hasPhoto = (() => { try { return !!variants(DISPLAY_PHOTO); } catch { return false; } })();
+// Both languages share one grid cell, so toggling crossfades without the layout jumping.
+const both = (en, bn) => `<span class="bl"><span class="l-en">${en}</span><span class="l-bn" lang="bn">${bn}</span></span>`;
+
+const bangla = (b) => html`
+<section class="section bangla" id="bangla" data-lang="en" aria-labelledby="bangla-title">
+  <div class="wrap bangla__grid">
+    <div class="bangla__copy" data-reveal>
+      <span class="badge badge--red">${both("Bangla display", "বাংলা ডিসপ্লে")}</span>
+      <h2 class="h2" id="bangla-title">${both("Your speedometer speaks Bangla.", "আপনার স্পিডোমিটার এখন বাংলায়।")}</h2>
+      <p class="lead">${both(
+        "Switch the speedometer and info display from English to Bangla, and keep <strong>Bangla as the primary language.</strong> Read your ride in the language you think in.",
+        "স্পিডোমিটার আর ইনফো ডিসপ্লের ভাষা ইংরেজি থেকে বাংলায় বদলে নিন, <strong>বাংলাকেই রাখুন প্রধান ভাষা।</strong> নিজের ভাষায় পড়ুন আপনার রাইড।")}</p>
+      <div class="seg bangla__toggle" role="group" aria-label="Display language">
+        <span class="seg__pill" aria-hidden="true"></span>
+        <button class="seg__btn" type="button" data-lang-set="en" aria-pressed="true">English</button>
+        <button class="seg__btn" type="button" data-lang-set="bn" aria-pressed="false" lang="bn">বাংলা</button>
+      </div>
+      ${ticks([
+        both("Switch between English and Bangla any time", "যেকোনো সময় ইংরেজি আর বাংলার মধ্যে বদলান"),
+        both("Set Bangla as the primary language", "বাংলাকে প্রধান ভাষা হিসেবে রাখুন"),
+        both(`Built into the ${b.fullName}'s full-colour TFT display`, `${b.fullName}-এর ফুল-কালার TFT ডিসপ্লেতেই আছে`),
+      ])}
+    </div>
+    <figure class="bangla__screen${hasPhoto ? " has-photo" : ""}" data-reveal>
+      ${hasPhoto
+        ? pic(DISPLAY_PHOTO, { alt: `${b.fullName} speedometer showing Bangla`, sizes: "(min-width: 900px) 50vw, 92vw" })
+        : `<!-- Photo slot: add site/static/img/bikes/bangla-display.png and rebuild. -->
+      <div class="bangla__word" aria-hidden="true">${both("English", "বাংলা")}<small>${both("Display language", "ডিসপ্লের ভাষা")}</small></div>`}
+    </figure>
+  </div>
+</section>`;
+
 const lineup = (cur) => html`
 <section class="section" id="lineup" aria-labelledby="lineup-title">
   <div class="wrap">
@@ -58,8 +95,8 @@ const lineup = (cur) => html`
 
 const specRows = (b) => [
   ["Motor", b.specs.motor], ["Range", b.specs.range], ["Top speed", b.specs.topSpeed], ["Battery", b.specs.battery],
-  ["Tyres", b.specs.tyre], ["Display", b.specs.display], ["Brakes", b.specs.brakes], ["Wheels", b.specs.wheels], ["Charger", b.specs.charger],
-];
+  ["Tyres", b.specs.tyre], ["Display", b.specs.display], ["Display language", b.specs.language], ["Brakes", b.specs.brakes], ["Wheels", b.specs.wheels], ["Charger", b.specs.charger],
+].filter(([, v]) => v);
 
 const details = (b) => html`
 <section class="section section--elev" id="overview" aria-labelledby="details-title">
@@ -196,7 +233,7 @@ export default BIKES.map((b) => {
       title: `RX ${b.name}`,
       href: bikeUrl(b),
       switcher: BIKES.map((x) => [x.name, bikeUrl(x), x === b]),
-      links: [["Overview", "overview"], ["Gallery", "gallery"], ["Compare", "compare"], ["FAQ", "faq"]],
+      links: [...(b.specs.language ? [["Bangla display", "bangla"]] : []), ["Overview", "overview"], ["Gallery", "gallery"], ["Compare", "compare"], ["FAQ", "faq"]],
       cta: ["Book Test Ride", "#test-ride-form"],
     }),
     schema: [
@@ -217,6 +254,7 @@ export default BIKES.map((b) => {
     body: html`
 ${c.html}
 ${hero(b)}
+${b.specs.language && bangla(b)}
 ${lineup(b)}
 ${details(b)}
 ${gal(b)}

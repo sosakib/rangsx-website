@@ -25,7 +25,7 @@ export const BIKES = [
       { id: "red", label: "Racing Red", swatch: "#B0141F", img: "/img/bikes/zs-red" },
       { id: "yellow", label: "Solar Yellow", swatch: "#F2C200", img: "/img/bikes/zs-yellow" },
     ],
-    specs: { ...shared, tyre: "110/70-12", display: "Full-colour TFT" },
+    specs: { ...shared, tyre: "110/70-12", display: "Full-colour TFT", language: "English and Bangla" },
     points: [
       "1500W motor tuned for city acceleration",
       "90-100 km range on a single charge",
@@ -73,7 +73,7 @@ export const BIKES = [
       { id: "olive", label: "Olive Green", swatch: "#6E7A56", img: "/img/bikes/t60-olive" },
       { id: "lavender", label: "Lavender", swatch: "#C6BAD9", img: "/img/bikes/t60-lavender" },
     ],
-    specs: { ...shared, tyre: "110/70-12", display: "Full-colour TFT" },
+    specs: { ...shared, tyre: "110/70-12", display: "Full-colour TFT", language: "English and Bangla" },
     points: [
       "1500W motor with a long, planted wheelbase",
       "90-100 km range on a single charge",

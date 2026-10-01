@@ -148,3 +148,10 @@ Cause: frames were 3 source frames apart and the canvas crossfaded them, includi
 
 ## Open questions
 - Production domain for canonicals (assumed https://rangsx.com).
+
+## Round 11 (1 Oct 2026): Bangla display feature
+- [x] `/electric-bikes/rx/zs` and `/t60`: new "Bangla display" section right after the hero (`#bangla`), English / বাংলা
+      toggle that crossfades the copy in place, photo slot, local-nav link, "Display language" spec row.
+- [x] `/electric-bikes` hub: signpost line linking to the section.
+- [ ] Photo: save it as `site/static/img/bikes/bangla-display.png` (or `.webp`), run start.bat. It replaces the placeholder.
+- [ ] Confirm: ES3 (LED cluster) left out on purpose. Bangla copy to be proofread by the team.
