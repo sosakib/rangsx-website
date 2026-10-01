@@ -10,9 +10,12 @@ Static rebuild of beta.rangsx.com with the same URL tree. No framework, no runti
 It builds the site, starts a local server at http://localhost:4321 (or the next free port) and opens your
 browser. It also prints a network address so phones on the same Wi-Fi can open the site. Press Ctrl+C to stop.
 Options: `--port 5000`, `--no-open`, `--no-build`. Needs Node.js 20+ (https://nodejs.org), nothing else.
+`rangsx.ico` is the icon for a Windows desktop shortcut to `start.bat`.
 
 ## Versions
-- `main`: the current site (homepage opening scrubbed from the intro film, audited 27 Sep 2026).
+- `main`: the current site (homepage opening scrubbed from the intro film, audited 27 Sep 2026; film
+  smoothed 29 Sep: no jump at the end of the scroll, no freeze on fast scrolls).
+- Tag `v5-ghost-free`: film frames taken from the full 60 fps source. Tag `v4-hd-film`: 1080p film, gliding scroll.
 - Tag `v3-video-intro`: first version of the film opening. Tag `v2-photo-intro`: the Dhaka-photo opening.
 - Tag `v1-before-homepage-intro`: the site before any homepage scroll intro. A standalone copy lives in
   `..\RangsX-Web-v1-before-homepage-intro\` (run its `start.bat`). Go back with `git switch --detach <tag>`.
