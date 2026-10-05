@@ -38,7 +38,7 @@
     kept() { try { return !!localStorage.getItem(SESS); } catch { return false; } },
   };
   window.RXAccount = acct;
-  const acctHome = (BN ? "/bn" : "") + "/account";
+  const acctHome = (BN ? "/bn/" : "/") + "account";
   const initial = (name = "") => (name.trim()[0] || "R").toUpperCase();
   const syncAcctLink = () => {
     const u = acct.signedIn() && acct.get().user;
@@ -106,7 +106,7 @@
     d.cart = cart;
     if (!acct.save(d)) return;
     syncBag();
-    const home = (BN ? "/bn" : "") + "/checkout";
+    const home = (BN ? "/bn/" : "/") + "checkout";
     if (b.hasAttribute("data-add-go")) location.href = home;
     else toast(T(`Added to your basket. <a href="${home}">Checkout</a>`, `বাস্কেটে যোগ হয়েছে। <a href="${home}">চেকআউট</a>`));
   });

@@ -2,7 +2,7 @@
 // Every module in site/pages exports default: a page object, an array of them, or a function returning either.
 // Page object: { path, title, description, body, image?, schema?, localNav?, css?, js?, noindex?, bodyClass? }
 import { readdirSync, mkdirSync, writeFileSync, cpSync, rmSync, existsSync, statSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, extname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { layout } from "./lib/layout.mjs";
 import { SITE } from "./data/site.mjs";
@@ -90,3 +90,15 @@ if (missing.size) {
 } else rmSync(join(here, "i18n", "missing.txt"), { force: true });
 if (problems.length) console.log("\nChecks:\n  " + [...new Set(problems)].join("\n  "));
 else console.log("Checks: all links resolve, one h1 per page, no en/em dashes.");
+
+// GitHub Pages serves this repo under /rangsx-website/: BASE=/rangsx-website prefixes every root path (after the checks).
+// ponytail: text rewrite of "/..." in html/css/js; on a custom domain or Vercel, build without BASE.
+const BASE = process.env.BASE || "";
+if (BASE) {
+  const fix = { html: /(=["']|, |["'`])\/(?=[a-z0-9#?"'])/g, css: /(url\(["']?)\/(?=[a-z])/g, js: /(["'`])\/(?=[a-z"'`])/g };
+  for (const f of readdirSync(dist, { recursive: true })) {
+    const re = fix[extname(f).slice(1)];
+    if (re) writeFileSync(join(dist, f), readFileSync(join(dist, f), "utf8").replace(re, `$1${BASE}/`));
+  }
+  console.log(`Prefixed root paths with ${BASE}`);
+}

@@ -5,7 +5,7 @@
   const RX = window.RXAccount, app = document.querySelector("[data-co]");
   if (!RX || !app) return;
   const $ = (s, r = app) => r.querySelector(s), $$ = (s, r = app) => [...r.querySelectorAll(s)];
-  const BN = document.documentElement.lang.startsWith("bn"), T = (en, bn) => (BN ? bn : en), PRE = BN ? "/bn" : "";
+  const BN = document.documentElement.lang.startsWith("bn"), T = (en, bn) => (BN ? bn : en), PRE = (BN ? "/bn/" : "/").slice(0, -1);
   const DATA = JSON.parse($("#co-data").textContent), CAT = DATA.catalog;
   const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const tk = (n) => "৳ " + Math.round(n).toLocaleString("en-US");

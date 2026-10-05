@@ -8,7 +8,7 @@
   const $$ = (s, r = app) => [...r.querySelectorAll(s)];
   const BN = document.documentElement.lang.startsWith("bn");
   const T = (en, bn) => (BN ? bn : en);
-  const PRE = BN ? "/bn" : "";
+  const PRE = (BN ? "/bn/" : "/").slice(0, -1);
   const DATA = JSON.parse($("#acct-data").textContent);
   const CAT = DATA.catalog;
   const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);

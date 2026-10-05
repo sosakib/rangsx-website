@@ -285,3 +285,13 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       showroom pickup still works, no console errors. Build checks pass, no missing Bangla.
 - [ ] Not tested on a real phone (iPhone Safari video scrubbing especially).
 - [ ] Bangla copy needs a native editor's proofread (legal pages especially).
+
+## Round 18 (5 Oct 2026): live on GitHub Pages
+- [x] Repo made public; GitHub Pages serves the `gh-pages` branch at https://sosakib.github.io/rangsx-website/
+- [x] `./deploy-pages.sh` (Git Bash) builds with `BASE=/rangsx-website` and force-pushes `dist/` to `gh-pages`.
+      The build prefixes every root path (html, css, js) only when BASE is set; normal builds are unchanged.
+      Client JS now builds its `/bn` prefix as one string so the rewrite covers both languages.
+- [x] Verified the BASE build served under /rangsx-website/: 51 pages + 110 assets load and stay under the base,
+      CSS fonts load, Book online -> checkout -> pay -> View my orders works in EN and BN, no console errors.
+      Root build re-tested: checkout suite still passes.
+- Note: an Actions auto-deploy needs the `workflow` scope on this PC's GitHub login (`gh auth refresh -s workflow`).
