@@ -237,3 +237,6 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       measured 0.0 px off at all widths. Nav links 14 -> 16 px (15 px under 1400, 14 px under 1140), 44 px targets.
 - [x] Fit checked 1920 to 360 px, English and Bangla, dark and light: no overlaps, no overflow; homepage film,
       product sub-nav and mobile menu offsets follow the new height.
+- [x] Browser tab icon: the RX logo (R + X with swoosh, from `Downloads\11. RX Logo`) replaces the lone X.
+      `favicon.svg` follows the browser theme (black R on light tabs, white R on dark tabs); `icon-48.png` fallback;
+      `apple-touch-icon.png` is white R + red X on black.
