@@ -51,7 +51,6 @@ writeFileSync(
     .join("\n")}\n</urlset>\n`
 );
 writeFileSync(join(dist, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE.url}/sitemap.xml\n`);
-writeFileSync(join(dist, "vercel.json"), JSON.stringify({ cleanUrls: true, trailingSlash: false }, null, 2));
 
 // Checks: broken internal links / assets, and the house-style dash ban in visible text.
 const problems = [];

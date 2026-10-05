@@ -29,8 +29,10 @@ node site/build.mjs   # writes dist/ and runs link / heading / dash checks
 ```
 
 ## Deploy
-`dist/` is plain HTML/CSS/JS. Vercel (a `vercel.json` with clean URLs is emitted), Netlify, Cloudflare
-Pages, S3 or nginx all work. Before going live:
+Live preview: https://sosakib.github.io/rangsx-website/ (GitHub Pages, `gh-pages` branch). Publish with
+`./deploy-pages.sh` from Git Bash; it builds with `BASE=/rangsx-website` (prefixes every root path) and
+force-pushes `dist/` to `gh-pages`. `dist/` is plain HTML/CSS/JS, so any static host works; build without
+`BASE` for a host that serves the site at the domain root. Before going live on rangsx.com:
 - Set `SITE.url` in `site/data/site.mjs` to the production origin (canonicals, sitemap, OG URLs).
 - Set `SITE.formEndpoint` to a real form backend (Formspree, a Next.js route, etc.). Until then, forms
   validate and then open WhatsApp with the message pre-filled.
@@ -45,7 +47,8 @@ site/
   lib/               layout (head, nav, footer), ui helpers, responsive images, Phosphor icons
   pages/             one module per route (or one template module per product family)
   static/            css/site.css (design system), js/site.js (behaviours), fonts, images, icons
-_research/           crawl of the live site, extracted text + structured data, source assets
+_research/           crawl of the live site: the source of truth for facts and specs, source assets, map script
+AGENTS.md            start here if you are an AI agent continuing this work
 ```
 
 ## Design decisions
@@ -53,8 +56,8 @@ _research/           crawl of the live site, extracted text + structured data, s
   #000000 stage, white type, brand grey #BCBEC0 for secondary text, red #ED2328 for accents (#D41E25 on buttons so
   white labels pass WCAG AA). Light theme from the header toggle: white page, black type, grey glows.
 - **Type (p.37):** LEMON MILK (all caps) for headlines and hero numbers, Poppins for everything else, Li Ador
-  Noirrit for Bangla. All self-hosted in `site/static/fonts`. LEMON MILK is free for personal use only: confirm
-  RangsX holds a commercial licence (donation to Marsnev, or Lemon Milk Pro) before launch. Li Ador Noirrit
+  Noirrit for Bangla. All self-hosted in `site/static/fonts`. LEMON MILK: the client confirmed RangsX holds a
+  commercial licence (5 Oct 2026). Li Ador Noirrit
   (Lipighor) asks for a credit, shown in the footer of the Bangla pages.
 - **Taglines:** "Drive Next" and "Electromobility" for RangsX, "Ride Beyond" for RX bikes only (p.15-18); they
   stay in English on the Bangla pages, as do model names and units.

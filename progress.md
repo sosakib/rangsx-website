@@ -295,3 +295,13 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       CSS fonts load, Book online -> checkout -> pay -> View my orders works in EN and BN, no console errors.
       Root build re-tested: checkout suite still passes.
 - Note: an Actions auto-deploy needs the `workflow` scope on this PC's GitHub login (`gh auth refresh -s workflow`).
+
+## Round 19 (5 Oct 2026): dead files out, agent handoff doc
+- [x] Deleted (unreferenced by any page, style, script or doc): 24 unused images (old brand lockups and PNG logos,
+      rx-mark.svg, EM-26 studio and front-quarter-b sets, scooter-hero, life detail-4), the stale
+      `HOMEPAGE-PLAN.md` ("nothing built yet"), scroll-craft verify screenshots/scripts and its FINGERPRINTS.md,
+      and the build's `vercel.json` (deploys go to GitHub Pages). Kept `_research/` (source of truth for facts,
+      map generator) and `rangsx.ico` (desktop shortcut icon). All recoverable from git history.
+- [x] `AGENTS.md`: the map for any AI agent continuing the work (`CLAUDE.md` imports it). README deploy section
+      and Lemon Milk licence note updated.
+- [x] Verified: build checks clean (every src/srcset still resolves); redeployed and the live crawl passes.

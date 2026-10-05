@@ -1,6 +1,6 @@
 # Product
 
-Derived from the client's own words in `scrollcraft/builds/rangsx-home/BRIEF.md`, `HOMEPAGE-PLAN.md` and
+Derived from the client's own words in `scrollcraft/builds/rangsx-home/BRIEF.md` and
 `progress.md` (22-27 Sep 2026). Edit freely; every design task reads this first.
 
 ## Register
