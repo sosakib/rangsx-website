@@ -44,7 +44,17 @@ const server = createServer(async (req, res) => {
   if (!file) { file = join(dist, "404.html"); status = 404; }
   try {
     const body = await readFile(file);
-    res.writeHead(status, { "Content-Type": TYPES[extname(file).toLowerCase()] || "application/octet-stream", "Cache-Control": "no-cache" });
+    const head = { "Content-Type": TYPES[extname(file).toLowerCase()] || "application/octet-stream", "Cache-Control": "no-cache", "Accept-Ranges": "bytes" };
+    // Byte ranges, so the streamed homepage film can seek before it has fully downloaded.
+    const m = status === 200 && /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+    if (m && (m[1] || m[2])) {
+      const start = m[1] ? +m[1] : Math.max(0, body.length - +m[2]), end = m[1] && m[2] ? Math.min(+m[2], body.length - 1) : body.length - 1;
+      if (start > end || start >= body.length) { res.writeHead(416, { "Content-Range": `bytes */${body.length}` }).end(); return; }
+      res.writeHead(206, { ...head, "Content-Range": `bytes ${start}-${end}/${body.length}`, "Content-Length": end - start + 1 });
+      res.end(req.method === "HEAD" ? undefined : body.subarray(start, end + 1));
+      return;
+    }
+    res.writeHead(status, head);
     res.end(req.method === "HEAD" ? undefined : body);
   } catch {
     res.writeHead(500).end("Server error");

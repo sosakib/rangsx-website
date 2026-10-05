@@ -473,21 +473,24 @@
 
     // The film is the source video itself: every one of its 600 frames at the full 1920x1080, re-encoded only so it
     // seeks fast (a keyframe every 4 frames, no B-frames, visually lossless against the source). The browser's video
-    // decoder paints each frame, so nothing is sampled, downscaled or blended. It loads as a blob, so a seek never
-    // waits on the network. One seek in flight at a time; when it lands, the next one chases wherever the scroll is.
+    // decoder paints each frame, so nothing is sampled, downscaled or blended. It streams: the film follows the scroll
+    // as soon as the first frames arrive (31 MB would otherwise freeze it on the poster for the whole download), and a
+    // jump ahead fetches just that part of the file. One seek in flight; when it lands, the next one chases the scroll.
     const V = L.video;
     let fNow = 0, asked = -1, seekAt = 0, live = false, primed = false;
     const seek = () => {
       if (!live) return;
-      if (V.seeking) { // a seek can stall (iOS): re-issue one stuck past 700 ms rather than freeze
-        if (performance.now() - seekAt > 700) { seekAt = performance.now(); V.currentTime = (asked + 0.5) / FPS; }
+      const f = Math.min(LAST, Math.max(0, Math.round(fNow)));
+      if (V.seeking) {
+        // A seek waiting on the network: after 700 ms retarget it to where the scroll is now. One stuck with its data
+        // already here (iOS can stall): re-issue it. Otherwise let it land rather than restart the download.
+        if (performance.now() - seekAt > 700 && (f !== asked || has(asked))) go(f);
         return;
       }
-      const f = Math.min(LAST, Math.max(0, Math.round(fNow)));
-      if (f === asked) return;
-      asked = f; seekAt = performance.now();
-      V.currentTime = (f + 0.5) / FPS; // mid-frame, so rounding never lands on a neighbour
+      if (f !== asked) go(f);
     };
+    const go = (f) => { asked = f; seekAt = performance.now(); V.currentTime = (f + 0.5) / FPS; }; // mid-frame: never a neighbour
+    const has = (f) => { const t = (f + 0.5) / FPS, b = V.buffered; for (let i = 0; i < b.length; i++) if (t >= b.start(i) && t <= b.end(i)) return true; return false; };
     V.addEventListener("seeked", () => { L.film.classList.add("is-ready"); seek(); });
     // iOS paints nothing until a muted video has played once: prime it, and retry on touch if the first try is refused.
     const prime = () => {
@@ -498,13 +501,17 @@
     addEventListener("touchend", prime, { passive: true });
     addEventListener("pointerdown", prime, { passive: true });
     V.muted = true;
-    fetch(V.dataset.src, { priority: "low" }).then((r) => (r.ok ? r.blob() : Promise.reject())).then((b) => {
-      V.addEventListener("loadeddata", () => {
-        live = true; prime(); seek();
-        setTimeout(() => L.film.classList.add("is-ready"), 2500); // never only on 'seeked'
-      }, { once: true });
-      V.src = URL.createObjectURL(b);
-    }, () => {}); // no film: the poster stays, the layers still move
+    V.addEventListener("loadeddata", () => {
+      live = true; prime(); seek();
+      setTimeout(() => L.film.classList.add("is-ready"), 2500); // never only on 'seeked'
+    }, { once: true });
+    V.preload = "auto"; // the whole film, in the background, so later seeks are local
+    // Streaming needs the host to serve byte ranges (every real host does; some bare local servers do not, and there a
+    // streamed video stalls). Ask for two bytes: a 206 means stream it; a 200 is the whole file, so keep that download
+    // and scrub it from memory. No film at all (error): the poster stays, the layers still move.
+    fetch(V.dataset.src, { headers: { Range: "bytes=0-1" } })
+      .then((r) => (r.status === 206 ? V.dataset.src : r.ok ? r.blob().then((b) => URL.createObjectURL(b)) : Promise.reject()))
+      .then((src) => (V.src = src), () => {});
 
     let H = 1, top0 = 0, travel = 1, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
     const measure = () => {

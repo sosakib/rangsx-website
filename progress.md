@@ -252,3 +252,8 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       can only guess where the film's beam lands, and the film is cropped differently on every screen shape, so it
       drifted off the background. The film's own beam now carries that moment on every screen. Desktop, phone and
       reduced motion re-shot, no errors, 6/6 homepage checks.
+- [x] Fix (5 Oct): the film stayed on the poster until all 31 MB had downloaded (reported as "the background
+      animation is not working"; on a simulated 10 Mbps line it was still frozen after 20 s). It now streams: the film
+      follows the scroll within ~4 s even at 4 Mbps, and a jump ahead fetches only that part of the file. A two-byte
+      probe picks the mode: hosts with byte ranges (all real hosts) stream; a bare server without them downloads the
+      file once and scrubs from memory. `serve.mjs` now serves byte ranges. Frame accuracy and smoothness unchanged.
