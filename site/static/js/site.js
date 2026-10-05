@@ -438,8 +438,8 @@
      Scroll is mapped to what happens on screen, not to clock time (measured from the pixels of the film):
        p .00-.05  hold          film 0.0 s        read the headline
        p .05-.34  warp          film 0.0-2.7 s    the headline parts with the light trails
-       p .34-.52  slow-down     film 2.7-4.9 s    the red bar flies to the horizon and stands upright
-       p .52-.60  ignition      film 4.9-5.6 s    the bar hands over to the film's own beam
+       p .34-.52  slow-down     film 2.7-4.9 s    the trails settle into the showroom
+       p .52-.60  ignition      film 4.9-5.6 s    the film's beam ignites
        p .60-.70  floor line    film 5.6-6.8 s    the chooser layer fades in, the van sets off
        p .70-.84  chevrons      film 6.8-7.7 s    peak: the van and the scooter land
        p .84-1    settle        film 7.7-10 s     chooser copy, then it goes live */
@@ -470,7 +470,6 @@
     const KNOTS = [[0, 0], [0.05, 0], [0.34, 2.7], [0.52, 4.9], [0.6, 5.6], [0.7, 6.8], [0.84, 7.7], [1, 10]];
     const seconds = (p) => { for (let i = 1; i < KNOTS.length; i++) if (p <= KNOTS[i][0]) { const [p0, t0] = KNOTS[i - 1], [p1, t1] = KNOTS[i]; return mix(t0, t1, (p - p0) / (p1 - p0)); } return 10; };
     const FPS = 60, LAST = 599;
-    const BEAM = [0.5, 0.69]; // where the film's beam ignites, as a share of the frame (measured)
 
     // The film is the source video itself: every one of its 600 frames at the full 1920x1080, re-encoded only so it
     // seeks fast (a keyframe every 4 frames, no B-frames, visually lossless against the source). The browser's video
@@ -507,20 +506,16 @@
       V.src = URL.createObjectURL(b);
     }, () => {}); // no film: the poster stays, the layers still move
 
-    let W = 1, H = 1, top0 = 0, travel = 1, bar = 0, beamY = 0, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
-    const offsetIn = (el) => { let y = 0; for (let e = el; e && e !== L.stage; e = e.offsetParent) y += e.offsetTop; return y; };
+    let H = 1, top0 = 0, travel = 1, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
     const measure = () => {
-      W = L.stage.clientWidth; H = L.stage.clientHeight;
+      H = L.stage.clientHeight;
       top0 = op.getBoundingClientRect().top + scrollY;
       travel = Math.max(1, op.offsetHeight - H);
-      bar = offsetIn(L.slot) + L.slot.offsetHeight / 2;
-      const s = Math.max(W / 1920, H / 1080); // object-fit: cover
-      beamY = (H - 1080 * s) / 2 + BEAM[1] * 1080 * s;
     };
 
     const render = (p) => {
       const ph = phone.matches;
-      const split1 = easeMove(seg(p, 0.05, 0.3)), fly = easeMove(seg(p, 0.34, 0.52));
+      const split1 = easeMove(seg(p, 0.05, 0.3));
       const van = easeOut(seg(p, 0.6, 0.82)), bike = easeOut(seg(p, 0.64, 0.86)), settle = easeOut(seg(p, 0.8, 0.97));
       // Film: the playhead follows the scroll (seeked in tick); a touch of pointer depth on desktop.
       fNow = seconds(p) * FPS;
@@ -532,8 +527,6 @@
       // The lead and buttons travel with the lower line (on phones it moves down into them), fading first.
       set(L.below, ph ? `translate3d(0, ${split1 * 14}svh, 0)` : `translate3d(0, ${split1 * 40}px, 0)`, 1 - seg(split1, 0, 0.35));
       L.shade.style.opacity = 1 - seg(p, 0.08, 0.36);
-      // The red bar flies to the horizon, stands upright, and hands over to the film's beam as it ignites.
-      set(L.line, `translate3d(0, ${mix(bar - H / 2, beamY - H / 2, fly)}px, 0) rotate(${mix(90, 0, fly)}deg) scaleY(${mix(120, 28, fly) / H})`, 1 - seg(p, 0.52, 0.58));
       // Chooser: fades in with the floor line; the van and the scooter land as the chevrons light up.
       L.landing.style.opacity = seg(p, 0.6, 0.72);
       set(L.van, `translate3d(${mix(-62, 0, van)}vw, 0, 0) rotate(${Math.sin(Math.PI * seg(van, 0.72, 1)) * 1.1}deg)`, seg(van, 0, 0.2));

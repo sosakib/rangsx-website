@@ -1,6 +1,6 @@
 // Home. Opening scene: the client's intro film (red light trails at warp speed), scrubbed frame by frame by the
-// scroll. The film slows into the showroom; the red bar under the headline flies to the horizon and hands over to
-// the film's beam as it ignites; the van and the scooter land as the chevrons light up; then the beta's chooser.
+// scroll. The film slows into the showroom and its own beam ignites; the van and the scooter land as the chevrons
+// light up; then the beta's chooser.
 // Film: site/static/video/intro.mp4 (the source, every frame, re-encoded for scrubbing). Motion: site.js ("Home opening"). No JS or reduced motion: the scenes stack.
 import { html, btn, pic, SITE } from "../lib/ui.mjs";
 
@@ -38,7 +38,6 @@ const body = html`
             </div>
           </div>
         </div>
-        <i class="opening__slot" data-l="slot" aria-hidden="true"></i>
       </div>
     </div>
     <section class="landing" data-landing data-l="landing" aria-label="Choose a vehicle type">
@@ -64,7 +63,6 @@ const body = html`
       </div>
       <p class="landing__badge" data-l="badge" aria-hidden="true"><span>Drive Next</span><small><b>E</b>lectromobility</small></p>
     </section>
-    <i class="opening__line" data-l="line" aria-hidden="true"><i></i></i>
   </div>
 </section>`;
 

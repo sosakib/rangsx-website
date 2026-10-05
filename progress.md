@@ -248,3 +248,7 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       size ratio kept (52vw : 36vw); vehicles drive in from the sides as on desktop.
 - [x] Checked 360x780, 375x667, 390x844, 430x932, 700x900, Bangla, light theme, reduced motion (static backdrop):
       no overlaps, no sideways overflow, no errors; 6/6 homepage interaction checks.
+- [x] Removed the floating red bar under the opening's buttons (and its fly-to-the-horizon animation): an overlay
+      can only guess where the film's beam lands, and the film is cropped differently on every screen shape, so it
+      drifted off the background. The film's own beam now carries that moment on every screen. Desktop, phone and
+      reduced motion re-shot, no errors, 6/6 homepage checks.
