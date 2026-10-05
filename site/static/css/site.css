@@ -803,25 +803,30 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
   .landing:has(.landing__side--fleet:hover, .veh--van:hover) .veh--van img, .landing:has(.landing__side--bikes:hover, .veh--bike:hover) .veh--bike img { transform: scale(1.05); }
   .landing:has(.landing__side--fleet:hover, .veh--van:hover) .veh--van .veh__in::before, .landing:has(.landing__side--bikes:hover, .veh--bike:hover) .veh--bike .veh__in::before { opacity: 1; transform: scaleX(1.2); }
 }
-/* Phone: the line lies across the screen; van above it, scooter below. Everything fits one screen. */
+/* Phone: the desktop composition, portrait. Copy on the sides (fleet left, bikes right), both vehicles standing on the
+   floor either side of the beam with their reflections, the tagline at the foot. Sizes keep desktop's van:scooter ratio. */
 @media (max-width: 767px) {
   .opening { --travel: 120svh; }
-  .landing { grid-template-columns: 1fr; align-content: center; justify-items: center; row-gap: 10px; padding: calc(var(--gnav-h) + 8px) 20px 20px; text-align: center; }
   .landing__bg img { object-position: 50% 50%; }
-  .landing__kicker, .landing__badge, .veh__refl { display: none; }
-  .landing__stage { display: contents; }
-  .landing__side { position: relative; left: auto !important; right: auto !important; top: auto; translate: none; width: auto; text-align: center; }
-  .landing__side h2 { font-size: 1.75rem; }
-  .landing__side p, .landing__side--bikes p { margin: 8px auto 0; }
-  .landing__side .btn { margin-top: 12px; }
-  .veh { position: relative; left: auto; right: auto; bottom: auto; }
-  .landing__side--fleet { grid-row: 1; }
-  .veh--van { grid-row: 2; width: min(66vw, 280px); }
-  .veh--bike { grid-row: 3; width: min(44vw, 200px); margin-top: 34px; }
-  .landing__side--bikes { grid-row: 4; }
-  .landing__flash { top: 30%; bottom: auto; height: 40%; left: 0; right: 0; }
+  .landing__kicker { top: calc(var(--gnav-h) + 18px); font-size: .6875rem; letter-spacing: .24em; }
+  /* The two copy blocks share one row: titles on the same line (both break before "EVs"), buttons on the same line. */
+  .landing { grid-template-columns: 1fr 1fr; align-content: start; column-gap: 20px; padding: 21svh 16px 0; }
+  .landing__side { position: relative; top: auto; left: auto !important; right: auto !important; translate: none; width: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .landing__side--bikes { align-items: flex-end; }
+  .landing__side h2 { font-size: 1.375rem; line-height: 1.02; }
+  .landing__side h2 .nw { display: block; }
+  .landing__side p { margin: 0 0 6px; font-size: .8125rem; line-height: 1.45; }
+  .landing__side h2 { margin-bottom: 6px; }
+  .landing__side .btn { margin-top: auto; min-height: 40px; padding: 0 14px; font-size: .8125rem; }
+  .veh { bottom: 24%; }
+  .veh--van { left: 1vw; width: 52vw; }
+  .veh--bike { right: 6vw; width: 36vw; bottom: 23.5%; }
+  .veh__in::before { opacity: .5; }
+  .landing__flash { left: 0; right: 0; bottom: 8%; height: 34%; }
+  .landing__badge { bottom: max(14px, 2.4svh); padding: 9px 18px; }
+  .landing__badge span { font-size: .6875rem; }
 }
-@media (max-width: 767px) and (max-height: 760px) { .landing__side p { display: none; } }
+@media (max-width: 767px) and (max-height: 760px) { .landing__side p { display: none; } .landing { padding-top: 24svh; } }
 
 /* ==========================================================================
    Hub pages (Electric Fleet, Electric Bikes): two big choice cards

@@ -240,3 +240,11 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [x] Browser tab icon: the RX logo (R + X with swoosh, from `Downloads\11. RX Logo`) replaces the lone X.
       `favicon.svg` follows the browser theme (black R on light tabs, white R on dark tabs); `icon-48.png` fallback;
       `apple-touch-icon.png` is white R + red X on black.
+
+## Round 15 (5 Oct 2026): phone chooser, vehicles side by side on the floor
+- [x] Phone homepage chooser now follows the desktop composition instead of a vertical stack: copy in two columns
+      (Four-Wheeler left, Two-Wheeler right; titles and buttons share a line), the van and scooter standing on the
+      floor either side of the beam with reflections, "Drive Next / Electromobility" at the foot. Desktop's van:scooter
+      size ratio kept (52vw : 36vw); vehicles drive in from the sides as on desktop.
+- [x] Checked 360x780, 375x667, 390x844, 430x932, 700x900, Bangla, light theme, reduced motion (static backdrop):
+      no overlaps, no sideways overflow, no errors; 6/6 homepage interaction checks.
