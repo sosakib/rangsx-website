@@ -9,6 +9,9 @@ import { bnPath } from "./i18n.mjs";
 
 const logo = (cls = "") =>
   `<span class="logo ${cls}"><img class="logo--on-dark" src="/img/brand/rangsx-on-dark.webp" width="480" height="205" alt="RangsX Electromobility"><img class="logo--on-light" src="/img/brand/rangsx-on-light.webp" width="480" height="205" alt="" aria-hidden="true"></span>`;
+// Header: the wordmark without the category line (the footer keeps the full lockup).
+const wordmark = () =>
+  `<span class="logo logo--bar"><img class="logo--on-dark" src="/img/brand/rangsx-wordmark-on-dark.webp" width="429" height="156" alt="RangsX"><img class="logo--on-light" src="/img/brand/rangsx-wordmark-on-light.webp" width="429" height="156" alt="" aria-hidden="true"></span>`;
 
 const isActive = (path, item) =>
   item.flyout === "fleet"
@@ -46,7 +49,7 @@ function header(path) {
 <a class="skip" href="#main">Skip to content</a>
 <header class="gnav" data-gnav>
   <div class="gnav__bar wrap wrap--wide">
-    <a class="gnav__logo" href="/" aria-label="RangsX home">${logo()}</a>
+    <a class="gnav__logo" href="/" aria-label="RangsX home">${wordmark()}</a>
     <nav class="gnav__nav" aria-label="Primary"><ul>${items}</ul></nav>
     <div class="gnav__tools">
       <a class="gnav__hotline" href="tel:${SITE.hotline}" aria-label="Call hotline ${SITE.hotline}">${icon("phone")}<span>${SITE.hotline}</span></a>

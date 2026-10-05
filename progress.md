@@ -228,3 +228,12 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       interaction checks, desktop/phone/reduced-motion sheets, Bangla homepage loads the film, no console errors.
 - [ ] Real phone check (iOS Safari video scrubbing cannot be reproduced headless). 31 MB on mobile data is the cost
       of full quality; the poster shows until it arrives.
+
+## Round 14 (5 Oct 2026): taller header, new logo
+- [x] Header 56 -> 80 px (phones 64 px). Logo: the supplied RANGSX wordmark without the category line
+      (`img/brand/rangsx-wordmark-on-dark|on-light.webp`, 3x); the footer keeps the full lockup with "Electromobility".
+- [x] Logo 52 px tall (letters ~23 px, near the brand book's 24 px minimum); 40 px on phones, 36 px under 380 px.
+- [x] Every header item is centred on the wordmark's letters, not the logo box (the swoosh rises above them):
+      measured 0.0 px off at all widths. Nav links 14 -> 16 px (15 px under 1400, 14 px under 1140), 44 px targets.
+- [x] Fit checked 1920 to 360 px, English and Bangla, dark and light: no overlaps, no overflow; homepage film,
+      product sub-nav and mobile menu offsets follow the new height.
