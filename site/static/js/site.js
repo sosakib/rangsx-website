@@ -433,9 +433,9 @@
     });
   }
 
-  /* ---------- Home opening: the intro film, scrubbed frame by frame by the scroll ----------
+  /* ---------- Home opening: the intro film, scrubbed frame by frame by the scroll (every frame, full resolution) ----------
      One eased progress value p (0..1) across the pinned travel drives the film's playhead and every layer.
-     Scroll is mapped to what happens on screen, not to clock time (measured from the pixels, _research/hero/frames.py):
+     Scroll is mapped to what happens on screen, not to clock time (measured from the pixels of the film):
        p .00-.05  hold          film 0.0 s        read the headline
        p .05-.34  warp          film 0.0-2.7 s    the headline parts with the light trails
        p .34-.52  slow-down     film 2.7-4.9 s    the red bar flies to the horizon and stands upright
@@ -466,98 +466,46 @@
     const set = (el, transform, opacity) => { el.style.transform = transform; if (opacity !== undefined) el.style.opacity = opacity; };
     const phone = matchMedia("(max-width: 767px)");
 
-    // Film timing: scroll -> seconds (knots above) -> a position in the frame set. The frames were sampled adaptively
-    // from the 60 fps source (dense where the picture changes fast, sparse where it is calm; see frames.py), so each
-    // set lists the source frame numbers it kept and `pos` maps every source frame onto a fractional frame index.
+    // Film timing: scroll -> seconds (knots above) -> a frame of the source film (60 fps, 600 frames).
     const KNOTS = [[0, 0], [0.05, 0], [0.34, 2.7], [0.52, 4.9], [0.6, 5.6], [0.7, 6.8], [0.84, 7.7], [1, 10]];
     const seconds = (p) => { for (let i = 1; i < KNOTS.length; i++) if (p <= KNOTS[i][0]) { const [p0, t0] = KNOTS[i - 1], [p1, t1] = KNOTS[i]; return mix(t0, t1, (p - p0) / (p1 - p0)); } return 10; };
-    const SRC_FPS = +L.film.dataset.fps;
-    let N = 0, pos = [];
-    const frameAt = (t) => { const s = Math.min(pos.length - 1, Math.max(0, t * SRC_FPS)), a = Math.floor(s); return a >= pos.length - 1 ? N - 1 : mix(pos[a], pos[a + 1], s - a); };
+    const FPS = 60, LAST = 599;
     const BEAM = [0.5, 0.69]; // where the film's beam ignites, as a share of the frame (measured)
 
-    // Frames arrive as compressed blobs (fetched coarse to fine: every 8th, then 4th, 2nd, all, so any scroll position
-    // has a near frame early) and are decoded off the main thread into two tiers of bitmaps:
-    //   low:  every frame at 360px tall, decoded once in the background. A fast scroll moves several frames per
-    //         screen refresh, faster than full-size decodes can follow; the low tier means every refresh still shows
-    //         the right frame (the softness is invisible at that speed) instead of freezing and then jumping.
-    //   full: canvas-sized, only around where the scroll is heading (its destination, not the current frame), so the
-    //         frame it comes to rest on is already sharp. Memory stays bounded: ~160 MB low + a small full window.
-    const blobs = [], low = [], full = new Map(), decoding = new Set(), WIN = 6;
-    let dir = "", fNow = 0, fShow = 0, drawn = "", bmSize = {}, bmW = 0, lowSize = {};
-    const dropBitmaps = () => { full.forEach((b) => b.close()); full.clear(); };
-    const dest = () => Math.round(frameAt(seconds(pAt(wy === null ? scrollY : wt))));
-    const decode = (i, small) => {
-      const key = (small ? "l" : "f") + i;
-      if (!blobs[i] || decoding.has(key) || decoding.size >= 4 || (small ? low[i] : full.has(i) && full.get(i).width === bmW)) return;
-      const from = dir, size = small ? lowSize : bmSize;
-      decoding.add(key);
-      createImageBitmap(blobs[i], size).then((b) => {
-        decoding.delete(key);
-        if (from !== dir || (!small && (size !== bmSize || Math.abs(i - dest()) > WIN + 4))) return b.close();
-        if (small) low[i] = b;
-        else { const old = full.get(i); old && old.close(); full.set(i, b); } // may replace one for an older canvas size
-        if (Math.abs(i - fShow) < 1.5 || drawn === "") paint();
-        warm();
-      }, () => decoding.delete(key));
-    };
-    const warm = () => {
-      const c = dest();
-      full.forEach((b, i) => { if (Math.abs(i - c) > WIN + 4) { b.close(); full.delete(i); } });
-      for (let d = 0; d <= WIN && decoding.size < 4; d++) { decode(c + d, false); if (d) decode(c - d, false); }
-      for (let d = 0; d < N && decoding.size < 4; d++) { decode(c + d, true); if (d) decode(c - d, true); }
-    };
-    const load = () => {
-      const set = phone.matches ? "m" : "d", want = L.film.dataset.dir + set + "/";
-      if (want === dir || typeof createImageBitmap !== "function") return; // no bitmaps: the poster stays, layers still move
-      dir = want; blobs.length = 0; drawn = ""; dropBitmaps();
-      low.forEach((b) => b.close()); low.length = 0;
-      lowSize = set === "m" ? { resizeWidth: 280, resizeHeight: 360 } : { resizeWidth: 640, resizeHeight: 360 };
-      const src = L.film.dataset[set].split(",").map(Number);
-      N = src.length; pos = [];
-      for (let i = 0; i < N - 1; i++) for (let f = src[i]; f < src[i + 1]; f++) pos[f] = i + (f - src[i]) / (src[i + 1] - src[i]);
-      pos[src[N - 1]] = N - 1;
-      fShow = Math.round(frameAt(seconds(cur)));
-      const order = [...new Set([0, N - 1, ...[8, 4, 2, 1].flatMap((s) => Array.from({ length: Math.ceil(N / s) }, (_, k) => k * s))])];
-      let next = 0, busy = 0;
-      const pump = () => {
-        while (next < order.length && busy < 6) {
-          const i = order[next++], from = dir;
-          busy++;
-          // Low priority: the poster and the rest of the page come first.
-          fetch(`${from}${String(i).padStart(3, "0")}.webp`, { priority: "low" })
-            .then((r) => (r.ok ? r.blob() : Promise.reject()))
-            .then((b) => { if (from === dir) { blobs[i] = b; warm(); } }, () => {})
-            .finally(() => { busy--; pump(); });
-        }
-      };
-      pump();
-    };
-
-    const ctx = L.canvas.getContext("2d", { alpha: false });
-    let rect = [0, 0, 1, 1];
-    // Draw the frame under the playhead: the full bitmap if decoded, else the low one. Between two neighbouring frames
-    // (which the sampling keeps alike) it crossfades while moving; at rest fShow sits on a whole frame, so what stays
-    // on screen is one real frame. Only while frames are still loading does the nearest ready one stand in.
-    const ready = (i) => full.get(i) || low[i];
-    const paint = () => {
-      warm();
-      let a = Math.floor(fShow), k = fShow - a;
-      if (!ready(a)) {
-        const c = Math.round(fShow);
-        a = -1; k = 0;
-        for (let d = 0; d < N && a < 0; d++) a = ready(c - d) ? c - d : ready(c + d) ? c + d : -1;
-        if (a < 0) return;
+    // The film is the source video itself: every one of its 600 frames at the full 1920x1080, re-encoded only so it
+    // seeks fast (a keyframe every 4 frames, no B-frames, visually lossless against the source). The browser's video
+    // decoder paints each frame, so nothing is sampled, downscaled or blended. It loads as a blob, so a seek never
+    // waits on the network. One seek in flight at a time; when it lands, the next one chases wherever the scroll is.
+    const V = L.video;
+    let fNow = 0, asked = -1, seekAt = 0, live = false, primed = false;
+    const seek = () => {
+      if (!live) return;
+      if (V.seeking) { // a seek can stall (iOS): re-issue one stuck past 700 ms rather than freeze
+        if (performance.now() - seekAt > 700) { seekAt = performance.now(); V.currentTime = (asked + 0.5) / FPS; }
+        return;
       }
-      const b = k > 0.004 && ready(a + 1) ? a + 1 : -1;
-      const key = `${a}${full.has(a) ? "f" : "l"}|${b < 0 ? "" : k.toFixed(3) + (full.has(b) ? "f" : "l")}|${L.canvas.width}`;
-      if (key === drawn) return;
-      drawn = key;
-      ctx.globalAlpha = 1;
-      ctx.drawImage(ready(a), ...rect);
-      if (b >= 0) { ctx.globalAlpha = k; ctx.drawImage(ready(b), ...rect); }
-      L.film.classList.add("is-ready");
+      const f = Math.min(LAST, Math.max(0, Math.round(fNow)));
+      if (f === asked) return;
+      asked = f; seekAt = performance.now();
+      V.currentTime = (f + 0.5) / FPS; // mid-frame, so rounding never lands on a neighbour
     };
+    V.addEventListener("seeked", () => { L.film.classList.add("is-ready"); seek(); });
+    // iOS paints nothing until a muted video has played once: prime it, and retry on touch if the first try is refused.
+    const prime = () => {
+      if (primed || !live) return;
+      const r = V.play();
+      r && r.then(() => { V.pause(); primed = true; asked = -1; seek(); }, () => {});
+    };
+    addEventListener("touchend", prime, { passive: true });
+    addEventListener("pointerdown", prime, { passive: true });
+    V.muted = true;
+    fetch(V.dataset.src, { priority: "low" }).then((r) => (r.ok ? r.blob() : Promise.reject())).then((b) => {
+      V.addEventListener("loadeddata", () => {
+        live = true; prime(); seek();
+        setTimeout(() => L.film.classList.add("is-ready"), 2500); // never only on 'seeked'
+      }, { once: true });
+      V.src = URL.createObjectURL(b);
+    }, () => {}); // no film: the poster stays, the layers still move
 
     let W = 1, H = 1, top0 = 0, travel = 1, bar = 0, beamY = 0, cur = 0, target = 0, px = 0, py = 0, tx = 0, ty = 0, raf = 0;
     const offsetIn = (el) => { let y = 0; for (let e = el; e && e !== L.stage; e = e.offsetParent) y += e.offsetTop; return y; };
@@ -566,25 +514,16 @@
       top0 = op.getBoundingClientRect().top + scrollY;
       travel = Math.max(1, op.offsetHeight - H);
       bar = offsetIn(L.slot) + L.slot.offsetHeight / 2;
-      const fw = phone.matches ? 840 : 1920, fh = 1080, s = Math.max(W / fw, H / fh); // cover, as the canvas draws it
-      beamY = (H - fh * s) / 2 + BEAM[1] * fh * s;
-      const r = Math.min(devicePixelRatio || 1, 1.5), cw = Math.round(W * r), ch = Math.round(H * r), cs = Math.max(cw / fw, ch / fh);
-      rect = [(cw - fw * cs) / 2, (ch - fh * cs) / 2, fw * cs, fh * cs];
-      const size = { resizeWidth: Math.round(fw * cs), resizeHeight: Math.round(fh * cs), resizeQuality: "medium" };
-      // Bitmaps at the size they are drawn (never larger than the frame). On a new size the old ones keep drawing,
-      // scaled, while sharper ones decode, so a resize never flashes an empty canvas.
-      const w = cs < 1 ? size.resizeWidth : fw;
-      if (w !== bmW) { bmW = w; bmSize = cs < 1 ? size : {}; }
-      drawn = "";
-      if (cw !== L.canvas.width || ch !== L.canvas.height) { L.canvas.width = cw; L.canvas.height = ch; paint(); }
+      const s = Math.max(W / 1920, H / 1080); // object-fit: cover
+      beamY = (H - 1080 * s) / 2 + BEAM[1] * 1080 * s;
     };
 
     const render = (p) => {
       const ph = phone.matches;
       const split1 = easeMove(seg(p, 0.05, 0.3)), fly = easeMove(seg(p, 0.34, 0.52));
       const van = easeOut(seg(p, 0.6, 0.82)), bike = easeOut(seg(p, 0.64, 0.86)), settle = easeOut(seg(p, 0.8, 0.97));
-      // Film: the playhead follows the scroll (drawn in tick); a touch of pointer depth on desktop.
-      fNow = frameAt(seconds(p));
+      // Film: the playhead follows the scroll (seeked in tick); a touch of pointer depth on desktop.
+      fNow = seconds(p) * FPS;
       set(L.film, `translate3d(${px * -10}px, ${py * -6}px, 0) scale(1.03)`);
       // Warp: the headline parts with the light trails (sideways on desktop, up and down on phones); the rest sinks.
       const part = 1 - seg(split1, 0.1, 0.55); // gone before the warp peaks: no half-faded headline over the trails
@@ -610,7 +549,7 @@
 
     // Smoothed scrub. Time-based easing (the same feel at 60, 120 or 144 Hz): the playhead eases toward the scroll
     // position, and on a mouse the wheel itself glides instead of stepping. The loop stops once everything settles.
-    const TAU = 0.09, TAU_FRAME = 0.045, GLIDE = 0.14, TAU_POINTER = 0.2; // seconds to close ~63% of the gap
+    const TAU = 0.09, GLIDE = 0.14, TAU_POINTER = 0.2; // seconds to close ~63% of the gap
     let last = 0, wy = null, wt = 0, written = 0;
     const pAt = (y) => Math.min(1, Math.max(0, (y - top0) / travel)), progress = () => pAt(scrollY);
     const tick = (now) => {
@@ -629,12 +568,8 @@
       const settled = Math.abs(target - cur) < 4e-4;
       if (settled) cur = target;
       render(cur);
-      // The shown frame eases onto the nearest whole frame: brief crossfades between neighbours, never a resting blend.
-      const goal = Math.round(fNow);
-      fShow += (goal - fShow) * (1 - Math.exp(-dt / TAU_FRAME));
-      if (Math.abs(goal - fShow) < 2e-3) fShow = goal;
-      paint();
-      const done = wy === null && settled && fShow === goal && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3;
+      seek();
+      const done = wy === null && settled && Math.abs(tx - px) < 2e-3 && Math.abs(ty - py) < 2e-3; // 'seeked' finishes the chase
       raf = done ? 0 : requestAnimationFrame(tick);
     };
     const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
@@ -653,7 +588,7 @@
       wt = Math.max(0, Math.min(max, wt + e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1)));
       start();
     }, { passive: false });
-    const remeasure = () => { measure(); load(); render(cur); kick(); };
+    const remeasure = () => { measure(); render(cur); kick(); };
     addEventListener("scroll", kick, { passive: true });
     addEventListener("resize", remeasure);
     addEventListener("load", remeasure);
@@ -662,11 +597,8 @@
     // Keyboard users tabbing past the hero land on the chooser: bring it on screen rather than focusing invisible links.
     L.landing.addEventListener("focusin", () => { if (!L.landing.classList.contains("is-live")) scrollTo({ top: top0 + travel, behavior: smooth() }); });
     measure();
-    load();
     cur = target = progress();
     render(cur);
-    fShow = Math.round(fNow);
-    paint();
     kick();
   }
 

@@ -13,7 +13,9 @@ Options: `--port 5000`, `--no-open`, `--no-build`. Needs Node.js 20+ (https://no
 `rangsx.ico` is the icon for a Windows desktop shortcut to `start.bat`.
 
 ## Versions
-- `main`: the current site. 1 Oct 2026: RANGSX brand book applied (LEMON MILK / Poppins / Li Ador Noirrit,
+- `main`: the current site. 5 Oct 2026: the homepage film is the source video itself, every frame at full
+  1920x1080 / 60 fps (`site/static/video/intro.mp4`, 31 MB, re-encoded only for fast seeking). Tag `v6-full-film`.
+  Earlier: 1 Oct 2026: RANGSX brand book applied (LEMON MILK / Poppins / Li Ador Noirrit,
   brand black, white, grey and red) and a full Bangla version at `/bn/...`. Before that: homepage opening scrubbed
   from the intro film (audited 27 Sep; smoothed 29 Sep).
 - Tag `v5-ghost-free`: film frames taken from the full 60 fps source. Tag `v4-hd-film`: 1080p film, gliding scroll.

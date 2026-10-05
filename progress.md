@@ -211,3 +211,20 @@ Source: `Documents\RANGSX_BRANDBOOK_compressed.pdf` (59 pages). Pulled GitHub fi
 - [ ] Going live needs: Google Identity Services client ID + a backend (accounts, ERP/DMS orders, warranty start,
       support inbox, referral rules). The swap points are marked `ponytail:` in site.js and account.js.
 - [ ] Referral reward wording is generic ("you both get a reward"); confirm the actual programme.
+
+## Round 13 (5 Oct 2026): homepage film at 100% of the source
+Ask: since it is a demo, no downgrade of quality, frame rate or experience in the scroll film.
+- [x] The film is now the source video itself (TensorPix 1080p60), all 600 frames at the full 1920x1080, scrubbed by
+      the scroll through a `<video>` element instead of sampled WebP frames on a canvas. Nothing is sampled (was 178 of
+      600 frames), downscaled (was a 360px tier in motion) or crossfaded.
+- [x] Encode for scrubbing: H.264 High, CRF 14, keyframe every 4 frames, no B-frames (`site/static/video/intro.mp4`,
+      31 MB). Fidelity against the source: PSNR ~50 dB (visually lossless). Same file on desktop and phone (cover crop).
+- [x] Loaded once as a blob (seeks never wait on the network); one seek in flight that chases the scroll; a seek stuck
+      past 700 ms is re-issued; iOS decoder primed with play/pause (retried on touch); reveal on `seeked` or 2.5 s.
+- [x] Removed: the 13 MB frame sequence, `site/data/film.mjs`, `_research/hero/frames.py`. Posters regenerated at q92.
+- [x] Verified (headless Chrome, desktop 1440x900 and phone 390x844): decodes 1920x1080, 10 rest positions each land
+      on the exact source frame (pixel-matched against frames from the original file), fast flicks present a new frame
+      on nearly every refresh (44 distinct frames in a 0.45 s flick), no main-thread frame over 17 ms, 6/6 homepage
+      interaction checks, desktop/phone/reduced-motion sheets, Bangla homepage loads the film, no console errors.
+- [ ] Real phone check (iOS Safari video scrubbing cannot be reproduced headless). 31 MB on mobile data is the cost
+      of full quality; the poster shows until it arrives.

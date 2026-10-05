@@ -699,15 +699,15 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
 .opening__stage { position: relative; }
 .opening__city { position: relative; isolation: isolate; overflow: clip; min-height: 100svh; display: grid; place-items: center; }
 .opening__film { position: absolute; inset: 0; z-index: -3; overflow: hidden; background: #000000; }
-.opening__poster img, .opening__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.opening__poster img, .opening__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .opening__poster img { object-fit: cover; }
 .js .opening__poster img { animation: film-in 1.6s var(--ease-out) both; }
 @keyframes film-in { from { opacity: 0; transform: scale(1.06); } }
-/* The canvas settles with the poster, so the hand-over from poster to live frames never jumps in scale. */
-.js .opening__canvas { animation: film-settle 1.6s var(--ease-out) both; }
+/* The video settles with the poster, so the hand-over from poster to live frames never jumps in scale. */
+.js .opening__video { animation: film-settle 1.6s var(--ease-out) both; }
 @keyframes film-settle { from { transform: scale(1.06); } }
-.opening__canvas { display: none; opacity: 0; transition: opacity .3s; }
-.opening__film.is-ready .opening__canvas { opacity: 1; }
+.opening__video { display: none; opacity: 0; transition: opacity .3s; }
+.opening__film.is-ready .opening__video { opacity: 1; }
 /* The overlay: a scrim where the words sit, a lid under the menu, a soft floor. The photo stays alive at the edges. */
 .opening__shade { position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background:
@@ -732,7 +732,7 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
   .js .opening__line { display: block; position: absolute; z-index: 4; left: 50%; top: 0; width: 3px; height: 100%; margin-left: -1.5px; pointer-events: none; transform: translate3d(0, 38svh, 0) rotate(90deg) scaleY(.14); }
   .js .opening__line > i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(to bottom, transparent, var(--red) 7%, var(--red) 93%, transparent); animation: line-in 1.1s .55s var(--ease-out) both; }
   @keyframes line-in { from { transform: scaleY(0); } }
-  .js .opening__canvas { display: block; }
+  .js .opening__video { display: block; }
   .js .opening .landing { opacity: 0; pointer-events: none; background: transparent; }
   .js .opening .landing__bg { display: none; }
   .js .opening .landing.is-live { pointer-events: auto; }
