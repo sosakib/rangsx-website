@@ -71,13 +71,8 @@
 
   /* ---------- Details ---------- */
   const form = $('[data-step="details"]'), F = (n) => form.elements[n];
-  const how = () => (hasBike() ? "showroom" : form.elements.how.value);
-  const syncHow = () => {
-    const bike = hasBike();
-    $$('input[name="how"]', form).forEach((r) => { r.disabled = bike && r.value === "home"; if (bike) r.checked = r.value === "showroom"; });
-    $("[data-bike-note]").hidden = !bike;
-    $$("[data-if]", form).forEach((x) => (x.hidden = x.dataset.if !== how()));
-  };
+  const how = () => form.elements.how.value;
+  const syncHow = () => $$("[data-if]", form).forEach((x) => (x.hidden = x.dataset.if !== how()));
   form.addEventListener("change", syncHow);
   function fillDetails() {
     const d = RX.get(), u = d.user, s = d.ship || {};

@@ -15,7 +15,8 @@ in the code where the real backend plugs in. Search for `ponytail:` comments to 
 - Basket line: `{ id, qty, note }`. `id` is `shop:<slug>` (RX Gear) or `bike:<slug>` (RX bike booking);
   `note` is the bike colour. Catalogue (names, images, prices) is built in `site/pages/account.mjs` (`CATALOG`).
 - Prices: RX Gear from `site/data/shop.mjs`. Bikes are sold online as a **booking advance**,
-  `SITE.bikeBooking` in `site/data/site.mjs` (Tk 10,000, default to confirm); the balance is paid at the showroom.
+  `SITE.bikeBooking` in `site/data/site.mjs` (Tk 10,000, confirmed); the balance is paid before handover.
+  Bikes, like RX Gear, may be delivered home or picked up at a showroom (confirmed).
   Delivery is shown as free. **The server must recompute every amount from its own price list**; never trust totals
   sent by the browser.
 - Delivery details: `{ name, phone, how: "home" | "showroom", address, showroom, note }`. A basket with a bike is

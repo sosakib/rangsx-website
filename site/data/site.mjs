@@ -23,8 +23,8 @@ export const SITE = {
   // Set to a real endpoint (Formspree, a Next.js route, etc.) to receive form posts.
   // Empty = forms validate, then hand the message off to WhatsApp.
   formEndpoint: "",
-  // Online booking advance for an RX bike (taka), paid at checkout; the balance is paid at the showroom.
-  // ponytail: default taken from the employee EMI minimum deposit. Confirm with sales before launch.
+  // Online booking advance for an RX bike (taka), paid at checkout; the balance is paid before handover.
+  // Confirmed by the client, 5 Oct 2026.
   bikeBooking: 10000,
 };
 

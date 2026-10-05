@@ -40,7 +40,6 @@ export default {
           <label class="opt-card"><input type="radio" name="how" value="home" checked>${icon("truck")}<span><b>Home delivery</b><small>To your door, anywhere in Bangladesh</small></span></label>
           <label class="opt-card"><input type="radio" name="how" value="showroom">${icon("storefront")}<span><b>Pick up at a showroom</b><small>Collect it from a RangsX showroom</small></span></label>
         </fieldset>
-        <p class="co-bike-note" data-bike-note hidden>${icon("info")}<span>Bikes are handed over at the showroom after registration, so a bike order is picked up there.</span></p>
         <div class="form__grid form__grid--1">
           <div data-if="home">${field({ name: "address", label: "Delivery address", type: "textarea", required: true, autocomplete: "street-address", hint: "House, road, area and city", full: true })}</div>
           <div data-if="showroom" hidden>${field({ name: "showroom", label: "Showroom", type: "select", required: true, placeholder: "Select showroom", options: SHOWROOMS.slice(0, -1), full: true })}</div>
@@ -76,7 +75,7 @@ export default {
         <div><dt>Delivery</dt><dd>Free</dd></div>
       </dl>
       <p class="total"><span>Pay now</span><b data-total></b></p>
-      <p class="fine" data-balance-note hidden>Bike bookings: the balance is paid at the showroom, before handover.</p>
+      <p class="fine" data-balance-note hidden>Bike bookings: the balance is paid before handover.</p>
       <button class="btn btn--primary btn--lg btn--block" type="button" data-next></button>
       <button class="linkbtn" type="button" data-back hidden>Back</button>
       <p class="co-sum__safe">${icon("shield-check")}Secured by SSLCOMMERZ</p>

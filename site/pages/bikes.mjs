@@ -24,7 +24,7 @@ const hero = (b) => html`
         ${more("Compare", "#compare")}
         ${wishBtn("bike:" + b.slug, "wish--lg")}
       </div>
-      <p class="hero__note">${icon("lock-key")}<span>Book online with ${taka(SITE.bikeBooking)}, pay the rest at the showroom.</span></p>
+      <p class="hero__note">${icon("lock-key")}<span>Book online with ${taka(SITE.bikeBooking)}, pay the rest before handover.</span></p>
       <div class="hero__stats">
         <div class="hero__stat"><b>90-100<small>km</small></b><span>Range</span></div>
         <div class="hero__stat"><b>65<small>km/h</small></b><span>Top Speed</span></div>

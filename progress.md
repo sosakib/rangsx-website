@@ -273,5 +273,15 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [x] Verified (desktop + phone, 37 checks): add/buy/quantity/remove, bike colour, totals, sign-in gate and return,
       prefill, showroom rule, required fields, terms tick, SSLCOMMERZ demo, order in account, empty basket, chat
       hand-off link, Bangla checkout; no console errors.
-- [ ] Confirm: booking advance amount, free delivery, and whether bikes may also go to home delivery.
+- [x] Confirm: booking advance amount, free delivery, and whether bikes may also go to home delivery (Round 17).
 
+
+## Round 17 (5 Oct 2026): client answers, bikes may go to home delivery
+- [x] Confirmed by the client: Tk 10,000 booking advance, free delivery, Lemon Milk is commercially licensed.
+- [x] Bikes may now be delivered home as well as picked up at a showroom: removed the showroom-only lock and its note
+      in checkout. Balance copy is now "paid before handover" (checkout summary, bike page hero, EN and BN).
+- [x] Verified (headless Chrome, 20 checks; EN desktop dark + BN phone light): bike basket can pick home delivery,
+      address prefilled and shown in review, order saved as home delivery at Tk 10,000, confirmation says delivery,
+      showroom pickup still works, no console errors. Build checks pass, no missing Bangla.
+- [ ] Not tested on a real phone (iPhone Safari video scrubbing especially).
+- [ ] Bangla copy needs a native editor's proofread (legal pages especially).
