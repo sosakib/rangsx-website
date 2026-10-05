@@ -257,3 +257,21 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       follows the scroll within ~4 s even at 4 Mbps, and a jump ahead fetches only that part of the file. A two-byte
       probe picks the mode: hosts with byte ranges (all real hosts) stream; a bare server without them downloads the
       file once and scrubs from memory. `serve.mjs` now serves byte ranges. Frame accuracy and smoothness unchanged.
+
+## Round 16 (5 Oct 2026): checkout (SSLCOMMERZ demo) + WhatsApp chat window
+- [x] Basket + `/checkout` (Basket -> Details -> Payment -> confirmation). "Add to basket" on RX Gear cards and
+      product pages ("Buy now" too); "Book online" on each RX bike page (books the colour picked). Header basket with
+      a count. Signing in is required before Details (returns to checkout after sign-in and profile); delivery details
+      prefill from the profile; a basket with a bike is picked up at a showroom.
+- [x] Bikes are booked online with an advance (`SITE.bikeBooking`, Tk 10,000: default from the EMI policy's minimum
+      deposit, to confirm). Retail bike prices stay off the public site (pricing is confidential). Delivery: free.
+- [x] Payment step opens a simulated SSLCOMMERZ page (card, bKash, Nagad, Rocket, internet banking), clearly marked as
+      a demo; the order then appears in the account as "Paid, processing". The account dashboard has a Basket card.
+- [x] The corner button is now a WhatsApp chat window (quick questions, typing, reply with "Continue on WhatsApp").
+- [x] `BACKEND.md`: what IT connects (Google sign-in, orders API, SSLCOMMERZ session/IPN/validation, WhatsApp Cloud API).
+- [x] Fix found while testing: first sign-in dropped a basket filled before signing in.
+- [x] Verified (desktop + phone, 37 checks): add/buy/quantity/remove, bike colour, totals, sign-in gate and return,
+      prefill, showroom rule, required fields, terms tick, SSLCOMMERZ demo, order in account, empty basket, chat
+      hand-off link, Bangla checkout; no console errors.
+- [ ] Confirm: booking advance amount, free delivery, and whether bikes may also go to home delivery.
+

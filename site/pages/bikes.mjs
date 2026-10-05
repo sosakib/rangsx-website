@@ -4,6 +4,7 @@ import { html, btn, more, head, icon, pic, swatchStage, faq, testRide, ctaBand, 
 import { localNav } from "../lib/layout.mjs";
 import { variants } from "../lib/img.mjs";
 import { BIKES, bikeUrl, RX_STANDARD, BIKE_FAQS, RX_H1, LIFESTYLE, QUIZ, COMPARE_ROWS, DAY } from "../data/bikes.mjs";
+import { taka } from "../data/shop.mjs";
 
 const bySlug = Object.fromEntries(BIKES.map((b) => [b.slug, b]));
 const getPrice = (b) => wa(`Hi RangsX, I would like the price of the ${b.fullName} electric bike.`);
@@ -19,10 +20,11 @@ const hero = (b) => html`
       <p class="hero__lead"><strong>${b.headline}</strong> ${b.tagline}</p>
       <div class="actions">
         ${btn("Book Test Ride", "#test-ride-form", { size: "lg", attrs: `data-fill="model=${b.fullName}"` })}
-        ${btn("Explore Models", "#lineup", { kind: "secondary", size: "lg" })}
+        ${btn("Book online", null, { kind: "secondary", size: "lg", ic: "shopping-bag", attrs: `data-add="bike:${b.slug}" data-add-go` })}
         ${more("Compare", "#compare")}
         ${wishBtn("bike:" + b.slug, "wish--lg")}
       </div>
+      <p class="hero__note">${icon("lock-key")}<span>Book online with ${taka(SITE.bikeBooking)}, pay the rest at the showroom.</span></p>
       <div class="hero__stats">
         <div class="hero__stat"><b>90-100<small>km</small></b><span>Range</span></div>
         <div class="hero__stat"><b>65<small>km/h</small></b><span>Top Speed</span></div>

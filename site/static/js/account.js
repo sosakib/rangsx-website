@@ -35,6 +35,8 @@
     const d = RX.get();
     if (!RX.signedIn()) return show("signin");
     if (!d.user.setupDone) return openSetup(false);
+    const next = new URLSearchParams(location.search).get("next");
+    if (next && next.startsWith("/")) return location.replace(next);
     renderDash();
     show("dash");
     if (location.hash) $(location.hash)?.scrollIntoView({ block: "start" });
@@ -48,13 +50,14 @@
   const signIn = (email, name) => {
     let d = RX.get();
     if (!d.user || d.user.email !== email) {
-      // First sign-in for this Google account: new profile + demo history (wishlist hearts already tapped are kept).
+      // First sign-in for this Google account: new profile + demo history (wishlist hearts and basket are kept).
       const s = DATA.seed;
       d = {
         user: { email, name, phone: "", address: "", photo: "", since: iso(today()), ref: refCode(name), setupDone: false },
         orders: s.orders.map((o) => ({ ...o, date: addDays(o.days) })),
         rides: s.rides.map((r, i) => ({ ...r, id: i + 1, date: addDays(r.days) })),
         wish: [...new Set([...(d.wish || []), ...s.wish])],
+        cart: d.cart || [], // a basket filled before signing in is waiting at checkout
         msgs: s.msgs.map((m) => ({ ...m, at: addDays(m.days) + "T10:00", read: false })),
       };
       if (!RX.save(d)) return;
@@ -157,7 +160,7 @@
   /* ---------- Dashboard ---------- */
   const hour = new Date().getHours();
   const hello = (n) => (hour < 12 ? T(`Good morning, ${n}`, `শুভ সকাল, ${n}`) : hour < 18 ? T(`Good afternoon, ${n}`, `শুভ বিকেল, ${n}`) : T(`Good evening, ${n}`, `শুভ সন্ধ্যা, ${n}`));
-  const vehicleOrder = (d) => d.orders.find((o) => o.items.some((i) => CAT[i.id]?.vehicle));
+  const vehicleOrder = (d) => d.orders.find((o) => o.status !== "processing" && o.items.some((i) => CAT[i.id]?.vehicle)); // booked bikes count once handed over
   // Months left on each warranty part, from the vehicle's purchase date.
   const warranty = (d) => {
     const o = vehicleOrder(d);
@@ -171,7 +174,8 @@
   const leftTxt = (m) => (m >= 12 ? T(`${Math.floor(m / 12)} yr ${m % 12 ? (m % 12) + " mo " : ""}left`, `${Math.floor(m / 12)} বছর ${m % 12 ? (m % 12) + " মাস " : ""}বাকি`) : m > 0 ? T(`${m} mo left`, `${m} মাস বাকি`) : T("Expired", "মেয়াদ শেষ"));
   const thumb = (x) => `<span class="thumb"><img src="${x.img}" alt="" loading="lazy"></span>`;
   const empty = (txt, link = "") => `<div class="empty"><p>${txt}</p>${link}</div>`;
-  const orderTotal = (o) => o.items.reduce((s, i) => s + (CAT[i.id]?.price || 0) * i.qty, 0);
+  const orderTotal = (o) => o.paid || o.items.reduce((s, i) => s + (CAT[i.id]?.price || 0) * i.qty, 0);
+  const orderState = (o) => (o.status === "processing" ? [T("Paid, processing", "পেমেন্ট সম্পন্ন, প্রসেসিং চলছে"), "wait"] : [T("Delivered", "ডেলিভারি সম্পন্ন"), "ok"]);
   const STATUS = { confirmed: [T("Confirmed", "কনফার্মড"), "ok"], requested: [T("Requested", "অনুরোধ পাঠানো হয়েছে"), "wait"], done: [T("Completed", "সম্পন্ন"), "done"] };
 
   function renderDash() {
@@ -219,7 +223,7 @@
     $("[data-orders]").innerHTML = d.orders.length
       ? `<ul class="list">${d.orders.map((o, i) => {
           const first = CAT[o.items[0].id], more = o.items.length - 1, total = orderTotal(o);
-          return `<li><button class="row" type="button" data-order="${i}">${thumb(first)}<span class="row__txt"><b>${esc(first.name)}${more ? ` ${T(`+ ${more} more`, `+ আরও ${more}টি`)}` : ""}</b><small>${fmt(o.date)} · ${T("Delivered", "ডেলিভারি সম্পন্ন")}</small></span><span class="row__end">${total ? tk(total) : T("Invoice", "ইনভয়েস")}</span></button></li>`;
+          return `<li><button class="row" type="button" data-order="${i}">${thumb(first)}<span class="row__txt"><b>${esc(first.name)}${more ? ` ${T(`+ ${more} more`, `+ আরও ${more}টি`)}` : ""}</b><small>${fmt(o.date)} · ${orderState(o)[0]}</small></span><span class="row__end">${total ? tk(total) : T("Invoice", "ইনভয়েস")}</span></button></li>`;
         }).join("")}</ul>`
       : empty(T("Nothing bought yet.", "এখনো কিছু কেনা হয়নি।"), `<a class="btn btn--secondary btn--sm" href="${PRE}/shop">${T("Visit RX Gear Shop", "RX Gear শপ দেখুন")}</a>`);
 
@@ -228,6 +232,13 @@
     $("[data-msgs]").innerHTML = `
       ${last ? `<button class="row row--msg" type="button" data-chat><span class="ava ava--rx">RX</span><span class="row__txt"><b>${last.from === "rx" ? "RangsX Support" : T("You", "আপনি")}${unread ? ` <i class="dot" aria-label="${T(`${unread} unread`, `${unread}টি নতুন`)}"></i>` : ""}</b><small class="clamp">${esc(BN && last.bn ? last.bn : last.text)}</small></span></button>` : ""}
       <button class="btn btn--secondary btn--sm btn--block" type="button" data-chat>${unread ? T(`Open chat (${unread} new)`, `চ্যাট খুলুন (${unread}টি নতুন)`) : T("Open chat", "চ্যাট খুলুন")}</button>`;
+
+    // Basket: what is waiting to be checked out
+    const cart = (d.cart || []).filter((l) => CAT[l.id]);
+    $("[data-basket]").innerHTML = cart.length
+      ? `<ul class="list">${cart.map((l) => { const x = CAT[l.id]; return `<li class="row row--static">${thumb(x)}<span class="row__txt"><b>${esc(x.name)}</b><small>${esc(l.note ? L(l.note) : kind(x))}${l.qty > 1 ? ` · ${T("Qty", "পরিমাণ")} ${l.qty}` : ""}</small></span><span class="row__end">${tk((x.price || x.deposit) * l.qty)}</span></li>`; }).join("")}</ul>
+         <a class="btn btn--primary btn--sm btn--block" href="${PRE}/checkout">${T("Go to checkout", "চেকআউটে যান")}</a>`
+      : empty(T("Your basket is empty.", "আপনার বাস্কেট খালি।"), `<a class="btn btn--secondary btn--sm" href="${PRE}/shop">${T("Visit RX Gear Shop", "RX Gear শপ দেখুন")}</a>`);
 
     // Wishlist
     const wish = (d.wish || []).filter((id) => CAT[id]);
@@ -269,8 +280,8 @@
     if (t.matches("[data-order]")) {
       const o = d.orders[+t.dataset.order], total = orderTotal(o);
       openSheet(T(`Order ${o.no}`, `অর্ডার ${o.no}`), `
-        <dl class="kv"><div><dt>${T("Date", "তারিখ")}</dt><dd>${fmt(o.date)}</dd></div><div><dt>${T("Bought at", "যেখান থেকে")}</dt><dd>${esc(L(o.place))}</dd></div><div><dt>${T("Status", "স্ট্যাটাস")}</dt><dd><span class="pill pill--ok">${T("Delivered", "ডেলিভারি সম্পন্ন")}</span></dd></div></dl>
-        <ul class="list items">${o.items.map((i) => { const x = CAT[i.id]; return `<li class="row row--static">${thumb(x)}<span class="row__txt"><b>${esc(x.name)}</b><small>${esc(i.note ? L(i.note) : kind(x))} · ${T("Qty", "পরিমাণ")} ${i.qty}</small></span><span class="row__end">${x.price ? tk(x.price * i.qty) : T("As invoiced", "ইনভয়েস অনুযায়ী")}</span></li>`; }).join("")}</ul>
+        <dl class="kv"><div><dt>${T("Date", "তারিখ")}</dt><dd>${fmt(o.date)}</dd></div><div><dt>${T("Bought at", "যেখান থেকে")}</dt><dd>${esc(L(o.place))}</dd></div><div><dt>${T("Status", "স্ট্যাটাস")}</dt><dd><span class="pill pill--${orderState(o)[1]}">${orderState(o)[0]}</span></dd></div></dl>
+        <ul class="list items">${o.items.map((i) => { const x = CAT[i.id]; return `<li class="row row--static">${thumb(x)}<span class="row__txt"><b>${esc(x.name)}</b><small>${esc(i.note ? L(i.note) : kind(x))} · ${T("Qty", "পরিমাণ")} ${i.qty}</small></span><span class="row__end">${x.price ? tk(x.price * i.qty) : x.deposit && o.paid ? T(`Booking ${tk(x.deposit)}`, `বুকিং ${tk(x.deposit)}`) : T("As invoiced", "ইনভয়েস অনুযায়ী")}</span></li>`; }).join("")}</ul>
         ${total ? `<p class="total"><span>${T("Total paid", "মোট পরিশোধ")}</span><b>${tk(total)}</b></p>` : `<p class="fine">${T("The vehicle price is on the invoice from the showroom.", "গাড়ির দাম শোরুমের ইনভয়েসে দেওয়া আছে।")}</p>`}
         <div class="sheet__actions"><button class="btn btn--secondary btn--block" type="button" data-chat>${T("Ask about this order", "এই অর্ডার নিয়ে জানতে চান")}</button></div>`);
     } else if (t.matches("[data-warranty]")) {

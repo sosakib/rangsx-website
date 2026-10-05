@@ -12,8 +12,8 @@ import { BN } from "../i18n/bn.mjs";
 const src = (base, w = 480) => { const v = variants(base); return (v.find((x) => x.w >= w) || v[v.length - 1]).src; };
 
 // Everything that can be bought, saved or test-ridden. Names stay English on Bangla pages (brand rule).
-const CATALOG = Object.fromEntries([
-  ...BIKES.map((b) => [`bike:${b.slug}`, { name: b.fullName, kind: b.kind, img: src(b.colorways[0].img), url: bikeUrl(b), vehicle: true }]),
+export const CATALOG = Object.fromEntries([
+  ...BIKES.map((b) => [`bike:${b.slug}`, { name: b.fullName, kind: b.kind, img: src(b.colorways[0].img), url: bikeUrl(b), vehicle: true, deposit: SITE.bikeBooking }]),
   ...FLEET.map((f) => [`fleet:${f.slug || f.url.split("/").pop()}`, { name: f.fullName, kind: f.kind, img: src(f.img), url: f.url, vehicle: true }]),
   ...PRODUCTS.map((p) => [`shop:${p.slug}`, { name: p.name, kind: "RX Gear", img: src(productImg(p)), url: productUrl(p), price: p.price }]),
 ].map(([id, x]) => [id, { ...x, kindBn: BN[x.kind] || x.kind }]));
@@ -139,6 +139,7 @@ export default {
       ${card("rides", "Test rides", "calendar-blank", `<div data-rides></div>`, { action: `<button class="linkbtn" type="button" data-book>${icon("plus")}Book</button>` })}
       ${card("orders", "Purchases", "receipt", `<div data-orders></div>`, { cls: "acard--wide" })}
       ${card("messages", "Messages", "chat-circle-text", `<div data-msgs></div>`)}
+      ${card("basket", "Basket", "shopping-bag", `<div data-basket></div>`)}
       ${card("wishlist", "Wishlist", "heart", `<div data-wishlist></div>`, { cls: "acard--wide" })}
       ${card("refer", "Refer a friend", "gift", html`
         <p class="acard__lead">Share your code. When a friend buys a RangsX, you both get a reward.</p>

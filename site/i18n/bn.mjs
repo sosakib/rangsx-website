@@ -22,7 +22,7 @@ export const KEEP = new Set([
   "3,714 / 10,000 rpm", "250 km", "260 km", "90 km/h", "5.68 m³", "4,865 × 1,715 × 2,065 mm", "5,265 × 1,715 × 2,065 mm",
   "3,050 mm", "3,450 mm", "1,654 kg", "1,700 kg", "2,700 kg", "41.86 kWh CATL LFP (Li-ion)", "53.58 kWh CATL LFP (Li-ion)",
   "RX Pro Helmet", "RX Urban Helmet", "RX Sport Gloves", "RX All-Weather Gloves", "RX Phone Mount", "RX Saddlebag 20L",
-  "RX Rider Jacket", "RX Rider T-Shirt",
+  "RX Rider Jacket", "RX Rider T-Shirt", "SSLCOMMERZ", "bKash", "Nagad", "Rocket", "Visa, Mastercard, Amex",
 ]);
 
 const PERIOD = (h) => (h < 12 ? "সকাল" : h < 16 ? "দুপুর" : h < 18 ? "বিকেল" : h < 20 ? "সন্ধ্যা" : "রাত");

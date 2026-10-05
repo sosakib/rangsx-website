@@ -54,6 +54,7 @@ function header(path) {
     <div class="gnav__tools">
       <a class="gnav__hotline" href="tel:${SITE.hotline}" aria-label="Call hotline ${SITE.hotline}">${icon("phone")}<span>${SITE.hotline}</span></a>
       ${langSwitch(path, "gnav__lang")}
+      <a class="icon-btn gnav__bag" href="/checkout" aria-label="Basket">${icon("shopping-bag")}<span class="gnav__count" data-bag-count hidden></span></a>
       <a class="icon-btn gnav__acct" href="/account" data-acct-link aria-label="My account">${icon("user")}</a>
       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch to light theme">${icon("sun", "i--sun")}${icon("moon", "i--moon")}</button>
       <button class="icon-btn gnav__menu" type="button" aria-expanded="false" aria-controls="mnav" data-menu-toggle><span class="burger" aria-hidden="true"></span><span class="sr">Menu</span></button>
@@ -122,16 +123,20 @@ function footer() {
 </footer>`;
 }
 
+// WhatsApp chat window on every page. ponytail: demo. Messages stay in the window and "Continue on WhatsApp" opens
+// the app with the text; live, site.js posts them to the WhatsApp Business API backend instead (see BACKEND.md).
 const helpSheet = () => `
 <div class="help" data-help>
-  <button class="help__btn" type="button" aria-expanded="false" aria-controls="help-panel" data-help-toggle>${icon("chat-circle-text", "i--open")}${icon("x", "i--close")}<span class="sr">Talk to RangsX</span></button>
-  <div class="help__panel" id="help-panel" role="dialog" aria-label="Talk to RangsX" hidden>
-    <p class="help__title">Talk to RangsX</p>
-    <p class="help__sub">Most people in Bangladesh are buying their first EV. Ask us anything.</p>
-    <a class="help__row" href="${wa()}" target="_blank" rel="noopener">${icon("whatsapp-logo")}<span><strong>WhatsApp</strong><small>Fastest, usually under 1 hour</small></span></a>
-    <a class="help__row" href="tel:${SITE.hotline}">${icon("phone")}<span><strong>Call ${SITE.hotline}</strong><small>${SITE.hours}</small></span></a>
-    <a class="help__row" href="/electric-bikes/rx/zs#test-ride-form">${icon("calendar-blank")}<span><strong>Book a test ride</strong><small>Confirmed within 24 hours</small></span></a>
-    <a class="help__row" href="/dealers">${icon("map-pin")}<span><strong>Find a dealer</strong><small>Showrooms and service centres</small></span></a>
+  <button class="help__btn" type="button" aria-expanded="false" aria-controls="help-panel" data-help-toggle>${icon("whatsapp-logo", "i--open")}${icon("x", "i--close")}<span class="sr">Chat with RangsX on WhatsApp</span></button>
+  <div class="help__panel wa" id="help-panel" role="dialog" aria-labelledby="wa-name" hidden>
+    <div class="wa__head"><span class="wa__ava">RX</span><span><strong id="wa-name">RangsX</strong><small>Typically replies within an hour</small></span>${icon("whatsapp-logo", "wa__logo")}</div>
+    <ol class="wa__log" data-wa-log aria-live="polite">
+      <li class="wa__msg">Hi, welcome to RangsX. Ask us about bikes, prices, test rides, service or your order.</li>
+    </ol>
+    <div class="wa__quick" data-wa-quick>
+      <button type="button" class="chip">Price of a bike</button><button type="button" class="chip">Book a test ride</button><button type="button" class="chip">Service help</button><button type="button" class="chip">My order</button>
+    </div>
+    <form class="wa__form" data-wa-form><label class="sr" for="wa-in">Message</label><input id="wa-in" name="msg" autocomplete="off" placeholder="Type a message" required><button class="wa__send" type="submit" aria-label="Send">${icon("paper-plane-right")}</button></form>
   </div>
 </div>`;
 

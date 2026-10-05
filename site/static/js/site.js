@@ -85,7 +85,32 @@
     if (!b.closest("[data-acct]"))
       toast(on ? T(`Saved to your wishlist. <a href="${acctHome}#wishlist">View</a>`, `উইশলিস্টে রাখা হয়েছে। <a href="${acctHome}#wishlist">দেখুন</a>`) : T("Removed from your wishlist.", "উইশলিস্ট থেকে সরানো হয়েছে।"));
   });
-  addEventListener("storage", () => { syncWish(); syncAcctLink(); });
+  // Basket: lines of { id, qty, note } in the same device store (it survives signing in). Bikes are one booking each.
+  const syncBag = () => {
+    const n = (acct.get().cart || []).reduce((s, l) => s + l.qty, 0);
+    $$("[data-bag-count]").forEach((c) => { c.hidden = !n; c.textContent = n; });
+    $$(".gnav__bag").forEach((a) => a.setAttribute("aria-label", n ? T(`Basket, ${n} items`, `বাস্কেট, ${n}টি আইটেম`) : T("Basket", "বাস্কেট")));
+  };
+  window.RXAccount.syncBag = syncBag;
+  syncBag();
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-add]");
+    if (!b) return;
+    e.preventDefault();
+    const d = acct.get(), id = b.dataset.add, bike = id.startsWith("bike:");
+    // A bike takes the colour picked on its page.
+    const note = bike ? ($("[data-swatch-label]", b.closest("[data-swatch-host]") || document) || {}).textContent || "" : "";
+    const cart = d.cart || [], line = cart.find((l) => l.id === id && l.note === note);
+    if (line && !bike) line.qty++;
+    else if (!line) cart.push({ id, qty: 1, note });
+    d.cart = cart;
+    if (!acct.save(d)) return;
+    syncBag();
+    const home = (BN ? "/bn" : "") + "/checkout";
+    if (b.hasAttribute("data-add-go")) location.href = home;
+    else toast(T(`Added to your basket. <a href="${home}">Checkout</a>`, `বাস্কেটে যোগ হয়েছে। <a href="${home}">চেকআউট</a>`));
+  });
+  addEventListener("storage", () => { syncWish(); syncAcctLink(); syncBag(); });
 
   /* ---------- Header: hairline once the page scrolls (sentinel, no scroll listener) ---------- */
   const gnav = $("[data-gnav]");
@@ -173,6 +198,7 @@
       helpPanel.hidden = false;
       helpPanel.classList.remove("is-closing");
       helpPanel.classList.add("is-open");
+      if (fine.matches) $("#wa-in", helpPanel)?.focus(); // not on touch: the keyboard would cover the chat
     } else if (!helpPanel.hidden) {
       helpPanel.classList.remove("is-open");
       helpPanel.classList.add("is-closing");
@@ -181,6 +207,38 @@
     }
   };
   helpBtn && helpBtn.addEventListener("click", () => setHelp(helpBtn.getAttribute("aria-expanded") !== "true"));
+
+  /* WhatsApp chat window. ponytail: demo replies. Live: send() posts to the WhatsApp Business API backend and replies
+     arrive from its webhook (BACKEND.md); until then the visitor continues the same conversation in WhatsApp. */
+  const waForm = $("[data-wa-form]"), waLog = $("[data-wa-log]");
+  if (waForm) {
+    const time = () => new Date().toLocaleTimeString(BN ? "bn-BD-u-nu-latn" : "en-GB", { hour: "numeric", minute: "2-digit" });
+    const say = (text, out) => {
+      const li = Object.assign(document.createElement("li"), { className: "wa__msg" + (out ? " wa__msg--out" : "") });
+      li.append(text, Object.assign(document.createElement("small"), { textContent: time() }));
+      waLog.append(li);
+      waLog.scrollTop = waLog.scrollHeight;
+      return li;
+    };
+    const send = (text) => {
+      text = text.trim();
+      if (!text) return;
+      say(text, true);
+      $("[data-wa-quick]").hidden = true;
+      const typing = Object.assign(document.createElement("li"), { className: "wa__msg wa__msg--typing", innerHTML: "<i></i><i></i><i></i>" });
+      waLog.append(typing);
+      setTimeout(() => {
+        typing.remove();
+        const li = say(T("Thanks, we have your message. A RangsX agent replies on WhatsApp, usually within an hour.", "ধন্যবাদ, আপনার মেসেজ পেয়েছি। একজন RangsX প্রতিনিধি সাধারণত এক ঘণ্টার মধ্যে WhatsApp-এ উত্তর দেবেন।"), false);
+        li.insertBefore(Object.assign(document.createElement("a"), {
+          className: "wa__go", target: "_blank", rel: "noopener", textContent: T("Continue on WhatsApp", "WhatsApp-এ চালিয়ে যান"),
+          href: `https://wa.me/${document.body.dataset.wa}?text=${encodeURIComponent(text)}`,
+        }), li.lastChild);
+      }, 1100);
+    };
+    waForm.addEventListener("submit", (e) => { e.preventDefault(); send(waForm.msg.value); waForm.reset(); });
+    $("[data-wa-quick]").addEventListener("click", (e) => { const c = e.target.closest(".chip"); c && send(c.textContent); });
+  }
   document.addEventListener("click", (e) => { if (helpBtn && !e.target.closest("[data-help]")) setHelp(false); });
 
   document.addEventListener("keydown", (e) => {

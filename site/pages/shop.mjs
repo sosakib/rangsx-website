@@ -1,8 +1,8 @@
-// RX Gear: /shop (filterable grid) and /shop/<slug> (product page). Orders go through WhatsApp, as on the beta.
+// RX Gear: /shop (filterable grid) and /shop/<slug> (product page). Bought through the basket and /checkout.
 import { html, btn, icon, pic, crumbs, esc, SITE, wa, ticks, beam, wishBtn } from "../lib/ui.mjs";
 import { CATEGORIES, PRODUCTS, taka, productUrl, productImg, bySlug, catLabel } from "../data/shop.mjs";
 
-const order = (p) => wa(`Hi RangsX, I am interested in the ${p.name} from RX Gear Shop.`);
+const add = (p, go = "") => `data-add="shop:${p.slug}"${go && " data-add-go"}`;
 const price = (p) => `<p class="price"><b>${taka(p.price)}</b>${p.was ? `<s>${taka(p.was)}</s>` : ""}</p>`;
 
 const card = (p) => html`
@@ -16,7 +16,7 @@ const card = (p) => html`
     <p class="prod__cat">${catLabel(p.cat)}</p>
     <h3 class="prod__name"><a href="${productUrl(p)}">${p.name}</a></h3>
     ${price(p)}
-    ${btn("Order via WhatsApp", order(p), { kind: "secondary", size: "sm", ic: "whatsapp-logo", cls: "btn--block", attrs: `target="_blank" rel="noopener"` })}
+    ${btn("Add to basket", null, { kind: "secondary", size: "sm", ic: "shopping-bag", cls: "btn--block", attrs: add(p) })}
   </div>
 </article>`;
 
@@ -27,7 +27,7 @@ const hub = (() => {
   return {
     path: "/shop",
     title: "RX Gear: Premium Riding Accessories",
-    description: "Shop RX Gear in Bangladesh: certified helmets, riding gloves, jackets and accessories for RX electric bike riders. Order on WhatsApp, delivered nationwide.",
+    description: "Shop RX Gear in Bangladesh: certified helmets, riding gloves, jackets and accessories for RX electric bike riders. Secure online checkout, delivered nationwide.",
     image: "/img/shop/rx-pro-helmet-800.webp",
     schema: [
       { "@type": "CollectionPage", name: "RX Gear", url: SITE.url + "/shop", mainEntity: { "@type": "ItemList", itemListElement: PRODUCTS.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: SITE.url + productUrl(p), name: p.name })) } },
@@ -53,7 +53,7 @@ ${c.html}
     </div>
     <h2 class="sr">All products</h2>
     <div class="shop-grid" data-stagger>${PRODUCTS.map(card)}</div>
-    <p class="choice__more">${icon("package")} Orders are fulfilled via WhatsApp, with delivery across Bangladesh.</p>
+    <p class="choice__more">${icon("lock-key")} Secure checkout with SSLCOMMERZ, delivery across Bangladesh.</p>
   </div>
 </section>`,
   };
@@ -84,8 +84,8 @@ ${c.html}
       <p class="price"><b>${taka(p.price)}</b>${p.was ? `<s>${taka(p.was)}</s><span class="save">Save ${taka(p.was - p.price)}</span>` : ""}</p>
       <p class="pdp__desc">${esc(p.desc)}</p>
       ${ticks(p.features.map(esc))}
-      <div class="actions">${btn("Order via WhatsApp", order(p), { size: "lg", ic: "whatsapp-logo", attrs: `target="_blank" rel="noopener"` })}${btn("Call " + SITE.hotline, "tel:" + SITE.hotline, { kind: "secondary", size: "lg", ic: "phone" })}${wishBtn("shop:" + p.slug, "wish--lg")}</div>
-      <p class="pdp__note">${icon("check-circle")}Orders fulfilled via WhatsApp. Delivery across Bangladesh.</p>
+      <div class="actions">${btn("Add to basket", null, { size: "lg", ic: "shopping-bag", attrs: add(p) })}${btn("Buy now", null, { kind: "secondary", size: "lg", attrs: add(p, 1) })}${wishBtn("shop:" + p.slug, "wish--lg")}</div>
+      <p class="pdp__note">${icon("lock-key")}Secure checkout with SSLCOMMERZ. Delivery across Bangladesh.</p>
     </div>
   </div>
 </section>
