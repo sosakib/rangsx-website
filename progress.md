@@ -364,7 +364,8 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [x] Verified (headless Chrome): nav one row 1200-1920 px EN/BN, group menus (hover, click, keyboard, Esc),
       current-group highlight on 6 pages, /charging EN/BN x desktop/phone x dark/light (39 cards + pins, chips,
       search, empty state, locate tooltip, no errors, no sideways scroll), dealers map unchanged, phone menu groups.
-- [ ] Not pushed or deployed yet.
+- [x] Pushed (06c27d8) and deployed 9 Nov: https://sosakib.github.io/rangsx-website/charging/ . Live checks: crawl 57 pages
+      + 112 assets under /rangsx-website/, booking flow, nav + charging suite EN/BN (all pass).
 - [ ] Worth confirming: Crack Platoon lists 3 chargers (incl. "RANGS Parking Lot" at 215 Bir Uttam Mir Shawkat
       Sarak, the Tejgaon showroom address) as "Private for Mercedes": the page says "Mercedes-Benz vehicles only".
       If RangsX vehicles can use the RANGS lot charger, tell me and it can be featured.
