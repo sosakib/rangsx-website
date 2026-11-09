@@ -185,7 +185,7 @@
   };
   menuBtn && menuBtn.addEventListener("click", () => setMenu(menuBtn.getAttribute("aria-expanded") !== "true"));
   // Rotating a tablet past the desktop breakpoint hides the menu button: close the menu so the page can scroll.
-  matchMedia("(min-width: 1024px)").addEventListener("change", (e) => e.matches && root.classList.contains("menu-open") && setMenu(false));
+  matchMedia("(min-width: 1200px)").addEventListener("change", (e) => e.matches && root.classList.contains("menu-open") && setMenu(false));
   mnav && mnav.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
 
   /* ---------- Help sheet ---------- */

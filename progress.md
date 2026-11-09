@@ -305,3 +305,38 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [x] `AGENTS.md`: the map for any AI agent continuing the work (`CLAUDE.md` imports it). README deploy section
       and Lemon Milk licence note updated.
 - [x] Verified: build checks clean (every src/srcset still resolves); redeployed and the live crawl passes.
+
+## Round 20 (6 Oct 2026): Dynamic vs Static content report for IT and Marketing
+- [x] cms-report/index.html + cms-report/shots/ (21 annotated screenshots, desktop dark): 115 elements sorted
+      (50 dynamic, 19 auto from portal data, 46 static), 12 portal modules with fields, code mapping, issues, assumptions.
+      Published privately: https://claude.ai/artifact/9doZNHg62B5RmmJp5u2Zev (share from its Share menu).
+- [x] Issues found: About says 12 dealers (list has 13); test ride showroom list (ui.mjs SHOWROOMS) does not match
+      DEALERS (Gulshan not a dealer, Tejgaon missing); EMI 12-36 typed in 6 places; office hours in 4 formats;
+      footer product list hand-typed; no shop stock field.
+- [ ] cms-report/ is untracked and the repo is public: decide before committing it.
+- [x] 8 Oct revision (report v2, same link): at Marketing's request moved to dynamic: home chooser (line, both
+      cards, van and bike images; backdrop stays static), Electric Bikes hub notes, RX lineup title + intro, RX details
+      title + tab labels + specs note, About counters, story and timeline. Now 121 elements: 60 dynamic, 19 auto,
+      42 static. 5 screenshots re-annotated. Report only: the site code is unchanged (no portal yet).
+
+## Round 21 (9 Nov 2026): Events section (BEVMX 2026)
+- [x] "Events" in the top nav (after RX Gear Shop), the phone menu and the footer. `/events` hub: featured card for
+      the current or next event (date "ticket" in LEMON MILK, status pill, countdown), a grid for more, "Past events"
+      once any have ended, and a designed empty state. `/events/bevmx-2026`: hero with ticket and live status, what
+      we are bringing (RX ZS, ES3, T60, Dongfeng EM-26, EM-27, pulled from the product data), who should drop by
+      (riders, fleets, future dealers, each with a prefilled WhatsApp), plan your visit (days, hours, venue, stall,
+      entry, Google Maps, add-to-calendar .ics), about BEVMX, closing band. ExhibitionEvent JSON-LD.
+- [x] IT workflow: one data file, `site/data/events.mjs`, documented field by field; status is computed in the
+      browser from the dates (Dhaka time). Bangla: `site/i18n/bn-events.mjs` + generic date/hours patterns in bn.mjs.
+- [x] Content only from the BEVMX brief (9 Nov) and site data. Left out until confirmed in writing: stall number
+      ("Announced soon"), the e-bike launch, test rides, offers, prices, visitor or trade-value forecasts, EM-27
+      cargo/payload figures from the brief (the site lists the EM-27 as a microbus).
+- [x] Header fix (also needed before this round): with 8 items the bar overflowed at 1024-1399 px and already did by
+      29-34 px at 1024 and 1200. Now the hotline number hides below 1400 px (icon stays) and the menu button takes
+      over below 1200 px (CSS + the site.js close-on-widen query). Fits from 1024 to 1920 px, EN and BN.
+- [x] Verified (headless Chrome): events pages in EN/BN x desktop/phone x dark/light, one h1, no sideways scroll, no
+      errors; status upcoming ("Starts in 17 days"), live on 27 Nov ("Day 2 of 3"), ended after, "tomorrow" on the
+      eve; .ics downloads with 26-28 Nov; phone menu and 1100 px menu list Events; full-site regression 55 pages +
+      112 assets pass; GitHub Pages BASE build keeps the calendar link.
+- [ ] Confirm before publishing: RangsX stall number (the team plan says EV-69 to EV-73), whether to announce the
+      RX launch on 26 Nov, the final display lineup (plan also lists an electric pickup, not on the site).

@@ -9,8 +9,9 @@ import fleet from "./bn-fleet.mjs";
 import company from "./bn-company.mjs";
 import legal from "./bn-legal.mjs";
 import account from "./bn-account.mjs";
+import events from "./bn-events.mjs";
 
-export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account };
+export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account, ...events };
 const LOWER = Object.fromEntries(Object.entries(BN).map(([k, v]) => [k.toLowerCase(), v]));
 const tr = (s) => BN[s] ?? LOWER[s.toLowerCase()];
 
@@ -35,7 +36,22 @@ const fuelNote = (km, date) =>
 const MONTHS = { Jan: "জানুয়ারি", Feb: "ফেব্রুয়ারি", Mar: "মার্চ", Apr: "এপ্রিল", May: "মে", Jun: "জুন", Jul: "জুলাই", Aug: "আগস্ট", Sep: "সেপ্টেম্বর", Oct: "অক্টোবর", Nov: "নভেম্বর", Dec: "ডিসেম্বর" };
 
 // Families of strings: [pattern, (match, ...groups) => Bangla | undefined]. Tried in order after the exact entries.
+// Event dates and days (site/pages/events.mjs): "26-28 November 2026", "November 2026", "Thursday 26 November".
+const MON = "January|February|March|April|May|June|July|August|September|October|November|December";
+const WD = { Sunday: "রবিবার", Monday: "সোমবার", Tuesday: "মঙ্গলবার", Wednesday: "বুধবার", Thursday: "বৃহস্পতিবার", Friday: "শুক্রবার", Saturday: "শনিবার" };
+const mon = (m) => MONTHS[m.slice(0, 3)];
+
 export const PATTERNS = [
+  [new RegExp(String.raw`^(\d{1,2})-(\d{1,2}) (${MON}) (\d{4})$`), (m, a, b, mo, y) => `${a}-${b} ${mon(mo)} ${y}`],
+  [new RegExp(String.raw`^(\d{1,2}) (${MON}) (\d{4})$`), (m, a, mo, y) => `${a} ${mon(mo)} ${y}`],
+  [new RegExp(String.raw`^(\d{1,2}) (${MON}) - (\d{1,2}) (${MON}) (\d{4})$`), (m, a, ma, b, mb, y) => `${a} ${mon(ma)} - ${b} ${mon(mb)} ${y}`],
+  [new RegExp(String.raw`^(${MON})(?:-(${MON}))? (\d{4})$`), (m, a, b, y) => `${mon(a)}${b ? `-${mon(b)}` : ""} ${y}`],
+  [new RegExp(String.raw`^(${Object.keys(WD).join("|")}) (\d{1,2}) (${MON})$`), (m, d, n, mo) => `${WD[d]}, ${n} ${mon(mo)}`],
+  [/^(\d{1,2}:\d\d) (AM|PM) - (\d{1,2}:\d\d) (AM|PM), every day$/, (m, a, ap, b, bp) => `প্রতিদিন ${clock(a, ap)} - ${clock(b, bp)}`],
+  [/^About (.+)$/, (m, what) => `${tr(what) ?? what} সম্পর্কে`],
+  [/^On the RangsX stall: <strong>(.+)<\/strong>\.$/, (m, list) => `RangsX স্টলে থাকছে: <strong>${list.replace(/ and ([^,]+)$/, " আর $1")}</strong>।`],
+  [/^Organised by (<a [^>]+>)(.+)<\/a>\.$/, (m, a, who) => `আয়োজক: ${a}${who}</a>।`],
+  [/^Hi RangsX, I can't make it to (.+)\. Can you help me here\?$/, (m, what) => `হ্যালো RangsX, ${what}-এ আসতে পারছি না। এখান থেকেই কি সাহায্য করতে পারবেন?`],
   // Gallery captions and alt text: "RX ZS Front detail", "RX ZS, front detail", "Dongfeng EM-27 Pearl White"
   [/^(RX (?:ZS|ES3|T60)|Dongfeng EM-2[67]),? (.+)$/, (m, model, rest) => tr(rest) && `${model}, ${tr(rest)}`],
   // "RX ZS in Silver Grey", "RX T60 electric bike in Sunset Orange", "Dongfeng EM-27 electric microbus in Pearl White"

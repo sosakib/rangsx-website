@@ -1,0 +1,135 @@
+/* Events: /events and /events/<slug> (site/pages/events.mjs). Tokens only, so both themes work. */
+
+/* ---------- Status pill. Text for each state is in the HTML; events.js sets data-status. ---------- */
+.ev-status { display: inline-flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 12px; border-radius: var(--r-pill); background: var(--bg-btn2); color: var(--fg); font: 600 var(--fs-xs)/1 var(--font-text); letter-spacing: .02em; }
+.ev-status [data-when] { display: none; }
+.ev-status[data-status="upcoming"] [data-when="upcoming"], .ev-status[data-status="live"] [data-when="live"], .ev-status[data-status="past"] [data-when="past"] { display: inline; }
+.ev-status__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg-3); }
+.ev-status[data-status="upcoming"] .ev-status__dot { background: var(--red); }
+.ev-status[data-status="live"] { background: rgb(237 35 40 / .14); color: var(--link); }
+.ev-status[data-status="live"] .ev-status__dot { background: var(--red); box-shadow: 0 0 0 4px rgb(237 35 40 / .22); }
+.ev-status__count:empty { display: none; }
+.ev-status__count { padding-left: 8px; border-left: 1px solid var(--line-strong); color: var(--fg-2); font-weight: 500; }
+
+/* ---------- Ticket: the date as the hero object. Notches are a mask; the stub sits under a dashed perforation. ---------- */
+.ticket {
+  --stub: 72px; --notch: 14px;
+  display: flex; flex-direction: column; align-items: flex-start; padding: clamp(24px, 3vw, 36px) clamp(24px, 3vw, 36px) 0;
+  border-radius: var(--r-lg); color: var(--fg);
+  background: radial-gradient(120% 75% at 50% 0%, rgb(var(--glow) / calc(.24 * var(--glow-k))), transparent 62%), var(--bg-card);
+  -webkit-mask: radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub)), #0000 97%, #000) 0 0 / 51% 100% no-repeat,
+                radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub)), #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+          mask: radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub)), #0000 97%, #000) 0 0 / 51% 100% no-repeat,
+                radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub)), #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+}
+.ticket__role { font: 600 var(--fs-xs)/1 var(--font-text); letter-spacing: .14em; text-transform: uppercase; color: var(--link); }
+.ticket__days { margin-top: 20px; font-family: var(--font-brand); font-weight: 500; font-size: clamp(4.5rem, 9vw, 8.5rem); line-height: .9; letter-spacing: .01em; font-size-adjust: cap-height .6; white-space: nowrap; }
+.ticket__days i { font-style: normal; color: var(--red); margin-inline: .03em; }
+.ticket__month { margin-top: 10px; font: 500 var(--fs-4)/1.25 var(--font-display); color: var(--fg-2); }
+.ticket__venue { align-self: stretch; display: flex; align-items: center; gap: 8px; height: var(--stub); margin-top: 28px; border-top: 2px dashed var(--line-strong); font-size: var(--fs-sm); font-weight: 500; }
+.ticket__venue .i { width: 18px; height: 18px; color: var(--fg-3); flex: none; }
+
+/* ---------- Hub ---------- */
+.ev-hub-hero .lead { max-width: 600px; }
+.ev-label { margin-bottom: 20px; font: 600 var(--fs-xs)/1.2 var(--font-text); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); }
+.ev-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+.ev-card { display: grid; grid-template-columns: minmax(0, 210px) minmax(0, 1fr); gap: clamp(20px, 3vw, 32px); padding: 16px; color: inherit; border-radius: var(--r-lg); }
+.ev-card .ticket { --stub: 56px; padding: 22px 22px 0; }
+.ev-card .ticket__days { font-size: clamp(3rem, 5vw, 4rem); margin-top: 14px; }
+.ev-card .ticket__month { font-size: var(--fs-sm); }
+.ev-card .ticket__venue { margin-top: 18px; }
+.ev-card__body { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 8px 8px 8px 0; }
+.ev-card__title { margin-top: 8px; font-family: var(--font-brand); font-weight: 500; font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1; letter-spacing: .01em; font-size-adjust: cap-height .6; }
+.ev-card__full { color: var(--fg-2); font-size: var(--fs-sm); }
+.ev-card__sum { margin-top: 8px; max-width: 54ch; color: var(--fg-2); }
+.ev-card__go { margin-top: auto; padding-top: 12px; }
+.ev-card:hover .ev-card__go span { text-decoration: underline; text-underline-offset: .2em; }
+.ev-card:hover .ev-card__go .i { transform: translateX(3px); }
+.ev-card--feature { grid-column: 1 / -1; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); padding: 20px; }
+.ev-card--feature .ticket { --stub: 72px; padding: clamp(24px, 3vw, 36px) clamp(24px, 3vw, 36px) 0; }
+.ev-card--feature .ticket__days { font-size: clamp(4.5rem, 8vw, 7.5rem); margin-top: 20px; }
+.ev-card--feature .ticket__month { font-size: var(--fs-4); }
+.ev-card--feature .ev-card__body { justify-content: center; padding: 16px 16px 16px 0; }
+.ev-card--feature .ev-card__title { font-size: clamp(2.25rem, 4.5vw, 3.75rem); }
+.ev-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 8px; color: var(--fg-2); font-size: var(--fs-sm); }
+.ev-meta li { display: inline-flex; align-items: center; gap: 8px; }
+.ev-meta .i { width: 18px; height: 18px; color: var(--fg-3); }
+.ev-empty { display: grid; justify-items: start; gap: 12px; max-width: 640px; }
+.ev-empty > .i { width: 32px; height: 32px; color: var(--fg-3); }
+.ev-empty .btn { margin-top: 8px; }
+
+/* ---------- Event page hero ---------- */
+.ev-hero__grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.ev-hero .ev-status { margin-bottom: 24px; }
+.ev-hero .lead { max-width: 620px; }
+.ev-meta--hero { margin-top: 28px; gap: 12px 28px; color: var(--fg); font-weight: 500; }
+.ev-hero .ticket { width: 100%; }
+
+/* ---------- What we are bringing ---------- */
+.ev-lanes { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-top: clamp(32px, 4vw, 48px); }
+.ev-lanes:has(> :only-child) { grid-template-columns: 1fr; }
+.ev-lane { display: flex; flex-direction: column; gap: 24px; padding: clamp(20px, 3vw, 36px); border-radius: var(--r-lg); background: var(--bg-card); box-shadow: 0 0 0 1px var(--line); }
+.ev-lane__title { font: 600 var(--fs-3)/1.15 var(--font-display); font-stretch: var(--stretch); letter-spacing: -.015em; }
+.ev-lane header p { margin-top: 6px; font-size: var(--fs-sm); }
+.ev-lane__items { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 8px; margin-top: auto; }
+.ev-item { display: grid; justify-items: center; gap: 2px; padding: 12px 8px 16px; border-radius: var(--r-md); text-align: center; color: inherit; transition: background-color var(--dur-2); }
+.ev-item:hover { background: var(--bg-hover); }
+.ev-item__img { width: 100%; aspect-ratio: 4 / 3; margin-bottom: 10px; }
+.ev-item__img img { width: 100%; height: 100%; object-fit: contain; transition: transform var(--dur-4) var(--ease-out); }
+.ev-item:hover .ev-item__img img { transform: scale(1.04); }
+.ev-item b { font: 600 var(--fs-sm)/1.3 var(--font-display); }
+.ev-item .muted { font-size: var(--fs-xs); }
+
+/* ---------- Who should drop by: three columns split by hairlines, not cards ---------- */
+.ev-who { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(32px, 4vw, 48px); border-top: 1px solid var(--line); }
+.ev-who__item { display: flex; flex-direction: column; align-items: flex-start; padding: 32px 32px 0 0; }
+.ev-who__item + .ev-who__item { padding-left: 32px; border-left: 1px solid var(--line); }
+.ev-who__item > .i { width: 28px; height: 28px; color: var(--red); }
+.ev-who__item h3 { margin-top: 16px; font: 600 var(--fs-4)/1.3 var(--font-display); font-stretch: 104%; }
+.ev-who__item p { margin-top: 8px; color: var(--fg-2); font-size: var(--fs-sm); }
+.ev-who__item .more { margin-top: auto; padding-top: 20px; }
+
+/* ---------- Plan your visit ---------- */
+.ev-visit { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.ev-facts { padding: 4px clamp(20px, 3vw, 32px); }
+.ev-facts > div { display: grid; grid-template-columns: 22px minmax(0, 150px) minmax(0, 1fr); gap: 4px 16px; padding: 20px 0; }
+.ev-facts > div + div { border-top: 1px solid var(--line); }
+.ev-facts .i { width: 20px; height: 20px; margin-top: 2px; color: var(--fg-3); }
+.ev-facts dt { color: var(--fg-2); font-size: var(--fs-sm); }
+.ev-facts dd { font-size: var(--fs-sm); font-weight: 500; }
+.ev-facts dd .muted { font-weight: 400; }
+.ev-days { display: grid; gap: 4px; }
+
+/* ---------- About the event ---------- */
+.ev-about { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 6vw, 96px); align-items: start; }
+.ev-about .lead { max-width: 60ch; }
+.ev-topics { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.ev-topics .chip, .ev-topics .chip:hover { cursor: default; background: none; color: var(--fg-2); }
+.ev-about__by { margin-top: 28px; color: var(--fg-2); font-size: var(--fs-sm); }
+.ev-about__by a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
+.ev-about .more { margin-top: 10px; }
+
+/* ---------- After the event ---------- */
+.ev-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; margin-top: 32px; }
+.ev-gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-md); }
+.ev-gallery figcaption { margin-top: 8px; font-size: var(--fs-sm); color: var(--fg-2); }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 1023px) {
+  .ev-hero__grid, .ev-visit, .ev-about { grid-template-columns: 1fr; }
+  .ev-hero .ticket { max-width: 460px; }
+  .ev-lanes { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .ev-card, .ev-card--feature { grid-template-columns: 1fr; gap: 16px; padding: 12px; }
+  .ev-card__body, .ev-card--feature .ev-card__body { padding: 4px 8px 12px; }
+  .ev-who { grid-template-columns: 1fr; }
+  .ev-who__item, .ev-who__item + .ev-who__item { padding: 28px 0; border-left: 0; }
+  .ev-who__item + .ev-who__item { border-top: 1px solid var(--line); }
+  .ev-facts > div { grid-template-columns: 22px minmax(0, 1fr); }
+  .ev-facts dd { grid-column: 2; }
+}
+@media (max-width: 479px) {
+  .ev-lane__items { gap: 4px; }
+  .ev-item { padding: 8px 2px 12px; }
+}

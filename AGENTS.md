@@ -61,6 +61,13 @@ scrollcraft/.../BRIEF.md   the client's homepage brief in their own words
 - **Homepage film:** `<video>` scrubbed by scroll. It streams with byte ranges; a 2-byte range probe falls back
   to download-then-scrub on hosts without ranges. Reduced motion gets a static version.
 - **Chat:** the corner button opens a WhatsApp-style chat window (demo) that hands off to wa.me.
+- **Events:** `site/data/events.mjs` is the only file to edit (its header lists every field). Each object becomes a
+  card on `/events` and a page at `/events/<slug>` (`site/pages/events.mjs`, `css/events.css`). Status (Upcoming,
+  Happening now, Ended) and the countdown come from the dates in Dhaka time on every visit (`js/events.js`), so
+  nothing changes by hand when an event starts or ends; ordering into "Current and upcoming" vs "Past events" is
+  decided at build, so rebuild and deploy after an event ends. Dates, hours and the stall list translate to Bangla
+  by pattern; a new event's own sentences go in `site/i18n/bn-events.mjs`. Recap and gallery sections appear only
+  when filled. Only publish what the organiser or management confirmed in writing (stall numbers, test rides, offers).
 
 ## Rules (from the client and the user)
 - Never invent specs, prices or facts: take them from `site/data` or `_research`. RX bike retail prices are

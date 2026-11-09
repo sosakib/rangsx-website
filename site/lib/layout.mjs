@@ -74,6 +74,7 @@ function mobileNav() {
       <li><a class="mnav__link" href="/dongfeng">Electric Fleet</a>${sub(FLEET.map((f) => [f.fullName, f.url]))}</li>
       <li><a class="mnav__link" href="/electric-bikes">Electric Bikes</a>${sub(BIKES.map((b) => [b.fullName, bikeUrl(b)]))}</li>
       <li><a class="mnav__link" href="/shop">RX Gear Shop</a></li>
+      <li><a class="mnav__link" href="/events">Events</a></li>
       <li><a class="mnav__link" href="/about">About</a></li>
       <li><a class="mnav__link" href="/service">Service</a></li>
       <li><a class="mnav__link" href="/dealers">Dealers</a></li>

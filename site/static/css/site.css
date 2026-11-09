@@ -304,19 +304,15 @@ html.menu-open .gnav::before { background: var(--bg); box-shadow: 0 1px 0 var(--
 @keyframes mnav-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes rise { to { opacity: 1; transform: none; } }
 
-/* 7 nav items: tighten on laptops, then drop the hotline number (icon stays) */
+/* 8 nav items: on laptops drop the hotline number (the icon stays) and tighten; below 1200 px the menu button takes over */
 @media (max-width: 1399px) {
   .gnav__bar { gap: 16px; }
   .gnav__link { padding: 0 12px; font-size: .9375rem; }
-}
-@media (max-width: 1199px) {
-  .gnav__nav > ul { gap: 0; }
-  .gnav__link { padding: 0 10px; }
   .gnav__hotline span { display: none; }
 }
-@media (max-width: 1139px) {
-  .gnav__bar { gap: 12px; }
-  .gnav__link { padding: 0 8px; font-size: .875rem; }
+@media (max-width: 1279px) {
+  .gnav__nav > ul { gap: 0; }
+  .gnav__link { padding: 0 9px; }
 }
 /* Phones: a shorter bar keeps the first screen for content; tools tighten so the menu button always fits. */
 @media (max-width: 767px) {
@@ -328,12 +324,12 @@ html.menu-open .gnav::before { background: var(--bg); box-shadow: 0 1px 0 var(--
   .gnav__hotline { min-height: 40px; padding: 0 10px; }
   .gnav__lang { min-width: 44px; min-height: 36px; padding: 0 10px; margin-inline: 2px; }
 }
-@media (max-width: 1023px) {
+@media (max-width: 1199px) {
   .gnav__nav { display: none; }
   .gnav__menu { display: inline-grid; }
   .gnav__tools { margin-left: auto; }
 }
-@media (min-width: 1024px) { .mnav { display: none !important; } }
+@media (min-width: 1200px) { .mnav { display: none !important; } }
 @media (max-width: 419px) { .gnav__hotline span { display: none; } }
 @media (max-width: 379px) { .logo--bar img { height: 36px; } }
 /* Language switch: "বাংলা" on English pages, "EN" on Bangla pages. */
