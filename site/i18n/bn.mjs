@@ -10,8 +10,9 @@ import company from "./bn-company.mjs";
 import legal from "./bn-legal.mjs";
 import account from "./bn-account.mjs";
 import events from "./bn-events.mjs";
+import charging from "./bn-charging.mjs";
 
-export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account, ...events };
+export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account, ...events, ...charging };
 const LOWER = Object.fromEntries(Object.entries(BN).map(([k, v]) => [k.toLowerCase(), v]));
 const tr = (s) => BN[s] ?? LOWER[s.toLowerCase()];
 
@@ -68,7 +69,12 @@ export const PATTERNS = [
   [/^Hi RangsX, I would like an EMI quote for the (.+)\.$/, (m, p) => `হ্যালো RangsX, ${p}-এর EMI কোটেশন চাই।`],
   [/^(RX [\w -]+): RX Gear \| RangsX$/, (m, p) => `${p}: RX Gear | RangsX`],
   // Dealers
-  [/^Show (.+) on the map$/, (m, name) => tr(name) && `ম্যাপে দেখুন: ${tr(name)}`],
+  [/^Show (.+) on the map$/, (m, name) => `ম্যাপে দেখুন: ${tr(name) ?? name}`], // charging stations keep English names
+  [/^Map of Bangladesh with (\d+) EV charging stations$/, (m, n) => `বাংলাদেশের ম্যাপে ${n}টি EV চার্জিং স্টেশন`],
+  [/^(\d+) EV charging stations across Bangladesh on one map, with the operator, plug type and power for each\. (.+)$/,
+    (m, n) => `সারা বাংলাদেশের ${n}টি EV চার্জিং স্টেশন এক ম্যাপে, প্রতিটির অপারেটর, প্লাগের ধরন আর পাওয়ার সহ। ঢাকা, চট্টগ্রাম, কুমিল্লা, কক্সবাজার, সিলেট ও আরও অনেক জায়গায়।`],
+  [/^Sources: the operators' own websites and the Charge Bangla directory\. Last checked (\d+) (\w+) (\d{4})\. (.+)$/,
+    (m, d, mo, y) => `সূত্র: অপারেটরদের নিজস্ব ওয়েবসাইট আর Charge Bangla ডিরেক্টরি। সর্বশেষ যাচাই ${d} ${mon(mo)} ${y}। যেখানে অপারেটর সঠিক লোকেশন প্রকাশ করেনি, সেখানে পিন আনুমানিক, আর দিকনির্দেশনা ঠিকানা দিয়ে ম্যাপে খোঁজে।`],
   [/^(\d+) locations?$/, (m, n) => `${n}টি লোকেশন`],
   [/^(\d+) products?$/, (m, n) => `${n}টি প্রোডাক্ট`],
   [/^Save ৳ ([\d,]+)$/, (m, n) => `৳ ${n} সাশ্রয়`],

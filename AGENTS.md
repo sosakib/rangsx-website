@@ -68,6 +68,11 @@ scrollcraft/.../BRIEF.md   the client's homepage brief in their own words
   decided at build, so rebuild and deploy after an event ends. Dates, hours and the stall list translate to Bangla
   by pattern; a new event's own sentences go in `site/i18n/bn-events.mjs`. Recap and gallery sections appear only
   when filled. Only publish what the organiser or management confirmed in writing (stall numbers, test rides, offers).
+- **Nav:** `NAV` in `site/data/site.mjs` drives the desktop bar, the phone menu and the active state. `flyout` = product
+  panel (fleet, bikes); `menu` = a group button (Network, Company) whose panel lists `[label, href, note, icon]`.
+- **Charging stations:** `site/data/chargers.mjs` is the only file to edit (fields documented in its header); `/charging`
+  reuses the dealer locator (cards, chips, search, division map; `locMap` in company.mjs, the dealers block in
+  site.js with `data-noun`). Names and addresses stay English on /bn/ through `translate="no"`. Unpublished = empty.
 
 ## Rules (from the client and the user)
 - Never invent specs, prices or facts: take them from `site/data` or `_research`. RX bike retail prices are

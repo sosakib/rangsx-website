@@ -3,6 +3,7 @@ import { html, btn, more, head, icon, pic, faq, testRide, ctaBand, crumbs, field
 import { FLEET } from "../data/fleet.mjs";
 import { GENERAL_FAQS, CONTACT_SUBJECTS, WARRANTY } from "../data/site.mjs";
 import { DEALERS, DIVISIONS } from "../data/dealers.mjs";
+import { CHARGERS, CHARGERS_CHECKED } from "../data/chargers.mjs";
 import { LEGAL } from "../data/legal.mjs";
 import { MAP, project, DIVISION_SHAPES } from "../data/bd-map.mjs";
 
@@ -182,25 +183,26 @@ const dealerCard = (d) => html`
   </div>
 </article>`;
 
-// Interactive division map. Divisions: geoBoundaries ADM1 (see _research/geo). Pins: dealer coordinates.
-// The SVG is mouse/touch sugar; the division chips and "show on map" buttons give the same control by keyboard.
-const perDiv = Object.fromEntries(DIVISIONS.map((v) => [v, DEALERS.filter((d) => d.district === v).length]));
+// Interactive division map (dealers and chargers). Divisions: geoBoundaries ADM1 (see _research/geo). Pins: each
+// item's lat/lng; `div` reads its division. The SVG is mouse/touch sugar; the division chips and "show on map"
+// buttons give the same control by keyboard.
 const LABEL_NUDGE = { Dhaka: [-26, -30], Chattogram: [-6, -24], Barishal: [4, 16], Rangpur: [-8, -14], Mymensingh: [0, -18], Sylhet: [-6, 22], Khulna: [-14, -14] };
-const dealerMap = () => html`
+const locMap = (items, div, label, key, big = "") => html`
 <figure class="bdmap" data-map data-reveal>
   <div class="bdmap__stage" data-glow>
-    <svg class="bdmap__map" viewBox="0 0 ${MAP.w} ${MAP.h}" role="img" aria-label="Map of Bangladesh with ${DEALERS.length} RangsX dealers across ${DIVISIONS.length} divisions">
+    <svg class="bdmap__map" viewBox="0 0 ${MAP.w} ${MAP.h}" role="img" aria-label="${label}">
       <g class="bdmap__zoom">
-        <g class="bdmap__divs">${DIVISION_SHAPES.map((v) => `<path class="bdmap__div" data-region="${v.name}" data-n="${perDiv[v.name] || 0}" d="${v.d}"/>`)}</g>
+        <g class="bdmap__divs">${DIVISION_SHAPES.map((v) => `<path class="bdmap__div" data-region="${v.name}" data-n="${items.filter((d) => div(d) === v.name).length}" d="${v.d}"/>`)}</g>
         <g class="bdmap__labels">${DIVISION_SHAPES.map((v) => { const [dx, dy] = LABEL_NUDGE[v.name] || [0, 0]; return `<text x="${(v.cx + dx).toFixed(1)}" y="${(v.cy + dy).toFixed(1)}" data-region="${v.name}">${v.name}</text>`; })}</g>
-        <g class="bdmap__pins">${DEALERS.map((d, i) => { const [x, y] = project(d.lat, d.lng); return `<g class="bdmap__pin" data-pin="${d.id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y})" style="--i:${i}"><g class="bdmap__pin-in"><circle class="bdmap__hit" r="11"/><circle class="bdmap__pulse" r="${d.id === "tejgaon" ? 8 : 6.5}"/><circle class="bdmap__dot" r="${d.id === "tejgaon" ? 5.4 : 4.2}"/></g></g>`; })}</g>
+        <g class="bdmap__pins">${items.map((d, i) => { const [x, y] = project(d.lat, d.lng); return `<g class="bdmap__pin" data-pin="${d.id}" data-x="${x}" data-y="${y}" transform="translate(${x} ${y})" style="--i:${i}"><g class="bdmap__pin-in"><circle class="bdmap__hit" r="11"/><circle class="bdmap__pulse" r="${d.id === big ? 8 : 6.5}"/><circle class="bdmap__dot" r="${d.id === big ? 5.4 : 4.2}"/></g></g>`; })}</g>
       </g>
     </svg>
     <div class="bdmap__tip" hidden></div>
     <button class="btn btn--secondary btn--sm bdmap__reset" type="button" data-map-reset hidden>${icon("arrow-u-up-left")}<span>All of Bangladesh</span></button>
   </div>
-  <figcaption class="bdmap__legend"><span><i class="bdmap__key" aria-hidden="true"></i>RangsX showroom or service centre</span><span>Select a division to zoom in</span></figcaption>
+  <figcaption class="bdmap__legend"><span><i class="bdmap__key" aria-hidden="true"></i>${key}</span><span>Select a division to zoom in</span></figcaption>
 </figure>`;
+const dealerMap = () => locMap(DEALERS, (d) => d.district, `Map of Bangladesh with ${DEALERS.length} RangsX dealers across ${DIVISIONS.length} divisions`, "RangsX showroom or service centre", "tejgaon");
 
 const dealers = page("/dealers", "Dealers", {
   title: "Dealer Locator: Showrooms Across Bangladesh",
@@ -235,6 +237,76 @@ ${pageHero({ eyebrow: "Dealer Network", title: `Dealer <span class="accent">loca
 ${testRide()}
 ${faq(GENERAL_FAQS)}
 ${ctaBand({ eyebrow: "Visit a Showroom", title: "Start your electric", accent: "journey today", lead: "Talk to a dealer near you. See the Dongfeng fleet or RX e-bikes in person, book a test ride, or get a fleet quote.", primary: ["Book a Visit", "#test-ride-form"], waText: "Hi RangsX, I'd like to visit a dealer near me." })}`,
+});
+
+// ---------------------------------------------------------------- Charging stations (data: site/data/chargers.mjs)
+// Station names, addresses and operators stay English on /bn/ (translate="no"), as the operators publish them.
+const KIND = { DC: ["DC fast", " badge--red"], AC: ["AC", ""], "": ["Type not published", ""] };
+const ACCESS = { Public: ["Public", "is-open"], "Mercedes-Benz vehicles only": ["Mercedes-Benz vehicles only", "is-ltd"], "": ["Access not published", ""] };
+const dirUrl = (s) => s.exact ? `https://www.google.com/maps/dir/?api=1&amp;destination=${s.lat},${s.lng}`
+  : `https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(`${s.name}, ${s.address}, ${s.city}, Bangladesh`)}`;
+const chargerCard = (s) => {
+  const spec = [s.power, s.plug].filter(Boolean).join(" · ");
+  return html`
+<article class="dealer charger" data-id="${s.id}" data-div="${s.division}" data-q="${esc(`${s.name} ${s.address} ${s.city} ${s.operator} ${s.kind} ${s.plug}`.toLowerCase())}" data-glow>
+  <div class="dealer__tags"><span class="badge${KIND[s.kind][1]}">${KIND[s.kind][0]}</span></div>
+  <h3><button type="button" class="dealer__locate" data-locate="${s.id}" aria-label="Show ${esc(s.name)} on the map"><span translate="no">${s.name}</span>${icon("map-pin")}</button></h3>
+  <address>${s.address === s.city ? "" : `<span translate="no">${s.address}</span>, `}<span>${s.city}</span></address>
+  <p class="dealer__lm" translate="no">${s.operator}</p>
+  <dl class="charger__spec">
+    <div><dt>Power and plug</dt><dd>${spec ? `<span translate="no">${spec}</span>` : "Not published"}</dd></div>
+    <div><dt>Charging points</dt><dd>${s.points || "Not published"}</dd></div>
+  </dl>
+  <p class="dealer__status ${ACCESS[s.access][1]}">${ACCESS[s.access][0]}</p>
+  <div class="dealer__acts dealer__acts--2">
+    <a href="${dirUrl(s)}" target="_blank" rel="noopener">${icon("navigation-arrow")}Directions</a>
+    <a href="${s.source}" target="_blank" rel="noopener">${icon("arrow-up-right")}Operator details</a>
+  </div>
+</article>`;
+};
+// Cards: by division, then the stations with the most published details first. Map pins keep the data order.
+const known = (s) => (s.access === "Public") * 4 + !!s.power * 2 + !!s.plug + !!s.points;
+const LIST = [...CHARGERS].sort((a, b) => DIVISIONS.indexOf(a.division) - DIVISIONS.indexOf(b.division) || known(b) - known(a));
+const CH_DIVS = DIVISIONS.filter((v) => CHARGERS.some((s) => s.division === v));
+const checked = new Date(CHARGERS_CHECKED + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+const charging = page("/charging", "Charging Stations", {
+  title: "EV Charging Stations in Bangladesh: Map and List",
+  description: `${CHARGERS.length} EV charging stations across Bangladesh on one map, with the operator, plug type and power for each. Dhaka, Chattogram, Cumilla, Cox's Bazar, Sylhet and more.`,
+  schema: [{ "@type": "ItemList", name: "EV charging stations in Bangladesh", itemListElement: CHARGERS.map((s, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "Place", name: s.name, address: { "@type": "PostalAddress", streetAddress: s.address, addressLocality: s.city, addressCountry: "BD" }, geo: { "@type": "GeoCoordinates", latitude: s.lat, longitude: s.lng } } })) }],
+  body: html`
+${pageHero({ eyebrow: "Charging Network", title: `Charging <span class="accent">stations</span>`, lead: "Public EV chargers across Bangladesh on one map: where they are, who runs them, and the plug and power each one offers. Every RangsX vehicle also charges from a standard AC socket at home or at your depot." })}
+<section class="section section--flush-top" aria-label="Charging stations">
+  <div class="wrap" data-dealers data-noun="charging station|চার্জিং স্টেশন">
+    <div class="dealer-bar">
+      <div class="dealer-bar__top">
+        <label class="search"><span class="sr">Search charging stations</span>${icon("magnifying-glass")}<input type="search" placeholder="Search by area, operator or plug" autocomplete="off"></label>
+        <p class="shop-bar__count" data-dealer-count aria-live="polite">${CHARGERS.length} locations</p>
+      </div>
+      <div class="chips-scroll" role="group" aria-label="Filter by division">
+        <button type="button" class="chip" data-div="all" aria-pressed="true">All <small>${CHARGERS.length}</small></button>
+        ${CH_DIVS.map((v) => `<button type="button" class="chip" data-div="${v}" aria-pressed="false">${v} <small>${CHARGERS.filter((s) => s.division === v).length}</small></button>`)}
+      </div>
+    </div>
+    <div class="locator">
+      <div class="locator__list">
+        <h2 class="sr">Charging station locations</h2><div class="dealer-grid">${LIST.map(chargerCard)}</div>
+        <p class="shop-empty" data-empty hidden>No charging station matches that search. Try another area, or ${more("ask us on WhatsApp", wa("Hi RangsX, where can I charge near me?"), { external: true })}</p>
+      </div>
+      <div class="locator__map">${locMap(CHARGERS, (s) => s.division, `Map of Bangladesh with ${CHARGERS.length} EV charging stations`, "EV charging station")}</div>
+    </div>
+    <div class="charge-notes">
+      <h2 class="h4">Before you set off</h2>
+      <ul class="charge-notes__list">
+        <li>${icon("plug-charging")}<span><strong>Check the plug.</strong> Most public AC chargers here use Type 2; DC fast chargers use CCS2. Make sure your vehicle's port matches.</span></li>
+        <li>${icon("lock-key")}<span><strong>Check who it is for.</strong> Some chargers are reserved for one brand's vehicles, marked on each card.</span></li>
+        <li>${icon("phone")}<span><strong>Confirm with the operator.</strong> Chargers can be busy, closed or out of service. Use the operator's app or call ahead.</span></li>
+      </ul>
+      <p class="fine">Sources: the operators' own websites and the Charge Bangla directory. Last checked ${checked}. Where an operator does not publish exact coordinates, the pin is approximate and Directions searches the map for the address.</p>
+    </div>
+  </div>
+</section>
+${ctaBand({ eyebrow: "Charging Network", title: "Know a charger", accent: "we have missed?", lead: "Send us the location on WhatsApp and we will look into adding it.", primary: ["Find a dealer", "/dealers"], waText: "Hi RangsX, I'd like to suggest an EV charging station for your map:" })}`,
 });
 
 // ---------------------------------------------------------------- Contact
@@ -303,4 +375,4 @@ ${pageHero({ eyebrow: "Legal", title: L.title, lead: `Last updated: ${L.updated}
   });
 };
 
-export default [about, service, dealers, contact, legal("privacy-policy"), legal("terms-of-use")];
+export default [about, service, dealers, charging, contact, legal("privacy-policy"), legal("terms-of-use")];

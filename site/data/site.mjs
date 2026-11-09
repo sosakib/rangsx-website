@@ -31,16 +31,22 @@ export const SITE = {
 export const wa = (text = "Hi RangsX, I have a question.") =>
   `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
 
-// Primary navigation. Labels and order match the live site.
+// Primary navigation. `flyout` = product panel; `menu` = a group with no page of its own: the trigger is a button
+// and the panel lists [label, href, note, icon]. The desktop bar and the phone menu are both built from this list.
 export const NAV = [
   { label: "Electric Fleet", href: "/dongfeng", flyout: "fleet" },
   { label: "Electric Bikes", href: "/electric-bikes", flyout: "bikes" },
   { label: "RX Gear Shop", href: "/shop" },
   { label: "Events", href: "/events" },
-  { label: "About", href: "/about" },
-  { label: "Service", href: "/service" },
-  { label: "Dealers", href: "/dealers" },
-  { label: "Contact", href: "/contact" },
+  { label: "Network", id: "network", menu: [
+    ["Dealer Locator", "/dealers", "Showrooms and service centres across Bangladesh", "storefront"],
+    ["Charging Stations", "/charging", "Public EV chargers on the map", "charging-station"],
+    ["Service & Support", "/service", "Warranty, maintenance and repairs", "wrench"],
+  ] },
+  { label: "Company", id: "company", menu: [
+    ["About RangsX", "/about", "Who we are and where we are going", "info"],
+    ["Contact Us", "/contact", "Hotline, WhatsApp, email and our office", "headset"],
+  ] },
 ];
 
 export const FOOTER = [
@@ -74,6 +80,7 @@ export const FOOTER = [
       { label: "About RangsX", href: "/about" },
       { label: "Service & Support", href: "/service" },
       { label: "Dealer Network", href: "/dealers" },
+      { label: "Charging Stations", href: "/charging" },
       { label: "Contact", href: "/contact" },
     ],
   },

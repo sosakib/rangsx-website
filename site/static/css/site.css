@@ -251,7 +251,9 @@ strong, b { font-weight: 600; }
 .gnav__item { height: 100%; display: flex; align-items: center; }
 .gnav__link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; white-space: nowrap; border-radius: var(--r-pill); font-size: 1rem; font-weight: 500; letter-spacing: -.005em; color: var(--fg-2); transition: color var(--dur-2), background-color var(--dur-2); }
 .gnav__link:hover, .gnav__item.is-open > .gnav__link { color: var(--fg); }
-.gnav__link[aria-current="page"] { color: var(--fg); font-weight: 600; }
+.gnav__link[aria-current] { color: var(--fg); font-weight: 600; }
+.gnav__caret { width: 12px; height: 12px; margin-left: 6px; opacity: .55; transition: transform var(--dur-3) var(--ease-out), opacity var(--dur-2); }
+.gnav__item.is-open .gnav__caret { transform: rotate(180deg); opacity: 1; }
 .gnav__tools { display: flex; align-items: center; gap: 4px; flex: none; }
 .gnav__tools .icon-btn { width: 44px; height: 44px; }
 .gnav__tools .icon-btn .i { width: 21px; height: 21px; }
@@ -285,6 +287,13 @@ strong, b { font-weight: 600; }
 .fly-card:hover .fly-card__img img { transform: scale(1.05); }
 .fly-card__name { display: block; margin-top: 12px; font: 600 1rem/1.2 var(--font-display); font-stretch: var(--stretch); }
 .fly-card__note { display: block; margin-top: 2px; font-size: var(--fs-xs); color: var(--fg-2); }
+/* Group panels (Network, Company): icon tile + name + one line, same entrance as the product cards. */
+.fly-link { display: flex; gap: 16px; align-items: flex-start; padding: 20px; border-radius: var(--r-md); background: var(--bg-card); box-shadow: 0 0 0 1px var(--line); transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out), box-shadow var(--dur-2), background-color var(--dur-2); }
+.fly-link:hover { background: var(--bg-hover); box-shadow: 0 0 0 1px var(--line-strong); }
+.fly-link[aria-current] { box-shadow: 0 0 0 1px var(--fg-3); }
+.fly-link .fly-card__name { margin-top: 0; }
+.fly-link__ic { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-sm); background: radial-gradient(80% 80% at 50% 100%, var(--stage-glow), transparent 75%), var(--bg-btn2); }
+.fly-link__ic .i { width: 22px; height: 22px; color: var(--red); }
 .gnav-scrim { position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity var(--dur-3) var(--ease-out), visibility 0s var(--dur-3); }
 .gnav-scrim.is-on { opacity: 1; visibility: visible; transition: opacity var(--dur-3) var(--ease-out); }
 
@@ -297,6 +306,9 @@ strong, b { font-weight: 600; }
 .mnav__link { display: block; padding: 12px 0 8px; font: 600 1.75rem/1.15 var(--font-display); font-stretch: var(--stretch); letter-spacing: -.02em; }
 .mnav__sub { display: flex; flex-wrap: wrap; gap: 4px 20px; padding-bottom: 8px; }
 .mnav__sub a { display: inline-block; padding: 6px 0; font-size: var(--fs-sm); color: var(--fg-2); }
+.mnav__group { padding: 20px 0 2px; font: 600 .75rem/1 var(--font-text); letter-spacing: .14em; text-transform: uppercase; color: var(--fg-3); }
+.mnav__sub--group { flex-direction: column; gap: 0; }
+.mnav__sub--group a { display: block; padding: 8px 0; font: 600 1.25rem/1.25 var(--font-display); font-stretch: var(--stretch); color: var(--fg); }
 .mnav__foot { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
 html.menu-open { overflow: hidden; }
 html.menu-open .gnav { position: fixed; left: 0; right: 0; top: 0; }
@@ -304,7 +316,7 @@ html.menu-open .gnav::before { background: var(--bg); box-shadow: 0 1px 0 var(--
 @keyframes mnav-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes rise { to { opacity: 1; transform: none; } }
 
-/* 8 nav items: on laptops drop the hotline number (the icon stays) and tighten; below 1200 px the menu button takes over */
+/* 6 nav items (4 with menus): on laptops drop the hotline number (the icon stays) and tighten; below 1200 px the menu button takes over */
 @media (max-width: 1399px) {
   .gnav__bar { gap: 16px; }
   .gnav__link { padding: 0 12px; font-size: .9375rem; }
@@ -1269,6 +1281,22 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
 .dealer__acts a { display: grid; justify-items: center; gap: 4px; padding: 10px 4px; border-radius: var(--r-sm); font-size: var(--fs-xs); font-weight: 600; color: var(--fg-2); transition: background-color var(--dur-2), color var(--dur-2); }
 .dealer__acts a:hover { background: var(--bg-hover); color: var(--fg); }
 .dealer__acts .i { width: 20px; height: 20px; color: var(--red); }
+/* Charging stations reuse the dealer card: specs instead of a phone, access instead of opening hours. */
+.charger__spec { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-top: 16px; }
+.charger__spec dt { font-size: var(--fs-xs); color: var(--fg-3); }
+.charger__spec dd { margin-top: 2px; font-size: var(--fs-sm); font-weight: 600; font-variant-numeric: tabular-nums; }
+.charger__spec div:last-child { text-align: right; }
+.charger .dealer__status.is-open::before { animation: none; }
+.charger .dealer__status.is-ltd { color: var(--fg); }
+.charger .dealer__status.is-ltd::before { background: var(--red); }
+.dealer__acts--2 { grid-template-columns: repeat(2, 1fr); }
+.charge-notes { margin-top: 48px; padding: 32px; border-radius: var(--r-lg); background: var(--bg-card); box-shadow: 0 0 0 1px var(--line); }
+.charge-notes__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 20px; }
+.charge-notes__list li { display: flex; gap: 12px; font-size: var(--fs-sm); color: var(--fg-2); }
+.charge-notes__list strong { display: block; margin-bottom: 4px; color: var(--fg); }
+.charge-notes__list .i { flex: none; width: 22px; height: 22px; margin-top: 1px; color: var(--red); }
+@media (max-width: 1023px) { .charge-notes__list { grid-template-columns: 1fr; } }
+@media (max-width: 639px) { .charge-notes { padding: 24px; } }
 @media (max-width: 1023px) { .dealer-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 639px) { .dealer-grid { grid-template-columns: 1fr; } }
 

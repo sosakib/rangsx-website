@@ -123,7 +123,7 @@
 
   /* ---------- Flyouts (desktop): hover intent, focus, Esc ---------- */
   const scrim = $("[data-scrim]");
-  let openItem = null, openT, closeT;
+  let openItem = null, openT, closeT, byHover = false;
   const openFly = (item) => {
     clearTimeout(closeT);
     if (openItem === item) return;
@@ -147,7 +147,7 @@
       if (e.pointerType !== "mouse" || !fine.matches) return;
       clearTimeout(closeT);
       clearTimeout(openT);
-      openT = setTimeout(() => openFly(item), openItem ? 0 : 110);
+      openT = setTimeout(() => { openFly(item); byHover = true; }, openItem ? 0 : 110);
     });
     item.addEventListener("pointerleave", (e) => {
       if (e.pointerType !== "mouse") return;
@@ -162,6 +162,13 @@
         const first = item.querySelector(".fly a");
         first && first.focus();
       }
+    });
+    // Group triggers (Network, Company) are buttons: a click or tap toggles the panel. When hover already opened
+    // it, the first click keeps it open (the user was reaching for it) and the next one closes it.
+    if (link.tagName === "BUTTON") link.addEventListener("click", () => {
+      if (openItem === item && !byHover) return closeFly(item);
+      openFly(item);
+      byHover = false;
     });
     item.addEventListener("focusout", (e) => { if (!item.contains(e.relatedTarget)) closeFly(item); });
   });
@@ -993,7 +1000,8 @@
       if (!r) return hideTip();
       const box = stage.getBoundingClientRect(), n = +r.dataset.n, out = div === r.dataset.region;
       const name = labels.find((l) => l.dataset.region === r.dataset.region).textContent;
-      showTip([[T(`${name} Division`, `${name} বিভাগ`)], [T(`${n} dealer${n === 1 ? "" : "s"} · ${out ? "click to zoom out" : "click to zoom in"}`, `${n}টি ডিলার · ${out ? "ক্লিক করে জুম আউট" : "ক্লিক করে জুম ইন"}`)]], e.clientX - box.left, e.clientY - box.top);
+      const [en, bn] = (w.dataset.noun || "dealer|ডিলার").split("|"); // /charging sets "charging station|চার্জিং স্টেশন"
+      showTip([[T(`${name} Division`, `${name} বিভাগ`)], [T(`${n} ${en}${n === 1 ? "" : "s"} · ${out ? "click to zoom out" : "click to zoom in"}`, `${n}টি ${bn} · ${out ? "ক্লিক করে জুম আউট" : "ক্লিক করে জুম ইন"}`)]], e.clientX - box.left, e.clientY - box.top);
     });
     svg.addEventListener("pointerleave", () => { hideTip(); labels.forEach((l) => l.classList.remove("is-hover")); });
     svg.addEventListener("click", (e) => {

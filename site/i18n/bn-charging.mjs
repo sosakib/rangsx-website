@@ -1,0 +1,56 @@
+// Bangla for the nav groups (Network, Company) and /charging. Station names, addresses and operators stay English
+// (translate="no" in the page), so a new station only needs its city here if the city is new.
+export default {
+  // Nav groups
+  "Network": "নেটওয়ার্ক",
+  "Dealer Locator": "ডিলার লোকেটর",
+  "Showrooms and service centres across Bangladesh": "সারা বাংলাদেশের শোরুম ও সার্ভিস সেন্টার",
+  "Charging Stations": "চার্জিং স্টেশন",
+  "Public EV chargers on the map": "ম্যাপে পাবলিক EV চার্জার",
+  "Warranty, maintenance and repairs": "ওয়ারেন্টি, মেইনটেন্যান্স ও রিপেয়ার",
+  "Who we are and where we are going": "আমরা কারা, আর কোন পথে এগোচ্ছি",
+  "Hotline, WhatsApp, email and our office": "হটলাইন, WhatsApp, ইমেইল আর আমাদের অফিস",
+
+  // /charging
+  "EV Charging Stations in Bangladesh: Map and List | RangsX": "বাংলাদেশের EV চার্জিং স্টেশন: ম্যাপ ও তালিকা | RangsX",
+  "Charging Network": "চার্জিং নেটওয়ার্ক",
+  'Charging <span class="accent">stations</span>': 'চার্জিং <span class="accent">স্টেশন</span>',
+  "Public EV chargers across Bangladesh on one map: where they are, who runs them, and the plug and power each one offers. Every RangsX vehicle also charges from a standard AC socket at home or at your depot.":
+    "সারা বাংলাদেশের পাবলিক EV চার্জার এক ম্যাপে: কোথায় আছে, কে চালায়, আর প্রতিটিতে কোন প্লাগ ও কত পাওয়ার। প্রতিটি RangsX গাড়ি বাসা বা ডিপোর সাধারণ AC সকেট থেকেও চার্জ হয়।",
+  "Charging stations": "চার্জিং স্টেশন",
+  "Search charging stations": "চার্জিং স্টেশন খুঁজুন",
+  "Search by area, operator or plug": "এলাকা, অপারেটর বা প্লাগ দিয়ে খুঁজুন",
+  "Charging station locations": "চার্জিং স্টেশনের লোকেশন",
+  "AC": "AC",
+  "DC fast": "DC ফাস্ট",
+  "Type not published": "ধরন প্রকাশিত নয়",
+  "Power and plug": "পাওয়ার ও প্লাগ",
+  "Charging points": "চার্জিং পয়েন্ট",
+  "Not published": "প্রকাশিত নয়",
+  "Public": "পাবলিক",
+  "Mercedes-Benz vehicles only": "শুধু Mercedes-Benz গাড়ির জন্য",
+  "Access not published": "কারা ব্যবহার করতে পারবেন, প্রকাশিত নয়",
+  "Operator details": "অপারেটরের তথ্য",
+  "Narayanganj": "নারায়ণগঞ্জ",
+  "Munshiganj": "মুন্সিগঞ্জ",
+  "Cumilla": "কুমিল্লা",
+  "Cox's Bazar": "কক্সবাজার",
+  "Bogura": "বগুড়া",
+  "Moulvibazar": "মৌলভীবাজার",
+  "No charging station matches that search. Try another area, or": "এই খোঁজে কোনো চার্জিং স্টেশন মেলেনি। অন্য এলাকা দিয়ে চেষ্টা করুন, অথবা",
+  "EV charging station": "EV চার্জিং স্টেশন",
+  "Before you set off": "রওনা দেওয়ার আগে",
+  "Check the plug.": "প্লাগ মিলিয়ে নিন।",
+  "Most public AC chargers here use Type 2; DC fast chargers use CCS2. Make sure your vehicle's port matches.":
+    "এখানকার বেশিরভাগ পাবলিক AC চার্জারে Type 2, আর DC ফাস্ট চার্জারে CCS2 প্লাগ। আপনার গাড়ির পোর্টের সাথে মিলছে কি না দেখে নিন।",
+  "Check who it is for.": "কাদের জন্য, দেখে নিন।",
+  "Some chargers are reserved for one brand's vehicles, marked on each card.": "কিছু চার্জার শুধু একটি ব্র্যান্ডের গাড়ির জন্য, প্রতিটি কার্ডে তা লেখা আছে।",
+  "Confirm with the operator.": "অপারেটরের সাথে কনফার্ম করুন।",
+  "Chargers can be busy, closed or out of service. Use the operator's app or call ahead.":
+    "চার্জার ব্যস্ত, বন্ধ বা নষ্ট থাকতে পারে। অপারেটরের অ্যাপ দেখুন বা আগে ফোন করে নিন।",
+  "Know a charger": "এমন কোনো চার্জার জানেন",
+  "we have missed?": "যা আমাদের তালিকায় নেই?",
+  "Send us the location on WhatsApp and we will look into adding it.": "WhatsApp-এ লোকেশনটা পাঠান, আমরা যোগ করার ব্যাপারে দেখব।",
+  "Hi RangsX, where can I charge near me?": "হ্যালো RangsX, আমার কাছাকাছি কোথায় চার্জ দিতে পারি?",
+  "Hi RangsX, I'd like to suggest an EV charging station for your map:": "হ্যালো RangsX, আপনাদের ম্যাপের জন্য একটি EV চার্জিং স্টেশনের খোঁজ দিতে চাই:",
+};

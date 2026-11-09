@@ -343,3 +343,28 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [x] Pushed and deployed 9 Nov: https://sosakib.github.io/rangsx-website/events/ . Live checks: 55 pages + 112
       assets load under /rangsx-website/, booking flow EN/BN, events suite (status, countdown, calendar file, nav
       fit 1024-1440, phone menu), no console errors.
+
+## Round 22 (9 Nov 2026): lighter top nav + Charging Stations locator
+- [x] Top nav from 8 items to 6: Electric Fleet, Electric Bikes, RX Gear Shop, Events, **Network** (Dealer Locator,
+      Charging Stations, Service & Support), **Company** (About RangsX, Contact Us). Group triggers are buttons with
+      a caret; their panel shows icon tiles (same glass flyout as the product panels). Hover opens, click/tap
+      toggles (first click after a hover keeps it open), ArrowDown focuses the first tile, Esc closes. The group is
+      highlighted when you are on any of its pages. Phone menu and footer are built from the same NAV list.
+- [x] `/charging`: 39 EV charging stations (5 operators: Crack Platoon, Ekhon Charge, BYD Bangladesh, BCharge,
+      IPDC/Rancon) on the dealer-style division map + searchable cards (area, operator, plug), chips per division,
+      kind (AC / DC fast), power and plug, charging points, access (Public / Mercedes-Benz vehicles only),
+      Directions + operator source link. "Before you set off" notes and a sources line with the check date.
+- [x] Data: `site/data/chargers.mjs` (IT edits only this; every field documented). Sources: Charge Bangla
+      directory (their check 24 Oct 2026) cross-checked with Crack Platoon's and Ekhon Charge's own pages on 9 Nov.
+      Crack Platoon's published coordinates and access type are used where given; two plus codes decoded
+      (Station-04, Station-06). Stations without exact coordinates have approximate pins and "Directions" searches
+      by name and address. Anything unpublished shows "Not published", nothing guessed.
+- [x] Bangla: `site/i18n/bn-charging.mjs`; station names, addresses and operators stay English via
+      `translate="no"` (new leaf-element rule in lib/i18n.mjs), cities translate.
+- [x] Verified (headless Chrome): nav one row 1200-1920 px EN/BN, group menus (hover, click, keyboard, Esc),
+      current-group highlight on 6 pages, /charging EN/BN x desktop/phone x dark/light (39 cards + pins, chips,
+      search, empty state, locate tooltip, no errors, no sideways scroll), dealers map unchanged, phone menu groups.
+- [ ] Not pushed or deployed yet.
+- [ ] Worth confirming: Crack Platoon lists 3 chargers (incl. "RANGS Parking Lot" at 215 Bir Uttam Mir Shawkat
+      Sarak, the Tejgaon showroom address) as "Private for Mercedes": the page says "Mercedes-Benz vehicles only".
+      If RangsX vehicles can use the RANGS lot charger, tell me and it can be featured.

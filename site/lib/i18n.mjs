@@ -31,6 +31,8 @@ export function toBangla(html, path, missing = new Set()) {
   const vault = [];
   const stash = (s) => `\u0001${vault.push(s) - 1}\u0002`;
   html = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, stash);
+  // translate="no" (leaf elements only): proper names kept as published, e.g. charging station names and addresses.
+  html = html.replace(/<(\w+)\b[^>]*\stranslate="no"[^>]*>[^<]*<\/\1>/g, stash);
   // Bangla display demo (bike pages): opens in Bangla here, and its English half stays English for the toggle.
   html = html.replace(/<span class="l-en">[\s\S]*?<\/span>(?=<span class="l-bn")/g, stash)
     .replace('id="bangla" data-lang="en"', 'id="bangla" data-lang="bn"')

@@ -13,10 +13,11 @@ const logo = (cls = "") =>
 const wordmark = () =>
   `<span class="logo logo--bar"><img class="logo--on-dark" src="/img/brand/rangsx-wordmark-on-dark.webp" width="429" height="156" alt="RangsX"><img class="logo--on-light" src="/img/brand/rangsx-wordmark-on-light.webp" width="429" height="156" alt="" aria-hidden="true"></span>`;
 
+const under = (path, href) => path === href || path.startsWith(href + "/");
 const isActive = (path, item) =>
-  item.flyout === "fleet"
-    ? /^\/(dongfeng|electric-vans|electric-microbus)/.test(path)
-    : path === item.href || path.startsWith(item.href + "/");
+  item.menu ? item.menu.some(([, h]) => under(path, h))
+    : item.flyout === "fleet" ? /^\/(dongfeng|electric-vans|electric-microbus)/.test(path)
+    : under(path, item.href);
 
 // ---------- flyout panels (desktop) ----------
 const flyCard = (href, img, name, note, alt) =>
@@ -32,17 +33,26 @@ const FLYOUTS = {
       ${BIKES.map((b) => flyCard(bikeUrl(b), b.colorways[0].img, b.fullName, b.kind, b.fullName)).join("")}
     </div>`,
 };
+// Group panels (Network, Company): one tile per link.
+const flyMenu = (menu, path) => `
+    <div class="fly__cards fly__cards--3">
+      ${menu.map(([l, h, note, ic]) => `<a class="fly-card fly-link" href="${h}"${under(path, h) ? ` aria-current="page"` : ""}><span class="fly-link__ic">${icon(ic)}</span><span><span class="fly-card__name">${l}</span><span class="fly-card__note">${note}</span></span></a>`).join("")}
+    </div>`;
 
 // Language switch: English pages link to the Bangla twin; site/lib/i18n.mjs turns it into "EN" on Bangla pages.
 const langSwitch = (path, cls) => path === "/404" ? "" : `<a class="${cls} lang-switch" href="${bnPath(path)}" hreflang="bn" lang="bn">বাংলা</a>`;
 
 function header(path) {
   const items = NAV.map((n) => {
-    const cur = isActive(path, n) ? ` aria-current="page"` : "";
-    if (!n.flyout) return `<li><a class="gnav__link" href="${n.href}"${cur}>${n.label}</a></li>`;
-    return `<li class="gnav__item" data-fly="${n.flyout}">
-      <a class="gnav__link" href="${n.href}"${cur} aria-haspopup="true" aria-expanded="false" aria-controls="fly-${n.flyout}">${n.label}</a>
-      <div class="fly" id="fly-${n.flyout}" role="region" aria-label="${n.label}"><div class="fly__inner wrap wrap--wide">${FLYOUTS[n.flyout]()}</div></div>
+    const on = isActive(path, n);
+    if (!n.flyout && !n.menu) return `<li><a class="gnav__link" href="${n.href}"${on ? ` aria-current="page"` : ""}>${n.label}</a></li>`;
+    const id = n.flyout || n.id, caret = icon("caret-down", "gnav__caret");
+    const trigger = n.menu
+      ? `<button class="gnav__link" type="button"${on ? ` aria-current="true"` : ""} aria-expanded="false" aria-controls="fly-${id}">${n.label}${caret}</button>`
+      : `<a class="gnav__link" href="${n.href}"${on ? ` aria-current="page"` : ""} aria-haspopup="true" aria-expanded="false" aria-controls="fly-${id}">${n.label}${caret}</a>`;
+    return `<li class="gnav__item" data-fly="${id}">
+      ${trigger}
+      <div class="fly" id="fly-${id}" role="region" aria-label="${n.label}"><div class="fly__inner wrap wrap--wide">${n.menu ? flyMenu(n.menu, path) : FLYOUTS[id]()}</div></div>
     </li>`;
   }).join("");
   return `
@@ -66,19 +76,16 @@ ${mobileNav()}`;
 }
 
 function mobileNav() {
-  const sub = (links) => `<ul class="mnav__sub">${links.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul>`;
+  const sub = (links, cls = "") => `<ul class="mnav__sub ${cls}">${links.map(([l, h]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul>`;
+  const SUBS = { fleet: FLEET.map((f) => [f.fullName, f.url]), bikes: BIKES.map((b) => [b.fullName, bikeUrl(b)]) };
+  const items = NAV.map((n) => n.menu
+    ? `<li><p class="mnav__group">${n.label}</p>${sub(n.menu, "mnav__sub--group")}</li>`
+    : `<li><a class="mnav__link" href="${n.href}">${n.label}</a>${n.flyout ? sub(SUBS[n.flyout]) : ""}</li>`).join("");
   return `
 <div class="mnav" id="mnav" data-mnav hidden>
   <nav class="mnav__inner wrap" aria-label="Mobile">
     <ul class="mnav__list">
-      <li><a class="mnav__link" href="/dongfeng">Electric Fleet</a>${sub(FLEET.map((f) => [f.fullName, f.url]))}</li>
-      <li><a class="mnav__link" href="/electric-bikes">Electric Bikes</a>${sub(BIKES.map((b) => [b.fullName, bikeUrl(b)]))}</li>
-      <li><a class="mnav__link" href="/shop">RX Gear Shop</a></li>
-      <li><a class="mnav__link" href="/events">Events</a></li>
-      <li><a class="mnav__link" href="/about">About</a></li>
-      <li><a class="mnav__link" href="/service">Service</a></li>
-      <li><a class="mnav__link" href="/dealers">Dealers</a></li>
-      <li><a class="mnav__link" href="/contact">Contact</a></li>
+      ${items}
       <li><a class="mnav__link" href="/account">My account</a></li>
     </ul>
     <div class="mnav__foot">
