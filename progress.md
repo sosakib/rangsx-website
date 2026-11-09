@@ -340,3 +340,6 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       112 assets pass; GitHub Pages BASE build keeps the calendar link.
 - [ ] Confirm before publishing: RangsX stall number (the team plan says EV-69 to EV-73), whether to announce the
       RX launch on 26 Nov, the final display lineup (plan also lists an electric pickup, not on the site).
+- [x] Pushed and deployed 9 Nov: https://sosakib.github.io/rangsx-website/events/ . Live checks: 55 pages + 112
+      assets load under /rangsx-website/, booking flow EN/BN, events suite (status, countdown, calendar file, nav
+      fit 1024-1440, phone menu), no console errors.
