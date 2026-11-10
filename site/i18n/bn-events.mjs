@@ -83,4 +83,71 @@ export default {
   "Charging infrastructure": "চার্জিং অবকাঠামো",
   "Components and manufacturing": "কম্পোনেন্ট ও ম্যানুফ্যাকচারিং",
   "Renewable energy": "নবায়নযোগ্য জ্বালানি",
+
+  // Shared labels for past events
+  "See the photos": "ছবিগুলো দেখুন",
+  "Read the coverage": "সংবাদ কাভারেজ পড়ুন",
+  "Highlights": "এক নজরে",
+  "In their words": "তাঁদের কথায়",
+  "How it went": "কেমন হলো",
+  "Photos": "ছবি",
+  "In the news": "সংবাদমাধ্যমে",
+  "What we showed": "যা দেখিয়েছি",
+  "See what's": "দেখুন সামনে",
+  "coming next": "কী আসছে",
+  "Find our next expo or launch, or talk to us on WhatsApp.": "আমাদের পরের এক্সপো বা লঞ্চের খোঁজ নিন, অথবা WhatsApp-এ কথা বলুন।",
+  "All events": "সব ইভেন্ট",
+
+  // DHL EV handover (8 July 2026)
+  "DHL EV Handover": "DHL EV হস্তান্তর",
+  "Dongfeng EM-26 Handover Ceremony, RangsX and DHL Express Bangladesh": "Dongfeng EM-26 হস্তান্তর অনুষ্ঠান, RangsX ও DHL Express Bangladesh",
+  "Sonargaon": "সোনারগাঁও",
+  "RangsX Hands Over 18 Electric Vans to DHL Express Bangladesh": "DHL Express Bangladesh-কে 18টি ইলেকট্রিক ভ্যান হস্তান্তর করল RangsX",
+  "On 8 July 2026, RangsX handed over 18 fully electric Dongfeng EM-26 cargo vans to DHL Express Bangladesh at the Rangs Assembly Plant in Sonargaon. Photos, quotes and press coverage.":
+    "8 জুলাই 2026, সোনারগাঁওয়ের Rangs অ্যাসেম্বলি প্ল্যান্টে DHL Express Bangladesh-কে 18টি সম্পূর্ণ ইলেকট্রিক Dongfeng EM-26 কার্গো ভ্যান হস্তান্তর করেছে RangsX। ছবি, বক্তব্য আর সংবাদ কাভারেজ।",
+  "RangsX handed over 18 fully electric Dongfeng EM-26 cargo vans to DHL Express Bangladesh at the Rangs Assembly Plant in Sonargaon.":
+    "সোনারগাঁওয়ের Rangs অ্যাসেম্বলি প্ল্যান্টে DHL Express Bangladesh-কে 18টি সম্পূর্ণ ইলেকট্রিক Dongfeng EM-26 কার্গো ভ্যান হস্তান্তর করেছে RangsX।",
+  '18 electric vans for <span class="accent">DHL Express</span>': '<span class="accent">DHL Express</span>-এর জন্য 18টি ইলেকট্রিক ভ্যান',
+  "On 8 July 2026, RangsX handed over 18 fully electric Dongfeng EM-26 cargo vans to DHL Express Bangladesh at the Rangs Assembly Plant in Sonargaon: one of the country's largest deployments of electric commercial vehicles.":
+    "8 জুলাই 2026, সোনারগাঁওয়ের Rangs অ্যাসেম্বলি প্ল্যান্টে DHL Express Bangladesh-কে 18টি সম্পূর্ণ ইলেকট্রিক Dongfeng EM-26 কার্গো ভ্যান হস্তান্তর করেছে RangsX: দেশে ইলেকট্রিক কমার্শিয়াল গাড়ির সবচেয়ে বড় ডেপ্লয়মেন্টগুলোর একটি।",
+  "The RangsX and DHL Express Bangladesh teams at the handover ceremony": "হস্তান্তর অনুষ্ঠানে RangsX ও DHL Express Bangladesh-এর টিম",
+  "Dongfeng EM-26 electric cargo vans handed over": "Dongfeng EM-26 ইলেকট্রিক কার্গো ভ্যান হস্তান্তর",
+  "Tailpipe emissions on DHL's pickup and delivery routes": "DHL-এর পিকআপ ও ডেলিভারি রুটে টেইলপাইপ ধোঁয়া",
+  "News outlets that covered the handover": "সংবাদমাধ্যমে হস্তান্তরের খবর",
+  "What we delivered": "যা হস্তান্তর করেছি",
+  "Eighteen <strong>Dongfeng EM-26</strong> electric cargo vans, in DHL Express colours.": "DHL Express-এর রঙে 18টি <strong>Dongfeng EM-26</strong> ইলেকট্রিক কার্গো ভ্যান।",
+  "The handover of these 18 fully electric cargo vans is more than the completion of a commercial agreement: it represents a new chapter in Bangladesh's electric mobility journey. The trust placed in us by a global company like DHL is a strong endorsement of our capabilities.":
+    "এই 18টি সম্পূর্ণ ইলেকট্রিক কার্গো ভ্যান হস্তান্তর শুধু একটি বাণিজ্যিক চুক্তির সমাপ্তি নয়: এটি বাংলাদেশের ইলেকট্রিক মোবিলিটি যাত্রার এক নতুন অধ্যায়। DHL-এর মতো বৈশ্বিক প্রতিষ্ঠানের আস্থা আমাদের সক্ষমতার বড় স্বীকৃতি।",
+  "Logistics operators continue to face rising fuel and maintenance costs. Electric cargo vans can significantly reduce operating expenses while improving the efficiency and reliability of logistics services.":
+    "লজিস্টিকস প্রতিষ্ঠানগুলোকে জ্বালানি আর রক্ষণাবেক্ষণের ক্রমবর্ধমান খরচের মুখে পড়তে হচ্ছে। ইলেকট্রিক কার্গো ভ্যান পরিচালন খরচ উল্লেখযোগ্যভাবে কমাতে পারে, সাথে লজিস্টিকস সেবাকে আরও দক্ষ ও নির্ভরযোগ্য করে।",
+  "The addition of fully electric cargo vans to our fleet marks an important milestone in our sustainability journey in Bangladesh and reinforces our commitment to greener logistics.":
+    "আমাদের ফ্লিটে সম্পূর্ণ ইলেকট্রিক কার্গো ভ্যান যুক্ত হওয়া বাংলাদেশে আমাদের সাসটেইনেবিলিটি যাত্রার একটি গুরুত্বপূর্ণ মাইলফলক, আর পরিবেশবান্ধব লজিস্টিকসের প্রতি আমাদের অঙ্গীকারকে আরও দৃঢ় করে।",
+  "Ahmed Shahriar Anwar": "Ahmed Shahriar Anwar",
+  "Shah Mohammad Rumman Bin Rouf": "Shah Mohammad Rumman Bin Rouf",
+  "Mohammad Miarul Haque": "Mohammad Miarul Haque",
+  "CEO, Automotive Division, Rangs Group": "সিইও, অটোমোটিভ ডিভিশন, Rangs Group",
+  "Business Head, Eicher Bus & Truck, Dongfeng EV and Pickup, Rangs Group": "বিজনেস হেড, Eicher বাস ও ট্রাক, Dongfeng EV ও পিকআপ, Rangs Group",
+  "Managing Director, DHL Express Bangladesh": "ব্যবস্থাপনা পরিচালক, DHL Express Bangladesh",
+  "The vans join DHL Express Bangladesh's pickup and delivery fleet, replacing diesel and petrol vans as the company works towards net-zero carbon emissions.":
+    "নেট-জিরো কার্বন নিঃসরণের লক্ষ্যে কাজ করা DHL Express Bangladesh-এর পিকআপ ও ডেলিভারি ফ্লিটে ডিজেল আর পেট্রল ভ্যানের জায়গা নিচ্ছে এই ভ্যানগুলো।",
+  "DHL plans to grow its electric fleet in Bangladesh to 39 vehicles by the end of 2026, nearly half of its pickup and delivery fleet.":
+    "2026 সালের শেষে বাংলাদেশে নিজেদের ইলেকট্রিক ফ্লিট 39টি গাড়িতে নিতে চায় DHL, যা তাদের পিকআপ ও ডেলিভারি ফ্লিটের প্রায় অর্ধেক।",
+  "Electric cargo vans": "ইলেকট্রিক কার্গো ভ্যান",
+  "Green logistics": "পরিবেশবান্ধব লজিস্টিকস",
+  "Fleet electrification": "ফ্লিট ইলেকট্রিফিকেশন",
+  "Net-zero transport": "নেট-জিরো পরিবহন",
+  "Senior leaders from both companies came together at the Rangs Assembly Plant for the handover. DHL Express Bangladesh was represented by Managing Director Mohammad Miarul Haque, Senior Director (Finance) Abu Noim Md. Kashem Chowdhury, Director (Customer Service) Ismail Ahmed Rasel and Senior Director (Operations) Mahmud Bin Alam.":
+    "হস্তান্তর অনুষ্ঠানে Rangs অ্যাসেম্বলি প্ল্যান্টে একসাথে ছিলেন দুই প্রতিষ্ঠানের শীর্ষ কর্মকর্তারা। DHL Express Bangladesh-এর পক্ষে ছিলেন ব্যবস্থাপনা পরিচালক Mohammad Miarul Haque, সিনিয়র ডিরেক্টর (ফাইন্যান্স) Abu Noim Md. Kashem Chowdhury, ডিরেক্টর (কাস্টমার সার্ভিস) Ismail Ahmed Rasel এবং সিনিয়র ডিরেক্টর (অপারেশনস) Mahmud Bin Alam।",
+  "From Rangs Group: Ahmed Shahriar Anwar, CEO of the Automotive Division; Shah Mohammad Rumman Bin Rouf, Business Head of Eicher Bus & Truck, Dongfeng EV and Pickup; Md Ahsanul Azim, Head of Finance; Md Arifuzzaman, Head of Business, Mahindra & Mahindra; and Sabbir Nawazz, Group Marketing Head.":
+    "Rangs Group-এর পক্ষে ছিলেন অটোমোটিভ ডিভিশনের সিইও Ahmed Shahriar Anwar; Eicher বাস ও ট্রাক, Dongfeng EV ও পিকআপের বিজনেস হেড Shah Mohammad Rumman Bin Rouf; হেড অব ফাইন্যান্স Md Ahsanul Azim; Mahindra & Mahindra-এর হেড অব বিজনেস Md Arifuzzaman; এবং গ্রুপ মার্কেটিং হেড Sabbir Nawazz।",
+  "Both teams said they hope the handover will speed up the move to electric commercial vehicles across Bangladesh's corporate and logistics sectors.":
+    "দুই পক্ষই আশা প্রকাশ করেছে, এই হস্তান্তর বাংলাদেশের কর্পোরেট ও লজিস্টিকস খাতে ইলেকট্রিক কমার্শিয়াল গাড়ির ব্যবহার আরও দ্রুত বাড়াবে।",
+  "The Dongfeng EM-26 vans lined up for handover": "হস্তান্তরের জন্য সারি করে রাখা Dongfeng EM-26 ভ্যান",
+  "A Dongfeng EM-26 in DHL Express colours": "DHL Express-এর রঙে একটি Dongfeng EM-26",
+  "The fleet ready for DHL's pickup and delivery routes": "DHL-এর পিকআপ ও ডেলিভারি রুটের জন্য প্রস্তুত ফ্লিট",
+  "Electrify your": "এবার ইলেকট্রিক হোক",
+  "fleet next": "আপনার ফ্লিট",
+  "Talk to our fleet team about running the Dongfeng EM-26 on your routes.": "আপনার রুটে Dongfeng EM-26 চালানো নিয়ে কথা বলুন আমাদের ফ্লিট টিমের সাথে।",
+  "Explore the EM-26": "EM-26 দেখুন",
+  "Hi RangsX, I'd like to talk about electric cargo vans for my fleet.": "হ্যালো RangsX, আমার ফ্লিটের জন্য ইলেকট্রিক কার্গো ভ্যান নিয়ে কথা বলতে চাই।",
 };

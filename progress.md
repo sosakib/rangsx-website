@@ -369,3 +369,21 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [ ] Worth confirming: Crack Platoon lists 3 chargers (incl. "RANGS Parking Lot" at 215 Bir Uttam Mir Shawkat
       Sarak, the Tejgaon showroom address) as "Private for Mercedes": the page says "Mercedes-Benz vehicles only".
       If RangsX vehicles can use the RANGS lot charger, tell me and it can be featured.
+
+## Round 23 (10 Nov 2026): DHL EV handover as a past event + IT brief (dynamic vs static)
+- [x] Event template made past-aware (one template for every event): after the end date the visit block and
+      calendar disappear, hero buttons go to photos and press, the closing band changes. New optional fields:
+      cover (+ coverAlt), highlights, quotes, coverage, showTitle/showLead, cta; hours optional (ceremonies).
+      Past-event cards on /events show the cover photo.
+- [x] `/events/dhl-handover-2026`: 18 Dongfeng EM-26 vans handed to DHL Express Bangladesh, 8 July 2026, Rangs
+      Assembly Plant, Sonargaon. Facts and quotes only from the RangsX press release (BSS, TBS, FE, Future Startup)
+      and DHL's fleet plan (Daily Star). Not used: Future Startup's "EM27 cargo van, 50 kWh, 248 km" line (conflicts
+      with site data; the ceremony banner says EM26) and the banner figures (220+ km, BDT 3.00/km) until confirmed.
+- [x] Photos: 4 RangsX press photos (credited "Image: RANGSX" by The Front Page), cropped from the PR posts read
+      with agent-reach + the Prothom Alo article image; low resolution (max 1638 px). Replace with the originals
+      from Marketing/PR agency when available (same file names, re-export WebP widths).
+- [x] Coverage: 32 outlets from `Downloads/RANGS  PR.xlsx` (sheet RANGSX), links checked (4 return 403 to bots only).
+- [x] Bangla for all new strings; verified EN/BN x desktop/phone x dark/light: hub (BEVMX upcoming, DHL past with
+      photo), DHL page (no visit/calendar, 3 stats, 3 quotes, 3 photos + cover, 32 press links), BEVMX unchanged.
+- [ ] Confirm with Marketing: original high-res photos; whether the 220+ km and BDT 3.00/km banner claims may go on
+      the site; any more past events to add (same template).

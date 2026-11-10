@@ -68,6 +68,9 @@ scrollcraft/.../BRIEF.md   the client's homepage brief in their own words
   decided at build, so rebuild and deploy after an event ends. Dates, hours and the stall list translate to Bangla
   by pattern; a new event's own sentences go in `site/i18n/bn-events.mjs`. Recap and gallery sections appear only
   when filled. Only publish what the organiser or management confirmed in writing (stall numbers, test rides, offers).
+  Optional fields (cover, coverAlt, highlights, quotes, coverage, showTitle/showLead, cta; hours may be left out) serve any
+  event. After the end date the page switches itself to a record: no visit block or calendar, hero buttons to photos and
+  press. Example of a past event: `dhl-handover-2026` (photos in `static/img/events/<slug>/`, WebP width variants).
 - **Nav:** `NAV` in `site/data/site.mjs` drives the desktop bar, the phone menu and the active state. `flyout` = product
   panel (fleet, bikes); `menu` = a group button (Network, Company) whose panel lists `[label, href, note, icon]`.
 - **Charging stations:** `site/data/chargers.mjs` is the only file to edit (fields documented in its header); `/charging`

@@ -69,6 +69,7 @@ export const PATTERNS = [
   [/^Hi RangsX, I would like an EMI quote for the (.+)\.$/, (m, p) => `হ্যালো RangsX, ${p}-এর EMI কোটেশন চাই।`],
   [/^(RX [\w -]+): RX Gear \| RangsX$/, (m, p) => `${p}: RX Gear | RangsX`],
   // Dealers
+  [/^Covered by (\d+) news outlets\.$/, (m, n) => `${n}টি সংবাদমাধ্যমে প্রকাশিত।`],
   [/^Show (.+) on the map$/, (m, name) => `ম্যাপে দেখুন: ${tr(name) ?? name}`], // charging stations keep English names
   [/^Map of Bangladesh with (\d+) EV charging stations$/, (m, n) => `বাংলাদেশের ম্যাপে ${n}টি EV চার্জিং স্টেশন`],
   [/^(\d+) EV charging stations across Bangladesh on one map, with the operator, plug type and power for each\. (.+)$/,

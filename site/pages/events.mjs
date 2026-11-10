@@ -23,8 +23,9 @@ const dateRange = (e) => {
   return sameMonth ? `${a.getUTCDate()}-${b.getUTCDate()} ${MONTH[b.getUTCMonth()]} ${y}` : `${a.getUTCDate()} ${MONTH[a.getUTCMonth()]} - ${b.getUTCDate()} ${MONTH[b.getUTCMonth()]} ${y}`;
 };
 const days = (e) => { const out = []; for (let t = D(e.start); t <= D(e.end); t = new Date(+t + 864e5)) out.push(`${WEEKDAY[t.getUTCDay()]} ${t.getUTCDate()} ${MONTH[t.getUTCMonth()]}`); return out; };
-const hours = (e) => `${e.hours[0]} - ${e.hours[1]}`;
+const hours = (e) => (e.hours ? `${e.hours[0]} - ${e.hours[1]}` : "");
 const to24 = (t) => { const [, h, m, ap] = t.match(/(\d+):(\d+) (AM|PM)/); return `${String((+h % 12) + (ap === "PM" ? 12 : 0)).padStart(2, "0")}:${m}:00`; };
+const when = (e, i) => (e.hours ? `${i ? e.end : e.start}T${to24(e.hours[i])}+06:00` : i ? e.end : e.start);
 
 // Status as of the build (Dhaka, UTC+6). events.js recomputes it on every visit.
 const today = new Date(Date.now() + 6 * 36e5).toISOString().slice(0, 10);
@@ -50,7 +51,7 @@ const ics = (e) => {
   const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//RangsX//Events//EN", "BEGIN:VEVENT", `UID:${e.slug}@rangsx.com`,
     `DTSTAMP:${d(e.start)}T000000Z`, `DTSTART;VALUE=DATE:${d(e.start)}`, `DTEND;VALUE=DATE:${d(e.end, 1)}`,
     `SUMMARY:${txt(`RangsX at ${e.name}`)}`, `LOCATION:${txt(`${e.venue.name}, ${e.venue.address}`)}`,
-    `DESCRIPTION:${txt(`${e.fullName}. Open ${hours(e)} daily. ${SITE.url}/events/${e.slug}`)}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    `DESCRIPTION:${txt(`${e.fullName}.${e.hours ? ` Open ${hours(e)} daily.` : ""} ${SITE.url}/events/${e.slug}`)}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   return `data:text/calendar;charset=utf-8,${encodeURIComponent(body)}`;
 };
 const calBtn = (e, size = "") => btn("Add to calendar", ics(e), { kind: "secondary", size, ic: "calendar-blank", attrs: `download="rangsx-${e.slug}.ics"` });
@@ -61,16 +62,16 @@ const coming = sorted.filter((e) => statusOf(e) !== "past");
 const past = sorted.filter((e) => statusOf(e) === "past").reverse();
 
 const schemaOf = (e) => ({
-  "@type": "ExhibitionEvent", name: e.fullName, url: SITE.url + eventUrl(e), description: e.description,
-  startDate: `${e.start}T${to24(e.hours[0])}+06:00`, endDate: `${e.end}T${to24(e.hours[1])}+06:00`,
+  "@type": e.role === "Exhibitor" ? "ExhibitionEvent" : "Event", name: e.fullName, url: SITE.url + eventUrl(e), description: e.description,
+  startDate: when(e, 0), endDate: when(e, 1), ...(e.cover && { image: SITE.url + imgUrl(e.cover, 1600) }),
   eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: { "@type": "Place", name: e.venue.name, address: { "@type": "PostalAddress", streetAddress: e.venue.address, addressCountry: "BD" } },
   organizer: { "@type": "Organization", name: e.organiser.name, url: e.organiser.url },
 });
 
 const card = (e, { feature = false } = {}) => html`
-<a class="card ev-card${feature ? " ev-card--feature" : ""}" href="${eventUrl(e)}" data-reveal>
-  ${ticket(e)}
+<a class="card ev-card${feature ? " ev-card--feature" : ""}${e.cover && !feature ? " ev-card--photo" : ""}" href="${eventUrl(e)}" data-reveal>
+  ${e.cover && !feature ? `<span class="ev-card__photo">${pic(e.cover, { alt: "", sizes: "(min-width: 900px) 210px, 100vw" })}</span>` : ticket(e)}
   <div class="ev-card__body">
     ${status(e)}
     <h3 class="ev-card__title">${e.name}</h3>
@@ -130,17 +131,25 @@ const detail = (e) => {
     ["Electric vehicles for business", "Dongfeng, for fleets and passengers", show.filter((x) => !x.bike)]].filter(([, , list]) => list.length);
   const facts = [
     ["calendar-blank", "Dates", `<ul class="ev-days">${days(e).map((d) => `<li>${d}</li>`).join("")}</ul>`],
-    ["clock", "Opening hours", `${hours(e)}, every day`],
+    e.hours && ["clock", "Opening hours", `${hours(e)}, every day`],
     ["map-pin", "Venue", `${e.venue.name}<br><span class="muted">${e.venue.address}</span>`],
     ["storefront", "RangsX stall", e.stall || `<span class="muted">Announced soon</span>`],
     ["users-three", "Entry", e.access],
-  ];
+  ].filter(Boolean);
+  // After the end date the page reads as a record: no visit block or calendar, hero buttons go to photos and press.
+  const past = statusOf(e) === "past";
+  const heroActions = past
+    ? [e.gallery?.length && btn("See the photos", "#ev-gallery", { size: "lg" }), e.coverage?.length && btn("Read the coverage", "#ev-press", { kind: "secondary", size: "lg" })].filter(Boolean).join("")
+    : btn("Plan your visit", "#visit", { size: "lg" }) + calBtn(e, "lg");
+  const showLead = e.showLead || (past ? `On show: <strong>${show.map((x) => x.name).join(", ").replace(/, ([^,]+)$/, " and $1")}</strong>.` : `On the RangsX stall: <strong>${show.map((x) => x.name).join(", ").replace(/, ([^,]+)$/, " and $1")}</strong>.`);
+  const cta = e.cta || (past ? { title: "See what's", accent: "coming next", lead: "Find our next expo or launch, or talk to us on WhatsApp.", primary: ["All events", "/events"], waText: "Hi RangsX, please tell me about your next event." }
+    : { title: "Can't make it to the expo?", lead: "Find a RangsX dealer near you, or talk to us on WhatsApp.", primary: ["Find a dealer", "/dealers"], waText: `Hi RangsX, I can't make it to ${e.name}. Can you help me here?` });
   const og = show.find((x) => !x.bike) || show[0];
   return {
     path: eventUrl(e),
     title: e.seoTitle || `RangsX at ${e.name}`,
     description: e.description,
-    ...(og && { image: imgUrl(og.img, 1600) }),
+    ...(e.cover ? { image: imgUrl(e.cover, 1600) } : og && { image: imgUrl(og.img, 1600) }),
     css: ["events"], js: ["events"],
     schema: [schemaOf(e), c.schema],
     body: html`
@@ -154,18 +163,26 @@ ${c.html}
       <p class="lead">${e.lead}</p>
       <ul class="ev-meta ev-meta--hero">
         <li>${icon("calendar-blank")}<span>${dateRange(e)}</span></li>
-        <li>${icon("clock")}<span>${hours(e)}</span></li>
+        ${e.hours && `<li>${icon("clock")}<span>${hours(e)}</span></li>`}
         <li>${icon("map-pin")}<span>${e.venue.short}</span></li>
       </ul>
-      <div class="actions">${btn("Plan your visit", "#visit", { size: "lg" })}${calBtn(e, "lg")}</div>
+      ${heroActions && `<div class="actions">${heroActions}</div>`}
     </div>
     ${ticket(e)}
   </div>
 </section>
 
+${e.cover && html`<section class="ev-cover" aria-label="${e.name}">
+  <div class="wrap wrap--wide"><figure data-reveal>${pic(e.cover, { alt: e.coverAlt || e.fullName, sizes: "(min-width: 1440px) 1360px, 96vw", eager: true })}</figure></div>
+</section>`}
+
+${e.highlights?.length > 0 && html`<section class="section section--flush-top" aria-label="Highlights">
+  <div class="wrap"><dl class="ev-stats" data-stagger>${e.highlights.map(([n, t]) => `<div data-reveal><dt>${n}</dt><dd>${t}</dd></div>`)}</dl></div>
+</section>`}
+
 ${show.length > 0 && html`<section class="section" aria-labelledby="ev-show">
   <div class="wrap">
-    ${head({ title: `<span id="ev-show">What we are bringing</span>`, lead: `On the RangsX stall: <strong>${show.map((x) => x.name).join(", ").replace(/, ([^,]+)$/, " and $1")}</strong>.` })}
+    ${head({ title: `<span id="ev-show">${e.showTitle || (past ? "What we showed" : "What we are bringing")}</span>`, lead: showLead })}
     <div class="ev-lanes">
       ${lanes.map(([t, sub, list]) => html`<article class="ev-lane" data-reveal>
         <header><h3 class="ev-lane__title">${t}</h3><p class="muted">${sub}</p></header>
@@ -194,7 +211,7 @@ ${e.audiences.length > 0 && html`<section class="section section--elev" aria-lab
   </div>
 </section>`}
 
-<section class="section" id="visit" aria-labelledby="ev-visit">
+${!past && html`<section class="section" id="visit" aria-labelledby="ev-visit">
   <div class="wrap ev-visit">
     <div data-reveal>
       ${head({ title: `<span id="ev-visit">Plan your visit</span>`, lead: e.fullName })}
@@ -204,7 +221,14 @@ ${e.audiences.length > 0 && html`<section class="section section--elev" aria-lab
       ${facts.map(([ic, k, v]) => `<div>${icon(ic)}<dt>${k}</dt><dd>${v}</dd></div>`)}
     </dl>
   </div>
-</section>
+</section>`}
+
+${e.quotes?.length > 0 && html`<section class="section" aria-labelledby="ev-quotes">
+  <div class="wrap">
+    <h2 class="h2" id="ev-quotes">In their words</h2>
+    <div class="ev-quotes" data-stagger>${e.quotes.map((q) => `<figure class="ev-quote" data-reveal><blockquote><p>${q.text}</p></blockquote><figcaption><b>${q.name}</b><span>${q.role}</span></figcaption></figure>`)}</div>
+  </div>
+</section>`}
 
 <section class="section section--elev" aria-labelledby="ev-about">
   <div class="wrap ev-about" data-reveal>
@@ -232,7 +256,14 @@ ${e.gallery?.length > 0 && html`<section class="section" aria-labelledby="ev-gal
   </div>
 </section>`}
 
-${ctaBand({ title: "Can't make it to the expo?", lead: "Find a RangsX dealer near you, or talk to us on WhatsApp.",primary: ["Find a dealer", "/dealers"], waText: `Hi RangsX, I can't make it to ${e.name}. Can you help me here?` })}`,
+${e.coverage?.length > 0 && html`<section class="section section--elev" aria-labelledby="ev-press">
+  <div class="wrap">
+    ${head({ title: `<span id="ev-press">In the news</span>`, lead: `Covered by ${e.coverage.length} news outlets.` })}
+    <ul class="ev-press" data-reveal>${e.coverage.map(([n, u]) => `<li><a href="${u}" target="_blank" rel="noopener"><span translate="no">${n}</span>${icon("arrow-up-right")}</a></li>`)}</ul>
+  </div>
+</section>`}
+
+${ctaBand(cta)}`,
   };
 };
 
