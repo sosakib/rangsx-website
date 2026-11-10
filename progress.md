@@ -387,6 +387,6 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       photo), DHL page (no visit/calendar, 3 stats, 3 quotes, 3 photos + cover, 32 press links), BEVMX unchanged.
 - [x] Pushed + deployed (f9b2f75, tag release-2026-11-10); live crawl 59 pages + 125 assets and DHL suite pass.
 - [x] IT brief (5-page PDF, dynamic/auto/static with annotated shots, CMS models, pull + go-live steps):
-      DocumentsRangsX_IT_Handoff_Nov2026RangsX_IT_Update_Nov2026.pdf (HTML source + shots beside it, not in the repo).
+      Documents/RangsX_IT_Handoff_Nov2026/RangsX_IT_Update_Nov2026.pdf (HTML source + shots beside it, not in the repo).
 - [ ] Confirm with Marketing: original high-res photos; whether the 220+ km and BDT 3.00/km banner claims may go on
       the site; any more past events to add (same template).
