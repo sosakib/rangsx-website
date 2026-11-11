@@ -86,6 +86,8 @@ export default {
   "Businesses and fleets pre-booking an EM-26 or EM-27": "EM-26 বা EM-27 প্রি-বুক করা ব্যবসা ও ফ্লিট",
   "Pre-book a Dongfeng EM-26 or EM-27 with our fleet team.": "আমাদের ফ্লিট টিমের সাথে Dongfeng EM-26 বা EM-27 প্রি-বুক করুন।",
   "We supply, install and commission your 7.4 kW AC charger.": "আপনার 7.4 kW AC চার্জার আমরা দিই, বসাই আর চালু করে দিই।",
+  "Charger": "চার্জার",
+  "7.4 kW AC, Type 2 plug, wall-mounted, IP65": "7.4 kW AC, Type 2 প্লাগ, দেয়ালে লাগানো, IP65",
   "Gift value": "উপহারের মূল্য",
   "Tk 60,000 per vehicle": "প্রতি গাড়িতে ৳60,000",
   "Includes": "যা থাকছে",

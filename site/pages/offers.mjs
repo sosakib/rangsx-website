@@ -45,7 +45,7 @@ const art = (o, ev) => {
     ${o.creativePhone && pic(o.creativePhone, { alt: o.creativeAlt || o.name, sizes: "100vw", cls: "offer__creative--phone" })}
     ${pic(o.creative, { alt: o.creativeAlt || o.name, sizes: "(min-width: 1440px) 1360px, 96vw", cls: o.creativePhone ? "offer__creative--wide" : "" })}
   </figure>`;
-  const shots = (o.poster || o.models.slice(0, 1)).map((id) => ITEMS[id]).filter(Boolean);
+  const shots = (o.poster || o.models.slice(0, 1)).map((id) => (id.startsWith("/") ? { img: id } : ITEMS[id])).filter(Boolean);
   return html`<div class="offer__art offer__poster" aria-hidden="true">
     <div class="offer__poster-copy">
       <p class="offer__poster-name">${o.name}</p>

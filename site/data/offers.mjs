@@ -20,7 +20,8 @@
 //   steps        how to claim: 3 short steps, in order
 //   details      optional small facts: [["Prizes", "..."], ...] (2 or 3 at most; keep policy wording off the site)
 //   models       catalogue ids the offer covers: "bike:zs", "bike:es3", "bike:t60", "fleet:em26", "fleet:em27"
-//   poster       optional: which of the models to picture on the built-in poster (default: the first)
+//   poster       optional: what the built-in poster pictures (default: the first model). Catalogue ids and/or an
+//                image path like "/img/offers/charger-7kw" (cut-out WebP); a second picture sits small in front
 //   ask          the prefilled WhatsApp message behind "Ask on WhatsApp"
 //
 // Creative (Marketing's artwork). Until it exists, the page draws a poster from `hero` and the model photo.
@@ -115,11 +116,13 @@ export const OFFERS = [
       "We supply, install and commission your 7.4 kW AC charger.",
     ],
     details: [
+      ["Charger", "7.4 kW AC, Type 2 plug, wall-mounted, IP65"],
       ["Gift value", "Tk 60,000 per vehicle"],
       ["Includes", "Charger, installation and commissioning"],
     ],
     models: ["fleet:em26", "fleet:em27"],
-    poster: ["fleet:em26"],
+    // The van plus the charger itself (Crack Platoon BCP-A2M-P; spec sheet in the same office note, renders from Marketing).
+    poster: ["fleet:em26", "/img/offers/charger-7kw"],
     creative: "",
     creativeAlt: "",
     ask: "Hi RangsX, please tell me about the free charger offer with a Dongfeng EM-26 or EM-27 pre-booking at BEVMX 2026.",
