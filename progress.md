@@ -412,4 +412,6 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       (shots.mjs + build_report.js beside it, not in the repo).
 - [ ] Open: CFO + CEO lines blank on both office notes; Free Charger was in the scan but the brief said three bike
       offers (remove its entry if not public); lucky-draw hashtag + QR link; can Rider Pass and Expo Special
-      combine; Marketing creatives; Bangla proofread. Not pushed or deployed yet.
+      combine; Marketing creatives; Bangla proofread.
+- [x] Pushed + deployed (1245dc6, tag release-2026-11-11); live /offers, /bn/offers, /events, BEVMX: 4 offers + 4 cards,
+      no console errors, every request under /rangsx-website/.
