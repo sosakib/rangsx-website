@@ -415,3 +415,7 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       combine; Marketing creatives; Bangla proofread.
 - [x] Pushed + deployed (1245dc6, tag release-2026-11-11); live /offers, /bn/offers, /events, BEVMX: 4 offers + 4 cards,
       no console errors, every request under /rangsx-website/.
+- [x] Free Charger offer (11 Nov, 3eea535, tag release-2026-11-11b, deployed + checked live): poster shows the
+      7.4 kW charger (Marketing renders, cut out of the #F7F7F7 studio background; originals in _research/offers)
+      in front of the EM-26; new "Charger" row: 7.4 kW AC, Type 2 plug, wall-mounted, IP65 (Crack Platoon
+      BCP-A2M-P sheet in the scan). `poster` may now hold an image path. IT report regenerated for release-2026-11-11b.
