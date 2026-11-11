@@ -390,3 +390,26 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       Documents/RangsX_IT_Handoff_Nov2026/RangsX_IT_Update_Nov2026.pdf (HTML source + shots beside it, not in the repo).
 - [ ] Confirm with Marketing: original high-res photos; whether the 220+ km and BDT 3.00/km banner claims may go on
       the site; any more past events to add (same template).
+
+## Round 24 (11 Nov 2026): Offers section + IT report (dynamic / auto / static)
+- [x] Nav "Events" became the "Events & Offers" menu (Events, Offers), built from NAV like Network and Company.
+      Fits one line at 1200 px in EN and BN. Footer Explore gets "Offers".
+- [x] `/offers` (+ `/bn/offers`) from ONE file, `site/data/offers.mjs` (header lists every field). Each offer: a
+      big 16:9 creative slot (Marketing's art; until then a built-in poster from `hero` + the model photo), then a
+      panel: status + day count, name, benefit, who, 3 how-to-claim steps, Valid / Where / optional details,
+      model chips, Plan your visit + WhatsApp, terms line. Phones: 4:5 poster or optional `creativePhone`.
+- [x] Auto expiry: `js/offers.js` (Dhaka time, every visit) shows Coming soon / On now with the day count and
+      REMOVES an offer the day after its end date; empty lists hide; /offers then shows "No offers running".
+      Ended offers are also left out at build.
+- [x] Offer cards on /events (all running offers) and on the event page an offer belongs to (BEVMX 2026).
+- [x] Four offers from the scanned office notes (Downloads/Scan_20261110_151323.pdf, 10 Nov): Rider Pass Tk 10,000
+      off for delivery/ride-share riders, Expo Special Tk 5,000 off, BEVMX Lucky Draw (coupons 10k/7k/5k, use within
+      3 months), Free Charger (7.4 kW AC, installed, worth Tk 60,000) with an EM-26/EM-27 pre-booking. All 26-28 Nov.
+- [x] Motion: poster number and model settle in after the card reveals, small hover shift; nothing loops;
+      reduced motion gets none. Verified EN/BN x desktop/phone x dark/light, no console errors, build checks clean.
+- [x] IT report (Word, 9 pages, 9 marked-up screens, element table, CMS Offer model, creative spec, steps,
+      open points): Documents/RangsX_Offers_IT_Report_Nov2026/RangsX_Offers_Page_IT_Report.docx
+      (shots.mjs + build_report.js beside it, not in the repo).
+- [ ] Open: CFO + CEO lines blank on both office notes; Free Charger was in the scan but the brief said three bike
+      offers (remove its entry if not public); lucky-draw hashtag + QR link; can Rider Pass and Expo Special
+      combine; Marketing creatives; Bangla proofread. Not pushed or deployed yet.

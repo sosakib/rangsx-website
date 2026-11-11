@@ -3,14 +3,8 @@
 import { html, btn, more, head, icon, pic, ctaBand, crumbs, SITE, wa, lines } from "../lib/ui.mjs";
 import { imgUrl } from "../lib/img.mjs";
 import { EVENTS } from "../data/events.mjs";
-import { BIKES, bikeUrl } from "../data/bikes.mjs";
-import { FLEET } from "../data/fleet.mjs";
-
-// Catalogue ids (the same as the basket: "bike:zs", "fleet:em26") -> what the showcase needs.
-const ITEMS = Object.fromEntries([
-  ...BIKES.map((b) => [`bike:${b.slug}`, { name: b.fullName, kind: b.kind, img: b.colorways[0].img, url: bikeUrl(b), bike: true }]),
-  ...FLEET.map((f) => [`fleet:${f.slug}`, { name: f.fullName, kind: f.kind, img: f.img, url: f.url }]),
-]);
+import { OFFERS } from "../data/offers.mjs";
+import { ITEMS, offerStrip } from "./offers.mjs";
 
 // Dates: ISO strings in, English out; site/i18n/bn.mjs turns these shapes into Bangla.
 const MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -91,7 +85,7 @@ const hub = {
   path: "/events",
   title: "Events: Meet RangsX at Expos and Launches",
   description: "Where to meet RangsX in person: the expos and events we take part in or host across Bangladesh, with dates, venues and what we are showing.",
-  css: ["events"], js: ["events"],
+  css: ["events", "offers"], js: ["events", "offers"],
   schema: [hubCrumbs.schema, ...coming.map(schemaOf)],
   body: html`
 ${hubCrumbs.html}
@@ -115,6 +109,7 @@ ${hubCrumbs.html}
         </div>`}
   </div>
 </section>
+${offerStrip(OFFERS, { title: "Offers", label: true })}
 ${past.length > 0 && html`<section class="section section--elev" aria-labelledby="ev-past">
   <div class="wrap">
     <h2 class="ev-label" id="ev-past">Past events</h2>
@@ -150,7 +145,7 @@ const detail = (e) => {
     title: e.seoTitle || `RangsX at ${e.name}`,
     description: e.description,
     ...(e.cover ? { image: imgUrl(e.cover, 1600) } : og && { image: imgUrl(og.img, 1600) }),
-    css: ["events"], js: ["events"],
+    css: ["events", "offers"], js: ["events", "offers"],
     schema: [schemaOf(e), c.schema],
     body: html`
 ${c.html}
@@ -196,6 +191,8 @@ ${show.length > 0 && html`<section class="section" aria-labelledby="ev-show">
     </div>
   </div>
 </section>`}
+
+${!past && offerStrip(OFFERS.filter((o) => o.event === e.slug), { title: "Offers at our stall", lead: `Claim these at the RangsX stall during ${e.name}.` })}
 
 ${e.audiences.length > 0 && html`<section class="section section--elev" aria-labelledby="ev-who">
   <div class="wrap">

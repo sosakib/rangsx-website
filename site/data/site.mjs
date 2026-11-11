@@ -37,7 +37,10 @@ export const NAV = [
   { label: "Electric Fleet", href: "/dongfeng", flyout: "fleet" },
   { label: "Electric Bikes", href: "/electric-bikes", flyout: "bikes" },
   { label: "RX Gear Shop", href: "/shop" },
-  { label: "Events", href: "/events" },
+  { label: "Events & Offers", id: "events", menu: [
+    ["Events", "/events", "Expos, launches and handovers", "calendar-blank"],
+    ["Offers", "/offers", "Deals running now on bikes and vehicles", "gift"],
+  ] },
   { label: "Network", id: "network", menu: [
     ["Dealer Locator", "/dealers", "Showrooms and service centres across Bangladesh", "storefront"],
     ["Charging Stations", "/charging", "Public EV chargers on the map", "charging-station"],
@@ -70,6 +73,7 @@ export const FOOTER = [
       { label: "Compare Models", href: "/electric-bikes/rx/zs#compare" },
       { label: "Savings Calculator", href: "/electric-vans/em26#savings" },
       { label: "Events", href: "/events" },
+      { label: "Offers", href: "/offers" },
       { label: "FAQ", href: "/electric-bikes/rx/zs#faq" },
     ],
   },

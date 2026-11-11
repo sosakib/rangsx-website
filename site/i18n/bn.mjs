@@ -11,8 +11,9 @@ import legal from "./bn-legal.mjs";
 import account from "./bn-account.mjs";
 import events from "./bn-events.mjs";
 import charging from "./bn-charging.mjs";
+import offers from "./bn-offers.mjs";
 
-export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account, ...events, ...charging };
+export const BN = { ...common, ...bikes, ...fleet, ...company, ...legal, ...account, ...events, ...charging, ...offers };
 const LOWER = Object.fromEntries(Object.entries(BN).map(([k, v]) => [k.toLowerCase(), v]));
 const tr = (s) => BN[s] ?? LOWER[s.toLowerCase()];
 
@@ -70,6 +71,11 @@ export const PATTERNS = [
   [/^(RX [\w -]+): RX Gear \| RangsX$/, (m, p) => `${p}: RX Gear | RangsX`],
   // Dealers
   [/^Covered by (\d+) news outlets\.$/, (m, n) => `${n}টি সংবাদমাধ্যমে প্রকাশিত।`],
+  // Offers (site/pages/offers.mjs): day counts and the event stall line
+  [/^Starts in (\d+) days$/, (m, n) => `${n} দিন পর শুরু`],
+  [/^Ends in (\d+) days$/, (m, n) => `আর ${n} দিন`],
+  [/^RangsX stall at (.+)$/, (m, what) => `${what}-এ RangsX স্টল`],
+  [/^Claim these at the RangsX stall during (.+)\.$/, (m, what) => `${what} চলাকালীন RangsX স্টলে এসে এই অফারগুলো নিন।`],
   [/^Show (.+) on the map$/, (m, name) => `ম্যাপে দেখুন: ${tr(name) ?? name}`], // charging stations keep English names
   [/^Map of Bangladesh with (\d+) EV charging stations$/, (m, n) => `বাংলাদেশের ম্যাপে ${n}টি EV চার্জিং স্টেশন`],
   [/^(\d+) EV charging stations across Bangladesh on one map, with the operator, plug type and power for each\. (.+)$/,
