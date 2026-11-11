@@ -404,7 +404,7 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
 - [x] Offer cards on /events (all running offers) and on the event page an offer belongs to (BEVMX 2026).
 - [x] Four offers from the scanned office notes (Downloads/Scan_20261110_151323.pdf, 10 Nov): Rider Pass Tk 10,000
       off for delivery/ride-share riders, Expo Special Tk 5,000 off, BEVMX Lucky Draw (coupons 10k/7k/5k, use within
-      3 months), Free Charger (7.4 kW AC, installed, worth Tk 60,000) with an EM-26/EM-27 pre-booking. All 26-28 Nov.
+      3 months), Free Charger (7.4 kW AC, installed; its price is NOT shown on the site, by request) with an EM-26/EM-27 pre-booking. All 26-28 Nov.
 - [x] Motion: poster number and model settle in after the card reveals, small hover shift; nothing loops;
       reduced motion gets none. Verified EN/BN x desktop/phone x dark/light, no console errors, build checks clean.
 - [x] IT report (Word, 9 pages, 9 marked-up screens, element table, CMS Offer model, creative spec, steps,
@@ -419,3 +419,4 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       7.4 kW charger (Marketing renders, cut out of the #F7F7F7 studio background; originals in _research/offers)
       in front of the EM-26; new "Charger" row: 7.4 kW AC, Type 2 plug, wall-mounted, IP65 (Crack Platoon
       BCP-A2M-P sheet in the scan). `poster` may now hold an image path. IT report regenerated for release-2026-11-11b.
+- [x] Charger price removed everywhere on request (site, Bangla, report); tag release-2026-11-11c, deployed.

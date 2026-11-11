@@ -117,7 +117,6 @@ export const OFFERS = [
     ],
     details: [
       ["Charger", "7.4 kW AC, Type 2 plug, wall-mounted, IP65"],
-      ["Gift value", "Tk 60,000 per vehicle"],
       ["Includes", "Charger, installation and commissioning"],
     ],
     models: ["fleet:em26", "fleet:em27"],
