@@ -24,13 +24,13 @@ const t60 = BIKES.find((b) => b.slug === "t60");
 const SEED = {
   orders: [
     { no: "RX-260417", days: -170, place: "RangsX Tejgaon Showroom", items: [{ id: "bike:t60", qty: 1, note: t60.colorways[0].label }] },
-    { no: "RX-260932", days: -38, place: "RX Gear Shop", items: [{ id: "shop:rx-pro-helmet", qty: 1 }, { id: "shop:rx-sport-gloves", qty: 1 }] },
+    { no: "RX-260932", days: -38, place: "RX Gear Shop", items: [{ id: "shop:rangsx-cap", qty: 1 }, { id: "shop:rangsx-polo-black", qty: 1 }] },
   ],
   rides: [
     { model: "RX ES3", location: SHOWROOMS[1], days: 5, time: TIME_SLOTS[3], status: "confirmed" },
     { model: "RX T60", location: SHOWROOMS[0], days: -182, time: TIME_SLOTS[0], status: "done" },
   ],
-  wish: ["bike:zs", "shop:rx-rider-jacket"],
+  wish: ["bike:zs", "shop:rangsx-windbreaker"],
   msgs: [{ from: "rx", days: -1, text: "Welcome to your RangsX account. Ask us anything about your bike, service or warranty, and we reply right here.", bn: "আপনার RangsX অ্যাকাউন্টে স্বাগতম। আপনার বাইক, সার্ভিস বা ওয়ারেন্টি নিয়ে যেকোনো প্রশ্ন এখানেই করুন, আমরা এখানেই উত্তর দেব।" }],
 };
 // Bangla for the few English strings the dashboard prints from data (showrooms, slots, colours, shops).

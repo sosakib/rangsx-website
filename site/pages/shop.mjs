@@ -5,9 +5,12 @@ import { CATEGORIES, PRODUCTS, taka, productUrl, productImg, bySlug, catLabel } 
 const add = (p, go = "") => `data-add="shop:${p.slug}"${go && " data-add-go"}`;
 const price = (p) => `<p class="price"><b>${taka(p.price)}</b>${p.was ? `<s>${taka(p.was)}</s>` : ""}</p>`;
 
+// Studio backdrop behind the cut-out photo: silver for black merchandise, graphite for light items (shop.mjs `stage`).
+const stage = (p) => `prod-stage prod-stage--${p.stage || "silver"}`;
+
 const card = (p) => html`
 <article class="prod" data-cat="${p.cat}" data-reveal>
-  <div class="prod__img">
+  <div class="prod__img ${stage(p)}">
     ${p.badge && `<span class="badge${p.badge === "Best Seller" ? " badge--red" : ""}">${p.badge}</span>`}
     ${pic(productImg(p), { alt: p.name, sizes: "(min-width: 1024px) 23vw, (min-width: 768px) 30vw, 46vw" })}
     ${wishBtn("shop:" + p.slug, "wish--float")}
@@ -26,9 +29,9 @@ const hub = (() => {
   const c = crumbs([["Home", "/"], ["RX Gear", "/shop"]], { wide: true });
   return {
     path: "/shop",
-    title: "RX Gear: Premium Riding Accessories",
-    description: "Shop RX Gear in Bangladesh: certified helmets, riding gloves, jackets and accessories for RX electric bike riders. Secure online checkout, delivered nationwide.",
-    image: "/img/shop/rx-pro-helmet-800.webp",
+    title: "RX Gear: Official RangsX Merchandise",
+    description: "Shop official RangsX merchandise in Bangladesh: polo shirts, a windbreaker, caps, key chains and wristbands in RangsX black and red. Delivered nationwide.",
+    image: "/img/shop/rangsx-windbreaker-800.webp",
     schema: [
       { "@type": "CollectionPage", name: "RX Gear", url: SITE.url + "/shop", mainEntity: { "@type": "ItemList", itemListElement: PRODUCTS.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: SITE.url + productUrl(p), name: p.name })) } },
       c.schema,
@@ -39,8 +42,8 @@ ${c.html}
   ${beam()}
   <div class="wrap wrap--wide intro">
     <p class="eyebrow">RX Gear</p>
-    <h1 class="h1">Premium riding <span class="accent">accessories</span></h1>
-    <p class="lead">Authentic gear engineered for RX riders. Helmets, gloves, and apparel built to match the precision of your ride.</p>
+    <h1 class="h1">Official RangsX <span class="accent">merchandise</span></h1>
+    <p class="lead">Polos, a windbreaker, caps and everyday accessories in RangsX black and red. Made for riders, and for everyone who rides with us.</p>
   </div>
 </section>
 <section class="section section--flush-top" aria-label="Products">
@@ -67,7 +70,7 @@ const pdp = (p) => {
     description: p.desc.length > 158 ? p.desc.slice(0, 155).replace(/\s\S*$/, "") + "." : p.desc,
     image: `${productImg(p)}-800.webp`,
     schema: [
-      { "@type": "Product", name: p.name, description: p.desc, category: catLabel(p.cat), brand: { "@type": "Brand", name: "RX" }, image: `${SITE.url}${productImg(p)}-800.webp`, offers: offer(p) },
+      { "@type": "Product", name: p.name, description: p.desc, category: catLabel(p.cat), brand: { "@type": "Brand", name: "RangsX" }, image: `${SITE.url}${productImg(p)}-800.webp`, offers: offer(p) },
       c.schema,
     ],
     body: html`
@@ -75,7 +78,7 @@ ${c.html}
 <section class="section" style="padding-top:clamp(32px,5vw,64px)" aria-labelledby="p-title">
   <div class="wrap wrap--wide pdp">
     <div class="pdp__media intro">
-      <div class="lens" data-lens>${pic(productImg(p), { alt: p.name, sizes: "(min-width: 900px) 46vw, 92vw", eager: true })}<span class="lens__hint">${icon("magnifying-glass")}Hover to zoom</span></div>
+      <div class="lens ${stage(p)}" data-lens>${pic(productImg(p), { alt: p.name, sizes: "(min-width: 900px) 46vw, 92vw", eager: true })}<span class="lens__hint">${icon("magnifying-glass")}Hover to zoom</span></div>
     </div>
     <div class="intro">
       <a class="pdp__back" href="/shop">${icon("arrow-right")}Back to shop</a>

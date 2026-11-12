@@ -1140,8 +1140,18 @@ html.home-past .is-home .gnav::before { background: var(--glass); -webkit-backdr
 .prod:hover { box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-lg); transform: translateY(-3px); }
 .prod[hidden] { display: none; }
 .prod__img { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--bg-elev); }
-.prod__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
-.prod:hover .prod__img img { transform: scale(1.06); }
+.prod__img img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
+.prod:hover .prod__img img { transform: translateY(-2.5%) scale(1.04); }
+/* Product stage: a studio backdrop behind the cut-out merchandise (photos are transparent, the item stands on the 88%
+   line). Silver (brand grey #BCBEC0 family) makes black items pop; graphite lifts light ones. A soft floor shadow sits
+   under the item and tightens as it lifts on hover. Same look in both themes, like a product photo. */
+:is(.prod__img, .lens).prod-stage { --st-a: #f2f2f3; --st-b: #d9dadc; --st-c: #bcbec0; --st-floor: rgb(0 0 0 / .32);
+  background: radial-gradient(120% 95% at 50% 26%, var(--st-a) 0%, var(--st-b) 56%, var(--st-c) 100%); }
+.prod-stage.prod-stage--graphite { --st-a: #4c4c51; --st-b: #28282c; --st-c: #131315; --st-floor: rgb(0 0 0 / .6); }
+.prod-stage::before { content: ""; position: absolute; left: 20%; right: 20%; top: 85.5%; height: 5%; border-radius: 50%; background: radial-gradient(closest-side, var(--st-floor), transparent); transition: transform 1.2s var(--ease-out), opacity 1.2s var(--ease-out); pointer-events: none; }
+.prod:hover .prod-stage::before { transform: scaleX(.86); opacity: .75; }
+.lens.prod-stage { box-shadow: none; }
+.lens.prod-stage img { position: relative; z-index: 1; }
 .prod__img .badge { position: absolute; top: 12px; left: 12px; z-index: 2; }
 /* Over a photo a badge needs a solid backing to stay legible, in either theme. */
 .prod__img .badge { background: rgb(0 0 0 / .62); color: #fff; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }

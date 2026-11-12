@@ -24,8 +24,8 @@ export const KEEP = new Set([
   "km", "km/h", "W", "kW", "kWh", "kg", "m³", "g", "1500W", "90-100 km", "65 km/h", "76V 30Ah", "76V 30Ah LFP", "IP67", "195R14C 8PR",
   "3,714 / 10,000 rpm", "250 km", "260 km", "90 km/h", "5.68 m³", "4,865 × 1,715 × 2,065 mm", "5,265 × 1,715 × 2,065 mm",
   "3,050 mm", "3,450 mm", "1,654 kg", "1,700 kg", "2,700 kg", "41.86 kWh CATL LFP (Li-ion)", "53.58 kWh CATL LFP (Li-ion)",
-  "RX Pro Helmet", "RX Urban Helmet", "RX Sport Gloves", "RX All-Weather Gloves", "RX Phone Mount", "RX Saddlebag 20L",
-  "RX Rider Jacket", "RX Rider T-Shirt", "SSLCOMMERZ", "bKash", "Nagad", "Rocket", "Visa, Mastercard, Amex",
+  "RangsX Polo Shirt (Black)", "RangsX Polo Shirt (Grey)", "RangsX Windbreaker", "RangsX Cap", "RangsX Key Chain",
+  "RangsX Wristband", "RX Wristband", "SSLCOMMERZ", "bKash", "Nagad", "Rocket", "Visa, Mastercard, Amex",
 ]);
 
 const PERIOD = (h) => (h < 12 ? "সকাল" : h < 16 ? "দুপুর" : h < 18 ? "বিকেল" : h < 20 ? "সন্ধ্যা" : "রাত");
@@ -68,7 +68,7 @@ export const PATTERNS = [
   [/^Hi RangsX, I am interested in the (.+)\.$/, (m, p) => `হ্যালো RangsX, ${thing(p)} সম্পর্কে জানতে চাই।`],
   [/^Hi RangsX, I would like the price of the (.+)\.$/, (m, p) => `হ্যালো RangsX, ${thing(p)}-এর দাম জানতে চাই।`],
   [/^Hi RangsX, I would like an EMI quote for the (.+)\.$/, (m, p) => `হ্যালো RangsX, ${p}-এর EMI কোটেশন চাই।`],
-  [/^(RX [\w -]+): RX Gear \| RangsX$/, (m, p) => `${p}: RX Gear | RangsX`],
+  [/^((?:RangsX|RX) [\w ()-]+): RX Gear( \| RangsX)?$/, (m, p, s) => `${p}: RX Gear${s || ""}`],
   // Dealers
   [/^Covered by (\d+) news outlets\.$/, (m, n) => `${n}টি সংবাদমাধ্যমে প্রকাশিত।`],
   // Offers (site/pages/offers.mjs): day counts and the event stall line

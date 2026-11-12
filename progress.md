@@ -420,3 +420,19 @@ Ask: since it is a demo, no downgrade of quality, frame rate or experience in th
       in front of the EM-26; new "Charger" row: 7.4 kW AC, Type 2 plug, wall-mounted, IP65 (Crack Platoon
       BCP-A2M-P sheet in the scan). `poster` may now hold an image path. IT report regenerated for release-2026-11-11b.
 - [x] Charger price removed everywhere on request (site, Bangla, report); tag release-2026-11-11c, deployed.
+
+## Round 25 (12 Nov 2026): RX Gear becomes official RangsX merchandise
+- [x] Shop catalogue replaced (site/data/shop.mjs): RangsX Polo Shirt Black and Grey (Tk 990), RangsX Windbreaker
+      (Tk 1,590), RangsX Cap (Tk 450), RangsX Key Chain (Tk 180), RangsX and RX Wristband (Tk 90 each). Facts from
+      the Marketing work orders RML-MKT-WO-24-Oct-26-03/04/05 and RML-MKT-WO-5-Nov-26-01 (scan:
+      Downloads/Scan_20261112_163931.pdf). Prices set by the user's rule (2 to 2.5x cost incl. VAT); costs are NOT in
+      this public repo. Categories now All / Apparel / Accessories.
+- [x] Photos cut out of the Marketing creatives (originals in _research/shop-merch; mock-up text dropped), composed
+      on a transparent square (item on the 88% line): polos and windbreaker show two views. Static/img/shop holds
+      only the new files (480/800/1200 WebP).
+- [x] Product "stage" behind each photo (`stage` field, .prod-stage in site.css): silver (brand grey family) for black
+      items, graphite for the grey polo; floor shadow that tightens on hover. Cards and product pages, both themes.
+- [x] Hub copy: "Official RangsX merchandise"; schema brand RangsX; /account demo order and wishlist use the new items.
+      Bangla for every new string (product names stay English); old product strings removed.
+- [ ] Open: windbreaker work order says "Size 2XL" (page says "Sizes up to 2XL"); polo sizes not stated in the order;
+      the key chain creative shows two straps (page says "Ride Beyond and RangsX branding", not two designs).
